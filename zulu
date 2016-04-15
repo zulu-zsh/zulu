@@ -1,0 +1,74 @@
+#!/usr/bin/env zsh
+
+###
+# Print usage information
+###
+function _zulu_usage() {
+  echo $(color yellow "Usage:")
+  echo "  zulu [options] <command>"
+  echo
+  echo $(color yellow "Options:")
+  echo "  -h, --help          Output this help text and exit"
+  echo
+  echo $(color yellow "Commands:")
+  echo "  install <package>     Install a package"
+  echo "  uninstall <package>   Uninstall a package"
+  echo "  link <package>        Create symlinks for a package"
+  echo "  unlink <package>      Remove symlinks for a package"
+  echo "  list                  List packages"
+  echo "  info                  Show information for a package"
+  echo "  alias <args>          Functions for adding/removing aliases"
+  echo "  path <args>           Functions for adding/removing dirs from \$PATH"
+  echo "  fpath <args>          Functions for adding/removing dirs from \$fpath"
+}
+
+###
+# Load the zulu commands
+###
+function _zulu_load_commands() {
+  source "$base/.core/helpers"
+  for cmd in $(find "$base/.core" -name "zulu-*"); do
+    source $cmd
+  done
+}
+
+###
+# The main zulu command. Loads and executes all other commands
+###
+(( $+functions[zulu] )) || function zulu() {
+  local cmd base
+
+  # Set up some source paths
+  base=${ZULU_DIR:-"$HOME/.config/zulu"}
+
+  _zulu_load_commands
+
+  # Parse CLI options
+  zparseopts -D h=help -help=help
+
+  # Print help
+  if [[ $help ]]; then
+    _zulu_usage
+    return
+  fi
+
+  cmd="$1"
+
+  # Zulu uses color (https://github.com/molovo/color) when installed
+  # Here's a simple fallback if it's not
+  [[ -f "$base/bin/color" ]] || function color() {
+    echo "${(@)@:2}"
+  }
+
+  # Check if the requested command exists
+  if (( ! $+functions[_zulu_${cmd}] )); then
+    # If it doesn't, print usage information and exit
+    echo $(color red "Command '$cmd' can not be found.")
+    echo
+    _zulu_usage
+    return 1
+  fi
+
+  # Execute the requested command
+  _zulu_${cmd} "${(@)@:2}"
+}

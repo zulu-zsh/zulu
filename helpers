@@ -1,0 +1,21 @@
+#!/usr/bin/env zsh
+
+###
+# Get the value for a key in a JSON object
+#
+# IMPORTANT: There must be no newlines within nested objects
+###
+(( $+functions[jsonval] )) || function jsonval {
+  local temp json=$1 key=$2
+
+  temp=$(echo $json | sed 's/\\\\\//\//g' | \
+    sed 's/[{}]//g' | \
+    sed 's/\"\:\"/\|/g' | \
+    sed 's/[\,]/ /g' | \
+    sed 's/\"//g' | \
+    grep -w $key | \
+    cut -d":" -f2-9999999 | \
+    sed -e 's/^ *//g' -e 's/ *$//g'
+  )
+  echo ${temp##*|}
+}

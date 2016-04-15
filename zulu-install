@@ -1,0 +1,78 @@
+#!/usr/bin/env zsh
+
+###
+# Output usage information
+###
+function _zulu_install_usage() {
+  echo $(color yellow "Usage:")
+  echo "  zulu install <packages...>"
+}
+
+###
+# Install a package
+###
+function _zulu_install_package() {
+  local package json repo dir file link
+
+  package="$1"
+
+  # Check if the package is already installed
+  root="$base/packages/$package"
+  if [[ -d "$root" ]]; then
+    echo $(color red "Package '$package' is already installed")
+    return 1
+  fi
+
+  # Get the JSON from the index
+  json=$(cat "$index/$package")
+
+  # Get the repository URL from the JSON
+  repo=$(jsonval $json 'repository')
+
+  # Clone the repository
+  cd "$base/packages"
+  git clone --recursive $repo $package
+
+  zulu link $package
+
+  return
+}
+
+###
+# Zulu command to handle package installation
+###
+function _zulu_install() {
+  local base index packages
+
+  # Parse options
+  zparseopts -D h=help -help=help
+
+  # Output help and return if requested
+  if [[ $help ]]; then
+    _zulu_install_usage
+    return
+  fi
+
+  # Set up some variables
+  base=${ZULU_DIR:-"$HOME/.config/zulu"}
+  index="${base}/.index"
+
+  # If no context is passed, output the contents of the pathfile
+  if [[ "$1" = "" ]]; then
+    echo $(color red "Please specify a package name")
+    return 1
+  fi
+
+  # Do a first loop, to ensure all packages exist
+  for package in "$@"; do
+    if [[ ! -f "$index/$package" ]]; then
+      echo $(color red "Package '$package' is not in the index")
+      return 1
+    fi
+  done
+
+  # Do a second loop, to do the actual install
+  for package in "$@"; do
+    _zulu_install_package "$package"
+  done
+}

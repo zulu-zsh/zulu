@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+
+function _zulu_init() {
+  local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/theme"}
+
+  # Populate $PATH and $fpath
+  zulu path reset
+  zulu fpath reset
+
+  # Source files in the init directory
+  for f in $(find "$base/init"); do
+    source $f
+  done
+
+  # Autoload zsh modules
+  autoload -U promptinit && promptinit
+  local theme=$(cat "$base/config/theme")
+  prompt $theme
+
+  # Load modules
+  zulu module load
+}

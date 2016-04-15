@@ -1,0 +1,31 @@
+#!/usr/bin/env zsh
+
+function _zulu_unlink() {
+  local package json dir file link base
+
+  base="${ZULU_DIR:-${ZDOTDIR:-"$HOME/.config/zulu"}}"
+  index="$base/.index"
+
+  package="$1"
+
+  # Check if the package is already installed
+  root="$base/packages/$package"
+  if [[ ! -d "$root" ]]; then
+    echo $(color red "Package '$package' is not installed")
+    return 1
+  fi
+
+  # Get the JSON from the index
+  json=$(cat "$index/$package")
+
+  # Loop through the 'bin' and 'share' objects
+  dirs=('bin' 'init' 'share')
+  for dir in $dirs[@]; do
+    # Convert the bin/share object into an associative array
+    typeset -A files=($(echo $(jsonval $json $dir) | tr "," "\n" | tr ":" " "))
+
+    # Loop through each of the values in the array, the key is a file within
+    # the package, the value is the name of a symlink to create in the directory
+    for file link ("${(@kv)files}") [[ -L "$base/$dir/$link" ]] && rm "$base/$dir/$link"
+  done
+}
