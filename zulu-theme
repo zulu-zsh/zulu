@@ -1,0 +1,32 @@
+#!/usr/bin/env zsh
+
+###
+# Output usage information
+###
+function _zulu_theme_usage() {
+  echo $(color yellow "Usage:")
+  echo "  zulu theme <theme_name>"
+}
+
+_zulu_theme() {
+  local base theme config
+
+  theme="$1"
+
+  # Parse options
+  zparseopts -D h=help -help=help
+
+  # Output help and return if requested
+  if [[ $help ]]; then
+    _zulu_theme_usage
+    return
+  fi
+
+  # Set up some variables
+  base=${ZULU_DIR:-"$HOME/.config/zulu"}
+  config="${base}/config/theme"
+
+  echo "$theme" >! $config
+
+  prompt $theme
+}
