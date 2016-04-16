@@ -1,0 +1,94 @@
+#!/usr/bin/env zsh
+
+###
+# Output usage information
+###
+function _zulu_alias_usage() {
+  echo $(color yellow "Usage:")
+  echo "  zulu alias <context> [args]"
+  echo
+  echo $(color yellow "Contexts:")
+  echo "  add <alias> <command>   Add an alias"
+  echo "  rm <alias>              Remove an alias"
+  echo "  load                    Load all aliases from alias file"
+}
+
+###
+# Add an alias
+###
+_zulu_alias_add() {
+  local existing alias cmd
+
+  alias="$1"
+  cmd="${(@)@:2}"
+
+  existing=$(cat $aliasfile | grep "alias $alias=")
+  if [[ $existing != "" ]]; then
+    echo $(color red "Alias '$alias' already exists")
+    return 1
+  fi
+
+  echo "alias $alias='$cmd'" >> $aliasfile
+
+  zulu alias load
+  return
+}
+
+###
+# Remove an alias
+###
+_zulu_alias_rm() {
+  local existing alias
+
+  alias="$1"
+
+  existing=$(cat $aliasfile | grep "alias $alias=")
+  if [[ $existing = "" ]]; then
+    echo $(color red "Alias '$alias' does not exist")
+    return 1
+  fi
+
+  echo $(cat $aliasfile | grep -v "alias $alias=") >! $aliasfile
+  unalias $alias
+  zulu alias load
+  return
+}
+
+###
+# Load aliases
+###
+_zulu_alias_load() {
+  source $aliasfile
+}
+
+###
+# Zulu command to handle path manipulation
+###
+function _zulu_alias() {
+  local ctx base aliasfile
+
+  # Parse options
+  zparseopts -D h=help -help=help
+
+  # Output help and return if requested
+  if [[ $help ]]; then
+    _zulu_alias_usage
+    return
+  fi
+
+  # Set up some variables
+  base=${ZULU_DIR:-"$HOME/.config/zulu"}
+  aliasfile="${base}/config/alias"
+
+  # If no context is passed, output the contents of the aliasfile
+  if [[ "$1" = "" ]]; then
+    cat "$aliasfile"
+    return
+  fi
+
+  # Get the context
+  ctx="$1"
+
+  # Call the relevant function
+  _zulu_alias_${ctx} "${(@)@:2}"
+}

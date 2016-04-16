@@ -6,6 +6,7 @@ function _zulu_init() {
   # Populate $PATH and $fpath
   zulu path reset
   zulu fpath reset
+  zulu alias load
 
   # Source files in the init directory
   for f in $(find "$base/init"); do
