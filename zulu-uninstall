@@ -32,6 +32,9 @@ function _zulu_uninstall_package() {
   #       get populated for some reason
   rm -rf "$root"
 
+  packagefile="$base/config/packages"
+  echo $(cat $packagefile | grep -v -e '^'${package}'$') >! $packagefile
+
   return
 }
 

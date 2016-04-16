@@ -35,6 +35,12 @@ function _zulu_install_package() {
 
   zulu link $package
 
+  packagefile="$base/config/packages"
+  in_packagefile=$(cat $packagefile | grep -e '^'${package}'$')
+  if [[ "$in_packagefile" = "" ]]; then
+    echo "$package" >> $packagefile
+  fi
+
   return
 }
 
@@ -75,4 +81,6 @@ function _zulu_install() {
   for package in "$@"; do
     _zulu_install_package "$package"
   done
+
+  zulu init
 }

@@ -13,13 +13,10 @@ function _zulu_init() {
     source $f
   done
 
-  # Autoload zsh modules
+  # Autoload zsh theme
   if [[ -f "$base/config/theme" ]]; then
     autoload -U promptinit && promptinit
     local theme=$(cat "$base/config/theme")
     prompt $theme
   fi
-
-  # Load modules
-  zulu module load
 }
