@@ -8,8 +8,9 @@ function _zulu_path_usage() {
   echo "  zulu path <context> <dir>"
   echo
   echo $(color yellow "Context:")
-  echo "  add <dir>     Add a directory to \$PATH"
-  echo "  remove <dir>  Remove a directory from \$PATH"
+  echo "  add <dir>   Add a directory to \$PATH"
+  echo "  rm <dir>    Remove a directory from \$PATH"
+  echo "  reset       Replace the current session \$PATH with the stored dirs"
 }
 
 ###
@@ -70,7 +71,7 @@ function _zulu_path_add() {
 ###
 # Remove a directory from $PATH
 ###
-function _zulu_path_remove() {
+function _zulu_path_rm() {
   local paths=($(cat $pathfile))
   local -a items
 

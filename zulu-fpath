@@ -8,8 +8,9 @@ function _zulu_fpath_usage() {
   echo "  zulu fpath <context> <dir>"
   echo
   echo $(color yellow "Context:")
-  echo "  add <dir>     Add a directory to \$fpath"
-  echo "  remove <dir>  Remove a directory from \$fpath"
+  echo "  add <dir>   Add a directory to \$fpath"
+  echo "  rm <dir>    Remove a directory from \$fpath"
+  echo "  reset       Replace the current session \$fpath with the stored dirs"
 }
 
 ###
@@ -70,7 +71,7 @@ function _zulu_fpath_add() {
 ###
 # Remove a directory from $fpath
 ###
-function _zulu_fpath_remove() {
+function _zulu_fpath_rm() {
   local paths=($(cat $pathfile))
   local -a items
 
