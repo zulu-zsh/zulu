@@ -27,5 +27,10 @@ function _zulu_link() {
     # Loop through each of the values in the array, the key is a file within
     # the package, the value is the name of a symlink to create in the directory
     for file link ("${(@kv)files}") ln -s "$root/$file" "$base/$dir/$link"
+
+    # Make sure that commands to be included in bin are executable
+    if [[ "$dir" = "bin" ]]; then
+      for file link ("${(@kv)files}") chmod u+x "$root/$file"
+    fi
   done
 }
