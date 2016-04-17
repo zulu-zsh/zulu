@@ -81,6 +81,4 @@ function _zulu_install() {
   for package in "$@"; do
     _zulu_install_package "$package"
   done
-
-  zulu init
 }

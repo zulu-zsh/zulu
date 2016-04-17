@@ -32,5 +32,9 @@ function _zulu_link() {
     if [[ "$dir" = "bin" ]]; then
       for file link ("${(@kv)files}") chmod u+x "$root/$file"
     fi
+
+    if [[ "$dir" = "init" ]]; then
+      for file link ("${(@kv)files}") source "$base/init/$link"
+    fi
   done
 }
