@@ -15,6 +15,8 @@ function _zulu_unlink() {
     return 1
   fi
 
+  _zulu_spinner_start "Unlinking $package..."
+
   # Get the JSON from the index
   json=$(cat "$index/$package")
 
@@ -28,4 +30,7 @@ function _zulu_unlink() {
     # the package, the value is the name of a symlink to create in the directory
     for file link ("${(@kv)files}") [[ -L "$base/$dir/$link" ]] && rm "$base/$dir/$link"
   done
+
+  _zulu_spinner_stop
+  echo "$(color green '✔') Finished unlinking $package        "
 }

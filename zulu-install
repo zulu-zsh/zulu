@@ -33,8 +33,6 @@ function _zulu_install_package() {
   cd "$base/packages"
   git clone --recursive $repo $package
 
-  zulu link $package
-
   packagefile="$base/config/packages"
   in_packagefile=$(cat $packagefile | grep -e '^'${package}'$')
   if [[ "$in_packagefile" = "" ]]; then
@@ -48,7 +46,7 @@ function _zulu_install_package() {
 # Zulu command to handle package installation
 ###
 function _zulu_install() {
-  local base index packages
+  local base index packages out
 
   # Parse options
   zparseopts -D h=help -help=help
@@ -63,14 +61,23 @@ function _zulu_install() {
   base=${ZULU_DIR:-"$HOME/.config/zulu"}
   index="${base}/.index"
 
-  # If no context is passed, output the contents of the pathfile
-  if [[ "$1" = "" ]]; then
+  packages=($@)
+  packagefile="$base/config/packages"
+
+  # If no context is passed, install the contents of the packagefile
+  if [[ ${#packages} -eq 0 ]]; then
+    packages=($(cat $packagefile))
+  fi
+
+  if [[ ${#packages} -eq 0 ]]; then
     echo $(color red "Please specify a package name")
+    echo
+    _zulu_install_usage
     return 1
   fi
 
   # Do a first loop, to ensure all packages exist
-  for package in "$@"; do
+  for package in "$packages[@]"; do
     if [[ ! -f "$index/$package" ]]; then
       echo $(color red "Package '$package' is not in the index")
       return 1
@@ -78,7 +85,19 @@ function _zulu_install() {
   done
 
   # Do a second loop, to do the actual install
-  for package in "$@"; do
-    _zulu_install_package "$package"
+  for package in "$packages[@]"; do
+    _zulu_spinner_start "Installing $package..."
+    out=$(_zulu_install_package "$package" 2>&1)
+
+    if [ $? -eq 0 ]; then
+      _zulu_spinner_stop
+      echo "$(color green '✔') Finished installing $package        "
+    else
+      _zulu_spinner_stop
+      echo "$(color red '✘') Error installing $package        "
+      echo "$out"
+    fi
+
+    zulu link $package
   done
 }

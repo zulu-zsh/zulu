@@ -3,6 +3,7 @@
 function _zulu_link() {
   local package json dir file link base index
 
+
   base="${ZULU_DIR:-${ZDOTDIR:-"$HOME/.config/zulu"}}"
   index="$base/.index"
 
@@ -14,6 +15,8 @@ function _zulu_link() {
     echo $(color red "Package '$package' is not installed")
     return 1
   fi
+
+  _zulu_spinner_start "Linking $package..."
 
   # Get the JSON from the index
   json=$(cat "$index/$package")
@@ -37,4 +40,7 @@ function _zulu_link() {
       for file link ("${(@kv)files}") source "$base/init/$link"
     fi
   done
+
+  _zulu_spinner_stop
+  echo "$(color green '✔') Finished linking $package        "
 }

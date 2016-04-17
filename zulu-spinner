@@ -1,0 +1,44 @@
+#!/usr/bin/env zsh
+
+function _zulu_spinner_callback() {
+  print $@
+}
+
+function _zulu_spinner_process() {
+  local msg="$1" spinner_index=0
+
+  while [[ 1=1 ]]; do
+    _zulu_spinner_spin
+    sleep 0.1
+  done
+}
+
+function _zulu_spinner_spin() {
+  local frames=('⠋' '⠙' '⠹' '⠸' '⠼' '⠴' '⠦' '⠧' '⠇' '⠏')
+
+  # ZSH arrays start at 1, so we need to bump the index if it's 0
+  if [[ $spinner_index -eq 0 ]]; then
+    spinner_index+=1
+  fi
+
+  # Echo the frame
+  echo -n $frames[$spinner_index]
+
+  # Set the spinner index to the next frame
+  spinner_index=$(( $(( $spinner_index + 1 )) % ${#frames} ))
+
+  # Echo the message and return to the beginning of the line
+  echo -en " $msg\r"
+}
+
+function _zulu_spinner_start() {
+  local msg="$1"
+
+  _zulu_spinner_process "$msg" &!
+  export ZULU_SPINNER_PID=$!
+}
+
+function _zulu_spinner_stop() {
+  [[ "$ZULU_SPINNER_PID" != "" ]] && kill "$ZULU_SPINNER_PID" > /dev/null
+  unset ZULU_SPINNER_PID
+}

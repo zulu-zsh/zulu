@@ -23,8 +23,6 @@ function _zulu_uninstall_package() {
     return 1
   fi
 
-  zulu unlink $package
-
   # Remove the package source
   #
   # TODO: Obviously, this works, but would really like to find a pure-zsh
@@ -33,7 +31,7 @@ function _zulu_uninstall_package() {
   rm -rf "$root"
 
   packagefile="$base/config/packages"
-  echo $(cat $packagefile | grep -v -e '^'${package}'$') >! $packagefile
+  cat $packagefile | grep -v -e "^${package}$" >! $packagefile
 
   return
 }
@@ -42,7 +40,7 @@ function _zulu_uninstall_package() {
 # Zulu command to handle package installation
 ###
 function _zulu_uninstall() {
-  local base index packages
+  local base index packages out
 
   # Parse options
   zparseopts -D h=help -help=help
@@ -75,6 +73,18 @@ function _zulu_uninstall() {
 
   # Do a second loop, to do the actual install
   for package in "$@"; do
-    _zulu_uninstall_package "$package"
+    zulu unlink $package
+
+    _zulu_spinner_start "Uninstalling $package..."
+    out=$(_zulu_uninstall_package "$package" 2>&1)
+
+    if [ $? -eq 0 ]; then
+      _zulu_spinner_stop
+      echo "$(color green '✔') Finished uninstalling $package        "
+    else
+      _zulu_spinner_stop
+      echo "$(color red '✘') Error uninstalling $package        "
+      echo "$out"
+    fi
   done
 }
