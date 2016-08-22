@@ -92,12 +92,11 @@ function _zulu_install() {
     if [ $? -eq 0 ]; then
       _zulu_spinner_stop
       echo "$(color green '✔') Finished installing $package        "
+      zulu link $package
     else
       _zulu_spinner_stop
       echo "$(color red '✘') Error installing $package        "
       echo "$out"
     fi
-
-    zulu link $package
   done
 }
