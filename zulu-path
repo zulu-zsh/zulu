@@ -23,15 +23,13 @@ function _zulu_path_parse() {
   if [[ -d "$PWD/$dir" ]]; then
     # If the directory exists in the current working directory
     # convert the relative path to absolute
-    echo "$PWD/$dir"
+    echo "$(realpath $PWD/$dir)"
   elif [[ -d "$dir" ]]; then
     # If the directory exists as an absolute path, we can use it directly
-    echo "$dir"
+    echo "$(realpath $dir)"
   elif [[ "$check_existing" != "false" ]]; then
-    # The directory could not be found. Print an error message and return
-    echo $(color red "Directory '$dir' cannot be found. You must specify an absolute or relative path to an existing directory")
-    echo
-    _zulu_path_usage
+    # The directory could not be found
+    echo $dir
     return 1
   fi
 }
@@ -40,7 +38,7 @@ function _zulu_path_parse() {
 # Add a directory to $PATH
 ###
 function _zulu_path_add() {
-  local paths=($(cat $pathfile))
+  local dir p paths=($(cat $pathfile))
   local -a items
 
   # Check that each of the passed directories exist, and convert relative
@@ -49,13 +47,14 @@ function _zulu_path_add() {
     dir=$(_zulu_path_parse "$dir")
 
     # If parsing returned with an error, output the error and return
-    if [[ ! $? -eq 0 ]]; then
-      echo $dir
-      return 1
-    fi
+    if [[ $? -eq 0 ]]; then
+      # Add the directory to the array of items
+      items+="$dir"
 
-    # Add the directory to the array of items
-    items+="$dir"
+      echo "$(color green '✔') $dir added to \$PATH"
+    else
+      echo "$(color red '✘') $dir cannot be found"
+    fi
   done
 
   # Loop through each of the existing paths and add those to the array as well
@@ -72,27 +71,27 @@ function _zulu_path_add() {
 # Remove a directory from $PATH
 ###
 function _zulu_path_rm() {
-  local paths=($(cat $pathfile))
+  local dir p paths=($(cat $pathfile))
   local -a items
 
   # Check that each of the passed directories exist, and convert relative
   # paths to absolute
   for dir in "$@"; do
-    dir=$(_zulu_path_parse "$dir" "false")
+    dir=$(_zulu_path_parse "$dir")
 
     # If parsing returned with an error, output the error and return
-    if [[ ! $? -eq 0 ]]; then
-      echo $dir
-      return 1
+    if [[ $? -eq 0 ]]; then
+      # Loop through each of the paths, and if they are *not* an exact match,
+      # we want to keep them
+      for p in "$paths[@]"; do
+        if [[ "$p" != "$dir" ]]; then
+          items+="$p"
+        fi
+      done
+
+      echo "$(color green '✔') $dir removed from \$PATH"
     fi
 
-    # Loop through each of the paths, and if they are *not* an exact match,
-    # we want to keep them
-    for p in "$paths[@]"; do
-      if [[ "$p" != "$dir" ]]; then
-        items+="$p"
-      fi
-    done
   done
 
   # Store the new paths in the pathfile, and override $PATH
