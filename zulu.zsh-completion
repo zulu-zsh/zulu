@@ -1,0 +1,219 @@
+#compdef zulu
+
+###
+# List of Commands
+###
+_zulu_commands=(
+  'install:Install a package'
+  'uninstall:Uninstall a package'
+  'link:Create symbolic links to enable a package'
+  'unlink:Remove symbolic links to disable a package'
+  'list:List packages'
+  'info:Show information for a package'
+  'theme:Change the theme'
+  'init:Reload zulu configuration'
+  'alias:Functions for adding/removing aliases'
+  'path:Functions for adding/removing directories from \$PATH'
+  'fpath:Functions for adding/removing directories from \$fpath'
+)
+
+###
+# Commands in the path context
+###
+_zulu_path_commands=(
+  'add:Add a directory to $PATH'
+  'rm:Remove a directory from $PATH'
+  'reset:Restore $PATH from pathfile'
+)
+
+###
+# Commands in the fpath context
+###
+_zulu_fpath_commands=(
+  'add:Add a directory to $fpath'
+  'rm:Remove a directory from $fpath'
+  'reset:Restore $fpath from pathfile'
+)
+
+###
+# Commands in the alias context
+###
+_zulu_alias_commands=(
+  'add:Add a new alias'
+  'rm:Remove an existing alias'
+  'load:Reload all aliases'
+)
+
+###
+# Locating the package file
+###
+local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/config/zulu"}
+_zulu_package_file="$base/config/packages"
+_zulu_index="$base/.index"
+
+
+###
+# Define a default caching policy for zulu: we rebuild the cache
+# if the cache file is older than zulu's package index.
+###
+local cache_policy
+zstyle -s ":completion::complete:zulu:*" cache-policy cache_policy
+if [[ -z "$cache_policy" ]]; then
+  zstyle ":completion::complete:zulu:*" cache-policy _zulu_caching_policy
+fi
+
+_zulu_caching_policy() {
+  [[ "$_zulu_package_file" -nt "$1" || "$_zulu_index" -nt "$1" ]] && return 0
+  return 1
+}
+
+# ~~~ CACHING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Using the cache mechanism of zsh to store packages
+(( $+functions[_zulu_get_packages] )) ||
+_zulu_get_packages() {
+  local package_list cacheid='ZULU_PACKAGE_LIST'
+  if ( [[ ${+_zulu_package_list} -eq 0 ]] || _cache_invalid $cacheid ) \
+            && ! _retrieve_cache $cacheid;
+  then
+    _zulu_package_list=()
+    IFS=$'\n' package_list=($(zulu list --all --describe --simple))
+
+    for i in $package_list; do
+      _zulu_package_list+="$(echo $i | cut -c 1-22 | tr -d " "):$(echo $i | cut -c 23-)"
+    done
+
+    _store_cache $cacheid _zulu_package_list
+  fi;
+}
+
+# ~~~ CACHING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Using the cache mechanism of zsh to store packages
+(( $+functions[_zulu_get_installed_packages] )) ||
+_zulu_get_installed_packages() {
+  local package_list cacheid='ZULU_INSTALLED_PACKAGE_LIST'
+  if ( [[ ${+_zulu_installed_package_list} -eq 0 ]] || _cache_invalid $cacheid ) \
+            && ! _retrieve_cache $cacheid;
+  then
+    _zulu_installed_package_list=()
+    IFS=$'\n' package_list=($(zulu list --installed --describe --simple))
+
+    for i in $package_list; do
+      _zulu_installed_package_list+="$(echo $i | cut -c 1-22 | tr -d " "):$(echo $i | cut -c 23-)"
+    done
+
+    _store_cache $cacheid _zulu_installed_package_list
+  fi;
+}
+
+# ~~~ CACHING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Using the cache mechanism of zsh to store packages
+(( $+functions[_zulu_get_not_installed_packages] )) ||
+_zulu_get_not_installed_packages() {
+  local package_list cacheid='ZULU_NOT_INSTALLED_PACKAGE_LIST'
+  if ( [[ ${+_zulu_not_installed_package_list} -eq 0 ]] || _cache_invalid $cacheid ) \
+            && ! _retrieve_cache $cacheid;
+  then
+    _zulu_not_installed_package_list=()
+    IFS=$'\n' package_list=($(zulu list --not-installed --describe --simple))
+
+    for i in $package_list; do
+      _zulu_not_installed_package_list+="$(echo $i | cut -c 1-22 | tr -d " "):$(echo $i | cut -c 23-)"
+    done
+
+    _store_cache $cacheid _zulu_not_installed_package_list
+  fi;
+}
+
+_zulu() {
+  typeset -A opt_args
+  local context state line curcontext="$curcontext"
+
+  _arguments -A \
+    '(-h --help)'{-h,--help}'[show help text and exit]' \
+    '(-v --version)'{-v,--version}'[show version information and exit]'
+
+  _arguments \
+    '1: :_zulu_cmds' \
+    '*::arg:->args'
+
+  case "$state" in
+    (args)
+      case "$words[1]" in
+        (install)
+          _arguments \
+            '*: :_zulu_not_installed_packages'
+          ;;
+        (info)
+          _arguments \
+            '*: :_zulu_packages'
+          ;;
+        (alias)
+          _arguments \
+            '1: :_zulu_alias_cmds'
+          ;;
+        (fpath)
+          _arguments \
+            '1: :_zulu_fpath_cmds'
+
+          case "$words[2]" in
+            (add|rm)
+              _arguments \
+                '*:directory:_files -/'
+              ;;
+          esac
+          ;;
+        (path)
+          _arguments \
+            '1: :_zulu_path_cmds'
+
+          case "$words[2]" in
+            (add|rm)
+              _arguments \
+                '*:directory:_files -/'
+              ;;
+          esac
+          ;;
+        (uninstall|link|unlink)
+          _arguments \
+            '*: :_zulu_installed_packages'
+          ;;
+      esac
+      ;;
+  esac
+}
+
+(( $+functions[_zulu_packages] )) || _zulu_packages() {
+  _zulu_get_packages
+  local expl
+  _describe -t packages 'packages' _zulu_package_list "$@"
+}
+
+(( $+functions[_zulu_installed_packages] )) || _zulu_installed_packages() {
+  _zulu_get_installed_packages
+  local expl
+  _describe -t packages 'packages' _zulu_installed_package_list "$@"
+}
+
+(( $+functions[_zulu_not_installed_packages] )) || _zulu_not_installed_packages() {
+  _zulu_get_not_installed_packages
+  local expl
+  _describe -t packages 'packages' _zulu_not_installed_package_list "$@"
+}
+
+(( $+functions[_zulu_path_cmds] )) || _zulu_path_cmds() {
+  _describe -t commands 'commands' _zulu_path_commands "$@"
+}
+
+(( $+functions[_zulu_fpath_cmds] )) || _zulu_fpath_cmds() {
+  _describe -t commands 'commands' _zulu_fpath_commands "$@"
+}
+
+(( $+functions[_zulu_alias_cmds] )) || _zulu_alias_cmds() {
+  _describe -t commands 'commands' _zulu_alias_commands "$@"
+}
+
+(( $+functions[_zulu_cmds] )) || _zulu_cmds() {
+  _describe -t commands 'commands' _zulu_commands "$@"
+}
+
+_zulu "$@"
