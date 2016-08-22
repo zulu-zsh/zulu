@@ -1,0 +1,143 @@
+#!/usr/bin/env zsh
+
+###
+# Print usage information
+###
+function _zulu_list_usage() {
+  echo $(color yellow "Usage:")
+  echo "  zulu list [options]"
+  echo
+  echo $(color yellow "Options:")
+  echo "  -h, --help        Output this help text and exit"
+  echo "  -a, --all         List all packages in the index"
+  echo "  -i, --installed   List only installed packages (default)"
+  echo "  -d, --describe    Include package description in output"
+  echo "  -s, --simple      Hide the 'package installed' indicator"
+  echo
+  echo $(color yellow "Commands:")
+  echo "  install <package>     Install a package"
+  echo "  uninstall <package>   Uninstall a package"
+  echo "  link <package>        Create symlinks for a package"
+  echo "  unlink <package>      Remove symlinks for a package"
+  echo "  list                  List packages"
+  echo "  info                  Show information for a package"
+  echo "  alias <args>          Functions for adding/removing aliases"
+  echo "  path <args>           Functions for adding/removing dirs from \$PATH"
+  echo "  fpath <args>          Functions for adding/removing dirs from \$fpath"
+}
+
+function _zulu_list_all() {
+  local base index files json packages package name description pad palength
+
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  index="$base/.index"
+
+  for package in $(ls $index); do
+    if [[ $simple ]]; then
+      name="$package"
+      lim=22
+    else
+      if [[ -d "$base/packages/$package" ]]; then
+        name="$(color green '✔') $package"
+        lim=36
+      else
+        name="  $package"
+        lim=24
+      fi
+    fi
+
+    if [[ $describe ]]; then
+      json="$(cat $index/$package)"
+      description=$(jsonval $json 'description')
+      printf '%s' "$name"
+      printf '%*.*s' 0 $(($lim - ${#name} )) "$(printf '%0.1s' " "{1..60})"
+      printf '%s\n' "$description"
+    else
+      echo $name
+    fi
+  done
+
+  return
+}
+
+function _zulu_list_installed() {
+  local base index files json packages package description pad palength
+
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  index="$base/.index"
+
+  for package in $(ls "$base/packages"); do
+    if [[ $describe ]]; then
+      json="$(cat $index/$package)"
+      description=$(jsonval $json 'description')
+
+      printf '%s' "$package"
+      printf '%*.*s' 0 $((24 - ${#package} )) "$(printf '%0.1s' " "{1..60})"
+      printf '%s\n' "$description"
+    else
+      echo $package
+    fi
+  done
+
+  return
+}
+
+function _zulu_list_not_installed() {
+  local base index files json packages package description pad palength
+
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  index="$base/.index"
+
+  for package in $(ls $index); do
+    if [[ ! -d "$base/packages/$package" ]]; then
+      if [[ $describe ]]; then
+        json="$(cat $index/$package)"
+        description=$(jsonval $json 'description')
+
+        printf '%s' "$package"
+        printf '%*.*s' 0 $((24 - ${#package} )) "$(printf '%0.1s' " "{1..60})"
+        printf '%s\n' "$description"
+      else
+        echo $package
+      fi
+    fi
+  done
+
+  return
+}
+
+function _zulu_list() {
+  local help all installed not_installed describe
+
+  # Parse options
+  zparseopts -D h=help \
+                -help=help \
+                i=installed \
+                -installed=installed \
+                n=not_installed \
+                -not-installed=not_installed \
+                a=all \
+                -all=all \
+                d=describe \
+                -describe=describe \
+                s=simple \
+                -simple=simple
+
+  # Output help and return if requested
+  if [[ $help ]]; then
+    _zulu_list_usage
+    return
+  fi
+
+  if [[ $all ]]; then
+    _zulu_list_all
+    return
+  fi
+
+  if [[ $not_installed ]]; then
+    _zulu_list_not_installed
+    return
+  fi
+
+  _zulu_list_installed
+}
