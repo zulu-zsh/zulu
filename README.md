@@ -46,6 +46,9 @@ zulu uninstall autosuggestions
 
 # List installed packages
 zulu list
+
+# List all available packages
+zulu list --all
 ```
 
 Zulu intelligently autocompletes package names for you when using any of the above commands
