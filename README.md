@@ -9,6 +9,8 @@ Zulu is a total environment manager for ZSH.
 
 ## Installation
 
+> **WARNING**: Although the majority of Zulu's functionality works as expected, it is in the early stages of development, and as such bugs are likely to be present. Please continue with caution.
+
 ### One-liner
 
 ```sh
