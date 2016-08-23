@@ -1,0 +1,52 @@
+#!/usr/bin/env zsh
+
+###
+# Print usage information
+###
+function _zulu_update_usage() {
+  echo $(color yellow "Usage:")
+  echo "  zulu update [options]"
+  echo
+  echo $(color yellow "Options:")
+  echo "  -h, --help        Output this help text and exit"
+}
+
+###
+# Update the zulu package index
+###
+function _zulu_update_index() {
+  cd $index
+  git fetch origin && git merge origin/master
+  cd -
+}
+
+###
+# Update the zulu package index
+###
+function _zulu_update() {
+  local help base index
+
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  index="${base}/index"
+
+  # Parse options
+  zparseopts -D h=help -help=help
+
+  # Output help and return if requested
+  if [[ $help ]]; then
+    _zulu_update_usage
+    return
+  fi
+
+  _zulu_spinner_start "Updating package index..."
+  out=$(_zulu_update_index 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(color green '✔') Package index updated        "
+  else
+    _zulu_spinner_stop
+    echo "$(color red '✘') Error updating package index        "
+    echo "$out"
+  fi
+}
