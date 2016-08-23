@@ -54,9 +54,14 @@ Zulu intelligently autocompletes package names for you when using any of the abo
 
 Zulu can manage the list of directories in `$PATH` and `$fpath` for you, negating the need for modifying init files and reloading the environment.
 
+Path commands support both absolute and relative paths.
+
 ```sh
 # Add a directory to $PATH
 zulu path add /path/to/dir
+
+# Add current durectory to $PATH
+zulu path add .
 
 # Remove a directory from $fpath
 zulu fpath rm /path/to/dir
