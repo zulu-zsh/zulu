@@ -1,0 +1,52 @@
+#!/usr/bin/env zsh
+
+###
+# Print usage information
+###
+function _zulu_self-update_usage() {
+  echo $(color yellow "Usage:")
+  echo "  zulu self-update [options]"
+  echo
+  echo $(color yellow "Options:")
+  echo "  -h, --help        Output this help text and exit"
+}
+
+###
+# Update the zulu core
+###
+function _zulu_self-update_core() {
+  cd $core
+  git fetch origin && git merge origin/master
+  cd -
+}
+
+###
+# Update the zulu core
+###
+function _zulu_self-update() {
+  local help base index
+
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  core="${base}/core"
+
+  # Parse options
+  zparseopts -D h=help -help=help
+
+  # Output help and return if requested
+  if [[ $help ]]; then
+    _zulu_self-update_usage
+    return
+  fi
+
+  _zulu_spinner_start "Updating zulu core..."
+  out=$(_zulu_self-update_core 2>&1)
+
+  if [ $? -eq 0 ]; then
+    _zulu_spinner_stop
+    echo "$(color green '✔') Zulu core updated        "
+  else
+    _zulu_spinner_stop
+    echo "$(color red '✘') Error updating zulu core        "
+    echo "$out"
+  fi
+}
