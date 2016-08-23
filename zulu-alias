@@ -77,8 +77,9 @@ function _zulu_alias() {
   fi
 
   # Set up some variables
-  base=${ZULU_DIR:-"$HOME/.config/zulu"}
-  aliasfile="${base}/config/alias"
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  aliasfile="${config}/alias"
 
   # If no context is passed, output the contents of the aliasfile
   if [[ "$1" = "" ]]; then

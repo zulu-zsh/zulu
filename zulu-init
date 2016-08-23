@@ -501,7 +501,8 @@ function _zulu_init_setup_key_bindings() {
 }
 
 function _zulu_init() {
-  local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  local config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
 
   # Ensure path arrays do not contain duplicates.
   typeset -gU cdpath fpath mailpath path
@@ -517,9 +518,9 @@ function _zulu_init() {
   done
 
   # Autoload zsh theme
-  if [[ -f "$base/config/theme" ]]; then
+  if [[ -f "$config/theme" ]]; then
     autoload -U promptinit && promptinit
-    local theme=$(cat "$base/config/theme")
+    local theme=$(cat "$config/theme")
     prompt $theme
   fi
 

@@ -47,9 +47,13 @@ _zulu_alias_commands=(
 ###
 # Locating the package file
 ###
-local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/config/zulu"}
-_zulu_package_file="$base/config/packages"
-_zulu_index="$base/.index"
+local base config
+
+base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+config_dir=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+
+_zulu_package_file="$config/packages"
+_zulu_index="$base/index"
 
 
 ###

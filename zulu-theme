@@ -9,7 +9,7 @@ function _zulu_theme_usage() {
 }
 
 _zulu_theme() {
-  local base theme config
+  local base theme config config_dir
 
   theme="$1"
 
@@ -23,11 +23,12 @@ _zulu_theme() {
   fi
 
   # Set up some variables
-  base=${ZULU_DIR:-"$HOME/.config/zulu"}
-  config="${base}/config/theme"
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  config_dir=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  config="${config_dir}/theme"
 
   echo "$theme" >! $config
-  
+
   # Ensure promptinit is loaded
   autoload -U promptinit && promptinit
 

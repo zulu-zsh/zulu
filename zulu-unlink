@@ -3,8 +3,9 @@
 function _zulu_unlink() {
   local package json dir file link base
 
-  base="${ZULU_DIR:-${ZDOTDIR:-"$HOME/.config/zulu"}}"
-  index="$base/.index"
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  config_dir=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  index="$base/index"
 
   package="$1"
 

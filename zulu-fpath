@@ -149,8 +149,9 @@ function _zulu_fpath() {
   fi
 
   # Set up some variables
-  base=${ZULU_DIR:-"$HOME/.config/zulu"}
-  pathfile="${base}/config/fpath"
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  pathfile="${config}/fpath"
 
   # If no context is passed, output the contents of the pathfile
   if [[ "$1" = "" ]]; then

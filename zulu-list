@@ -29,8 +29,10 @@ function _zulu_list_usage() {
 function _zulu_list_all() {
   local base index files json packages package name description pad palength
 
-  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="$base/.index"
+
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  index="$base/index"
 
   for package in $(ls $index); do
     if [[ $simple ]]; then
@@ -63,8 +65,9 @@ function _zulu_list_all() {
 function _zulu_list_installed() {
   local base index files json packages package description pad palength
 
-  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="$base/.index"
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  index="$base/index"
 
   for package in $(ls "$base/packages"); do
     if [[ $describe ]]; then
@@ -85,8 +88,9 @@ function _zulu_list_installed() {
 function _zulu_list_not_installed() {
   local base index files json packages package description pad palength
 
-  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="$base/.index"
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  index="$base/index"
 
   for package in $(ls $index); do
     if [[ ! -d "$base/packages/$package" ]]; then

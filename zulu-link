@@ -3,9 +3,9 @@
 function _zulu_link() {
   local package json dir file link base index
 
-
-  base="${ZULU_DIR:-${ZDOTDIR:-"$HOME/.config/zulu"}}"
-  index="$base/.index"
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  index="$base/index"
 
   package="$1"
 

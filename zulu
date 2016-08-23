@@ -26,8 +26,8 @@ function _zulu_usage() {
 # Load the zulu commands
 ###
 function _zulu_load_commands() {
-  source "$base/.core/helpers"
-  for cmd in $(find "$base/.core" -name "zulu-*"); do
+  source "$base/core/helpers"
+  for cmd in $(find "$base/core" -name "zulu-*"); do
     source $cmd
   done
 }
@@ -39,7 +39,8 @@ function _zulu_load_commands() {
   local cmd base
 
   # Set up some source paths
-  base=${ZULU_DIR:-"$HOME/.config/zulu"}
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
 
   _zulu_load_commands
 
