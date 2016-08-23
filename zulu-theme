@@ -27,6 +27,9 @@ _zulu_theme() {
   config="${base}/config/theme"
 
   echo "$theme" >! $config
+  
+  # Ensure promptinit is loaded
+  autoload -U promptinit && promptinit
 
   prompt $theme
 }
