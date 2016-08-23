@@ -65,6 +65,10 @@ function _zulu_install() {
   packages=($@)
   packagefile="$config/packages"
 
+  if [[ ! -f $packagefile ]]; then
+    touch $packagefile
+  fi
+
   # If no context is passed, install the contents of the packagefile
   if [[ ${#packages} -eq 0 ]]; then
     packages=($(cat $packagefile))
