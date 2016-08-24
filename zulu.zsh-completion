@@ -6,6 +6,9 @@
 _zulu_commands=(
   'install:Install a package'
   'uninstall:Uninstall a package'
+  'upgrade:Upgrade a package'
+  'update:Update the package index'
+  'self-update:Update the zulu core framework'
   'link:Create symbolic links to enable a package'
   'unlink:Remove symbolic links to disable a package'
   'list:List packages'
@@ -177,7 +180,7 @@ _zulu() {
               ;;
           esac
           ;;
-        (uninstall|link|unlink)
+        (uninstall|link|unlink|upgrade)
           _arguments \
             '*: :_zulu_installed_packages'
           ;;

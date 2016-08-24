@@ -1,0 +1,77 @@
+#!/usr/bin/env zsh
+
+###
+# Output usage information
+###
+function _zulu_upgrade_usage() {
+  echo $(color yellow "Usage:")
+  echo "  zulu upgrade [<packages...>]"
+}
+
+###
+# Upgrade a package
+###
+function _zulu_upgrade_package() {
+  local package json repo dir file link
+
+  package="$1"
+
+  # Pull from the repository
+  cd "$base/packages/$package"
+  git fetch origin && git merge origin/master
+
+  return $?
+}
+
+###
+# Zulu command to handle package upgrades
+###
+function _zulu_upgrade() {
+  local base index packages out
+
+  # Parse options
+  zparseopts -D h=help -help=help
+
+  # Output help and return if requested
+  if [[ $help ]]; then
+    _zulu_upgrade_usage
+    return
+  fi
+
+  # Set up some variables
+  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+  config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  index="${base}/index"
+
+  packages=($@)
+  packagefile="$config/packages"
+
+  if [[ ! -f $packagefile ]]; then
+    touch $packagefile
+  fi
+
+  # If no context is passed, upgrade the contents of the packagefile
+  if [[ ${#packages} -eq 0 ]]; then
+    packages=($(cat $packagefile))
+  fi
+
+  # Do a second loop, to do the actual upgrade
+  for package in "$packages[@]"; do
+    # Unlink package first
+    zulu unlink $package
+
+    # Upgrade the package
+    _zulu_spinner_start "Upgrading $package..."
+    out=$(_zulu_upgrade_package "$package" 2>&1)
+
+    if [ $? -eq 0 ]; then
+      _zulu_spinner_stop
+      echo "$(color green '✔') Finished upgrading $package        "
+      zulu link $package
+    else
+      _zulu_spinner_stop
+      echo "$(color red '✘') Error upgrading $package        "
+      echo "$out"
+    fi
+  done
+}
