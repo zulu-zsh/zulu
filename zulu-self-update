@@ -49,4 +49,6 @@ function _zulu_self-update() {
     echo "$(color red '✘') Error updating zulu core        "
     echo "$out"
   fi
+
+  zulu init
 }
