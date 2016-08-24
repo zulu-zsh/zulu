@@ -28,7 +28,7 @@ function _zulu_spinner_spin() {
   spinner_index=$(( $(( $spinner_index + 1 )) % ${#frames} ))
 
   # Echo the message and return to the beginning of the line
-  echo -en " $msg\r"
+  echo -en " \033[0;38;5;242m${msg}\033[0;m\r"
 }
 
 function _zulu_spinner_start() {
