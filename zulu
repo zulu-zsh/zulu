@@ -23,16 +23,6 @@ function _zulu_usage() {
 }
 
 ###
-# Load the zulu commands
-###
-function _zulu_load_commands() {
-  source "$base/core/helpers"
-  for cmd in $(find "$base/core" -name "zulu-*"); do
-    source $cmd
-  done
-}
-
-###
 # The main zulu command. Loads and executes all other commands
 ###
 (( $+functions[zulu] )) || function zulu() {
@@ -41,8 +31,6 @@ function _zulu_load_commands() {
   # Set up some source paths
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-
-  _zulu_load_commands
 
   # Parse CLI options
   zparseopts -D h=help -help=help
@@ -54,6 +42,13 @@ function _zulu_load_commands() {
   fi
 
   cmd="$1"
+
+  # The init command needs to be loaded itself
+  if [[ $cmd = 'init' ]]; then
+    if (( ! $+functions[_zulu_init] )); then
+      source "$base/core/zulu-init"
+    fi
+  fi
 
   # Zulu uses color (https://github.com/molovo/color) when installed
   # Here's a simple fallback if it's not

@@ -500,12 +500,24 @@ function _zulu_init_setup_key_bindings() {
   unset key{,map,bindings}
 }
 
+###
+# Load the zulu commands
+###
+function _zulu_load_commands() {
+  source "$base/core/helpers"
+  for cmd in $(find "$base/core" -name "zulu-*"); do
+    source $cmd
+  done
+}
+
 function _zulu_init() {
   local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   local config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
 
   # Ensure path arrays do not contain duplicates.
   typeset -gU cdpath fpath mailpath path
+
+  _zulu_load_commands
 
   # Populate $PATH and $fpath
   zulu path reset
