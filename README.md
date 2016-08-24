@@ -111,7 +111,7 @@ zulu update
 
 ## Contributing
 
-All contributions are welcome, and encouraged. Please read our [contribution guidelines] and [code of conduct] for more information.
+All contributions are welcome, and encouraged. Please read our [contribution guidelines](contributing.md) and [code of conduct](code-of-conduct.md) for more information.
 
 ## License
 
