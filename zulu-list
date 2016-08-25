@@ -38,14 +38,14 @@ function _zulu_list_all() {
   for package in $(/bin/ls $index); do
     if [[ $simple ]]; then
       name="$package"
-      lim=22
+      lim=28
     else
       if [[ -d "$base/packages/$package" ]]; then
         name="$(color green '✔') $package"
         lim=36
       else
         name="  $package"
-        lim=24
+        lim=30
       fi
     fi
 
@@ -76,7 +76,7 @@ function _zulu_list_installed() {
       description=$(jsonval $json 'description')
 
       printf '%s' "$package"
-      printf '%*.*s' 0 $((24 - ${#package} )) "$(printf '%0.1s' " "{1..60})"
+      printf '%*.*s' 0 $((30 - ${#package} )) "$(printf '%0.1s' " "{1..60})"
       printf '%s\n' "$description"
     else
       echo $package
@@ -100,7 +100,7 @@ function _zulu_list_not_installed() {
         description=$(jsonval $json 'description')
 
         printf '%s' "$package"
-        printf '%*.*s' 0 $((24 - ${#package} )) "$(printf '%0.1s' " "{1..60})"
+        printf '%*.*s' 0 $((30 - ${#package} )) "$(printf '%0.1s' " "{1..60})"
         printf '%s\n' "$description"
       else
         echo $package

@@ -86,7 +86,7 @@ _zulu_get_packages() {
     IFS=$'\n' package_list=($(zulu list --all --describe --simple))
 
     for i in $package_list; do
-      _zulu_package_list+="$(echo $i | cut -c 1-22 | tr -d " "):$(echo $i | cut -c 23-)"
+      _zulu_package_list+="$(echo $i | cut -c 1-30 | tr -d " "):$(echo $i | cut -c 31-)"
     done
 
     _store_cache $cacheid _zulu_package_list
@@ -105,7 +105,7 @@ _zulu_get_installed_packages() {
     IFS=$'\n' package_list=($(zulu list --installed --describe --simple))
 
     for i in $package_list; do
-      _zulu_installed_package_list+="$(echo $i | cut -c 1-22 | tr -d " "):$(echo $i | cut -c 23-)"
+      _zulu_installed_package_list+="$(echo $i | cut -c 1-30 | tr -d " "):$(echo $i | cut -c 31-)"
     done
 
     _store_cache $cacheid _zulu_installed_package_list
@@ -124,7 +124,7 @@ _zulu_get_not_installed_packages() {
     IFS=$'\n' package_list=($(zulu list --not-installed --describe --simple))
 
     for i in $package_list; do
-      _zulu_not_installed_package_list+="$(echo $i | cut -c 1-22 | tr -d " "):$(echo $i | cut -c 23-)"
+      _zulu_not_installed_package_list+="$(echo $i | cut -c 1-30 | tr -d " "):$(echo $i | cut -c 31-)"
     done
 
     _store_cache $cacheid _zulu_not_installed_package_list
