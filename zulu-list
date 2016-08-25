@@ -35,7 +35,7 @@ function _zulu_list_all() {
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="$base/index"
 
-  for package in $(ls $index); do
+  for package in $(/bin/ls $index); do
     if [[ $simple ]]; then
       name="$package"
       lim=22
@@ -70,7 +70,7 @@ function _zulu_list_installed() {
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="$base/index"
 
-  for package in $(ls "$base/packages"); do
+  for package in $(/bin/ls "$base/packages"); do
     if [[ $describe ]]; then
       json="$(cat $index/$package)"
       description=$(jsonval $json 'description')
@@ -93,7 +93,7 @@ function _zulu_list_not_installed() {
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="$base/index"
 
-  for package in $(ls $index); do
+  for package in $(/bin/ls $index); do
     if [[ ! -d "$base/packages/$package" ]]; then
       if [[ $describe ]]; then
         json="$(cat $index/$package)"
