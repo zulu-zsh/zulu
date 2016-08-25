@@ -50,5 +50,5 @@ function _zulu_self-update() {
     echo "$out"
   fi
 
-  zulu init
+  _zulu_load_commands
 }
