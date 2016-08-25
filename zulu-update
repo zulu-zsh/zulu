@@ -16,7 +16,7 @@ function _zulu_update_usage() {
 ###
 function _zulu_update_index() {
   cd $index
-  git fetch origin && git merge origin/master
+  git fetch origin && git rebase origin
   cd -
 }
 
