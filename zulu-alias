@@ -48,7 +48,7 @@ _zulu_alias_rm() {
     return 1
   fi
 
-  echo $(cat $aliasfile | grep -v "alias $alias=") >! $aliasfile
+  echo "$(cat $aliasfile | grep -v "alias $alias=")" >! $aliasfile
   unalias $alias
   zulu alias load
   return
