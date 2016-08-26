@@ -8,9 +8,9 @@ function _zulu_path_usage() {
   echo "  zulu path <context> <dir>"
   echo
   echo $(color yellow "Context:")
-  echo "  add <dir>   Add a directory to \$PATH"
-  echo "  rm <dir>    Remove a directory from \$PATH"
-  echo "  reset       Replace the current session \$PATH with the stored dirs"
+  echo "  add <dir>   Add a directory to \$path"
+  echo "  rm <dir>    Remove a directory from \$path"
+  echo "  reset       Replace the current session \$path with the stored dirs"
 }
 
 ###
@@ -35,7 +35,7 @@ function _zulu_path_parse() {
 }
 
 ###
-# Add a directory to $PATH
+# Add a directory to $path
 ###
 function _zulu_path_add() {
   local dir p paths=($(cat $pathfile))
@@ -51,10 +51,11 @@ function _zulu_path_add() {
       # Add the directory to the array of items
       items+="$dir"
 
-      echo "$(color green '✔') $dir added to \$PATH"
+      echo "$(color green '✔') $dir added to \$path"
     else
       echo "$(color red '✘') $dir cannot be found"
     fi
+
   done
 
   # Loop through each of the existing paths and add those to the array as well
@@ -62,13 +63,13 @@ function _zulu_path_add() {
     items+="$p"
   done
 
-  # Store the new paths in the pathfile, and override $PATH
+  # Store the new paths in the pathfile, and override $path
   _zulu_path_store
   _zulu_path_reset
 }
 
 ###
-# Remove a directory from $PATH
+# Remove a directory from $path
 ###
 function _zulu_path_rm() {
   local dir p paths=($(cat $pathfile))
@@ -77,24 +78,26 @@ function _zulu_path_rm() {
   # Check that each of the passed directories exist, and convert relative
   # paths to absolute
   for dir in "$@"; do
-    dir=$(_zulu_path_parse "$dir")
+    dir=$(_zulu_path_parse "$dir" "false")
 
     # If parsing returned with an error, output the error and return
-    if [[ $? -eq 0 ]]; then
-      # Loop through each of the paths, and if they are *not* an exact match,
-      # we want to keep them
-      for p in "$paths[@]"; do
-        if [[ "$p" != "$dir" ]]; then
-          items+="$p"
-        fi
-      done
-
-      echo "$(color green '✔') $dir removed from \$PATH"
+    if [[ ! $? -eq 0 ]]; then
+      echo $dir
+      return 1
     fi
 
+    # Loop through each of the paths, and if they are *not* an exact match,
+    # we want to keep them
+    for p in "$paths[@]"; do
+      if [[ "$p" != "$dir" ]]; then
+        items+="$p"
+      fi
+    done
+
+    echo "$(color green '✔') $dir removed from \$path"
   done
 
-  # Store the new paths in the pathfile, and override $PATH
+  # Store the new paths in the pathfile, and override $path
   _zulu_path_store
   _zulu_path_reset
 }
@@ -119,15 +122,15 @@ function _zulu_path_store() {
 }
 
 ###
-# Override the $PATH variable with the current contents of the pathfile
+# Override the $path variable with the current contents of the pathfile
 ###
 function _zulu_path_reset() {
   local separator out paths=($(cat $pathfile))
 
-  # Separate the array by colons, and store the contents in $PATH
-  separator=":"
-  local IFS="$separator"; out="${paths[*]/#/${separator}}"
-  export PATH="${out:${#separator}}"
+  path=()
+  for p in "${paths[@]}"; do
+    path+="$p"
+  done
 }
 
 ###
