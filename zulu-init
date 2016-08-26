@@ -501,6 +501,23 @@ function _zulu_init_setup_key_bindings() {
 }
 
 ###
+# Check for updates
+###
+function _zulu_check_for_update() {
+  local out
+
+  out=$(zulu self-update --check)
+  if [[ $? -eq 0 ]]; then
+    echo $out
+  fi
+
+  out=$(zulu update --check)
+  if [[ $? -eq 0 ]]; then
+    echo $out
+  fi
+}
+
+###
 # Load the zulu commands
 ###
 function _zulu_load_commands() {
@@ -542,4 +559,5 @@ function _zulu_init() {
   _zulu_init_setup_key_bindings
   _zulu_init_setup_history
   _zulu_init_setup_completion
+  _zulu_check_for_update
 }

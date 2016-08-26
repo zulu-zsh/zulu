@@ -3,21 +3,21 @@
 ###
 # Output usage information
 ###
-function _zulu_path_usage() {
+function _zulu_cdpath_usage() {
   echo $(color yellow "Usage:")
-  echo "  zulu path <context> <dir>"
+  echo "  zulu cdpath <context> <dir>"
   echo
   echo $(color yellow "Context:")
-  echo "  add <dir>   Add a directory to \$path"
-  echo "  rm <dir>    Remove a directory from \$path"
-  echo "  reset       Replace the current session \$path with the stored dirs"
+  echo "  add <dir>   Add a directory to \$cdpath"
+  echo "  rm <dir>    Remove a directory from \$cdpath"
+  echo "  reset       Replace the current session \$cdpath with the stored dirs"
 }
 
 ###
 # Check the existence of a directory when passed as an argument,
 # and convert relative paths to absolute
 ###
-function _zulu_path_parse() {
+function _zulu_cdpath_parse() {
   local dir="$1" check_existing="$2"
 
   if [[ -d "$PWD/$dir" ]]; then
@@ -35,23 +35,23 @@ function _zulu_path_parse() {
 }
 
 ###
-# Add a directory to $path
+# Add a directory to $cdpath
 ###
-function _zulu_path_add() {
+function _zulu_cdpath_add() {
   local dir p paths=($(cat $pathfile))
   local -a items
 
   # Check that each of the passed directories exist, and convert relative
   # paths to absolute
   for dir in "$@"; do
-    dir=$(_zulu_path_parse "$dir")
+    dir=$(_zulu_cdpath_parse "$dir")
 
     # If parsing returned with an error, output the error and return
     if [[ $? -eq 0 ]]; then
       # Add the directory to the array of items
       items+="$dir"
 
-      echo "$(color green '✔') $dir added to \$path"
+      echo "$(color green '✔') $dir added to \$cdpath"
     else
       echo "$(color red '✘') $dir cannot be found"
     fi
@@ -63,22 +63,22 @@ function _zulu_path_add() {
     items+="$p"
   done
 
-  # Store the new paths in the pathfile, and override $path
-  _zulu_path_store
-  _zulu_path_reset
+  # Store the new paths in the pathfile, and override $cdpath
+  _zulu_cdpath_store
+  _zulu_cdpath_reset
 }
 
 ###
-# Remove a directory from $path
+# Remove a directory from $cdpath
 ###
-function _zulu_path_rm() {
+function _zulu_cdpath_rm() {
   local dir p paths=($(cat $pathfile))
   local -a items
 
   # Check that each of the passed directories exist, and convert relative
   # paths to absolute
   for dir in "$@"; do
-    dir=$(_zulu_path_parse "$dir" "false")
+    dir=$(_zulu_cdpath_parse "$dir" "false")
 
     # If parsing returned with an error, output the error and return
     if [[ ! $? -eq 0 ]]; then
@@ -94,24 +94,24 @@ function _zulu_path_rm() {
       fi
     done
 
-    echo "$(color green '✔') $dir removed from \$path"
+    echo "$(color green '✔') $dir removed from \$cdpath"
   done
 
-  # Store the new paths in the pathfile, and override $path
-  _zulu_path_store
-  _zulu_path_reset
+  # Store the new paths in the pathfile, and override $cdpath
+  _zulu_cdpath_store
+  _zulu_cdpath_reset
 }
 
 ###
 # Store an array of paths in the pathfile
 ###
-function _zulu_path_store() {
+function _zulu_cdpath_store() {
   local separator out
 
   # Check that we have all the parameters we need. This will only happen if
-  # _zulu_path_store is executed internally.
+  # _zulu_cdpath_store is executed internally.
   if [[ "$items" = "" || "$pathfile" = "" ]]; then
-    echo 'Missing parameters. Was _zulu_path_store called from within the add or remove functions?'
+    echo 'Missing parameters. Was _zulu_cdpath_store called from within the add or remove functions?'
     return 1
   fi
 
@@ -122,21 +122,21 @@ function _zulu_path_store() {
 }
 
 ###
-# Override the $path variable with the current contents of the pathfile
+# Override the $cdpath variable with the current contents of the pathfile
 ###
-function _zulu_path_reset() {
+function _zulu_cdpath_reset() {
   local separator out paths=($(cat $pathfile))
 
-  path=()
+  cdpath=()
   for p in "${paths[@]}"; do
-    path+="$p"
+    cdpath+="$p"
   done
 }
 
 ###
 # Zulu command to handle path manipulation
 ###
-function _zulu_path() {
+function _zulu_cdpath() {
   local ctx base pathfile
 
   # Parse options
@@ -144,14 +144,14 @@ function _zulu_path() {
 
   # Output help and return if requested
   if [[ $help ]]; then
-    _zulu_path_usage
+    _zulu_cdpath_usage
     return
   fi
 
   # Set up some variables
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  pathfile="${config}/path"
+  pathfile="${config}/cdpath"
 
   # If no context is passed, output the contents of the pathfile
   if [[ "$1" = "" ]]; then
@@ -163,5 +163,5 @@ function _zulu_path() {
   ctx="$1"
 
   # Call the relevant function
-  _zulu_path_${ctx} "${(@)@:2}"
+  _zulu_cdpath_${ctx} "${(@)@:2}"
 }
