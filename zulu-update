@@ -8,6 +8,7 @@ function _zulu_update_usage() {
   echo "  zulu update [options]"
   echo
   echo $(color yellow "Options:")
+  echo "  -c, --check       Check if an update is available"
   echo "  -h, --help        Output this help text and exit"
 }
 
@@ -20,17 +21,35 @@ function _zulu_update_index() {
   cd -
 }
 
+function _zulu_update_check_for_update() {
+  cd "$base/index"
+
+  if command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
+    count="$(command git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)"
+
+    down="$count[(w)2]"
+
+    if [[ $down > 0 ]]; then
+      echo "$(color green 'Zulu index updates available') Run zulu update to update the index"
+      return
+    fi
+  fi
+
+  echo $(color green 'No update available')
+  return 1
+}
+
 ###
 # Update the zulu package index
 ###
 function _zulu_update() {
-  local help base index
+  local help base index check
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   index="${base}/index"
 
   # Parse options
-  zparseopts -D h=help -help=help
+  zparseopts -D h=help -help=help c=check -check=check
 
   # Output help and return if requested
   if [[ $help ]]; then
@@ -38,15 +57,26 @@ function _zulu_update() {
     return
   fi
 
-  _zulu_spinner_start "Updating package index..."
-  out=$(_zulu_update_index 2>&1)
-
-  if [ $? -eq 0 ]; then
-    _zulu_spinner_stop
-    echo "$(color green '✔') Package index updated        "
-  else
-    _zulu_spinner_stop
-    echo "$(color red '✘') Error updating package index        "
-    echo "$out"
+  if [[ $check ]]; then
+    _zulu_update_check_for_update
+    return
   fi
+
+  if _zulu_update_check_for_update > /dev/null; then
+    _zulu_spinner_start "Updating package index..."
+    out=$(_zulu_update_index 2>&1)
+
+    if [ $? -eq 0 ]; then
+      _zulu_spinner_stop
+      echo "$(color green '✔') Package index updated        "
+    else
+      _zulu_spinner_stop
+      echo "$(color red '✘') Error updating package index        "
+      echo "$out"
+    fi
+
+    return
+  fi
+
+  echo $(color green 'No update available')
 }
