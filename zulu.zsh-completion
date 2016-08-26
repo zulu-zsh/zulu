@@ -16,7 +16,8 @@ _zulu_commands=(
   'theme:Change the theme'
   'init:Reload zulu configuration'
   'alias:Functions for adding/removing aliases'
-  'path:Functions for adding/removing directories from \$PATH'
+  'path:Functions for adding/removing directories from \$path'
+  'cdpath:Functions for adding/removing directories from \$cdpath'
   'fpath:Functions for adding/removing directories from \$fpath'
 )
 
@@ -24,9 +25,9 @@ _zulu_commands=(
 # Commands in the path context
 ###
 _zulu_path_commands=(
-  'add:Add a directory to $PATH'
-  'rm:Remove a directory from $PATH'
-  'reset:Restore $PATH from pathfile'
+  'add:Add a directory to $path'
+  'rm:Remove a directory from $path'
+  'reset:Restore $path from pathfile'
 )
 
 ###
@@ -36,6 +37,15 @@ _zulu_fpath_commands=(
   'add:Add a directory to $fpath'
   'rm:Remove a directory from $fpath'
   'reset:Restore $fpath from pathfile'
+)
+
+###
+# Commands in the cdpath context
+###
+_zulu_cdpath_commands=(
+  'add:Add a directory to $cdpath'
+  'rm:Remove a directory from $cdpath'
+  'reset:Restore $cdpath from pathfile'
 )
 
 ###
@@ -169,6 +179,17 @@ _zulu() {
               ;;
           esac
           ;;
+        (cdpath)
+          _arguments \
+            '1: :_zulu_cdpath_cmds'
+
+          case "$words[2]" in
+            (add|rm)
+              _arguments \
+                '*:directory:_files -/'
+              ;;
+          esac
+          ;;
         (path)
           _arguments \
             '1: :_zulu_path_cmds'
@@ -227,6 +248,10 @@ _zulu() {
 
 (( $+functions[_zulu_fpath_cmds] )) || _zulu_fpath_cmds() {
   _describe -t commands 'commands' _zulu_fpath_commands "$@"
+}
+
+(( $+functions[_zulu_cdpath_cmds] )) || _zulu_cdpath_cmds() {
+  _describe -t commands 'commands' _zulu_cdpath_commands "$@"
 }
 
 (( $+functions[_zulu_alias_cmds] )) || _zulu_alias_cmds() {
