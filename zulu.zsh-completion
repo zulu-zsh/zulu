@@ -184,6 +184,20 @@ _zulu() {
           _arguments \
             '*: :_zulu_installed_packages'
           ;;
+        (update|self-update)
+          _arguments -A \
+            '(-h --help)'{-h,--help}'[show help text and exit]' \
+            '(-c --check)'{-c,--check}'[check if an update is available]'
+          ;;
+        (list)
+          _arguments -A \
+            '(-h --help)'{-h,--help}'[show help text and exit]' \
+            '(-i --installed)'{-i,--installed}'[list only installed packages]' \
+            '(-n --not-installed)'{-n,--not-installed}'[list only packages which have not been installed]' \
+            '(-a --all)'{-a,--all}'[list all packages]' \
+            '(-s --simple)'{-s,--simple}'[do not show installed indicators]' \
+            '(-d --describe)'{-d,--describe}'[show package descriptions]'
+          ;;
       esac
       ;;
   esac
