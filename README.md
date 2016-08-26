@@ -107,6 +107,10 @@ zulu self-update
 
 # Update the package index
 zulu update
+
+# Check if updates are available
+zulu update --check
+zulu self-update --check
 ```
 
 ## Contributing
