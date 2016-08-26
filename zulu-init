@@ -530,7 +530,7 @@ function _zulu_load_commands() {
 function _zulu_load_packages() {
   # Source files in the init directory
   for f in $(find "$base/init"); do
-    source $f
+    source $(realpath $f)
   done
 }
 
