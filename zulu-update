@@ -16,12 +16,16 @@ function _zulu_update_usage() {
 # Update the zulu package index
 ###
 function _zulu_update_index() {
+  local old="$(pwd)"
+
   cd $index
   git fetch origin && git rebase origin
-  cd -
+  cd $old
 }
 
 function _zulu_update_check_for_update() {
+  local old="$(pwd)"
+
   cd "$base/index"
 
   if command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
@@ -31,11 +35,13 @@ function _zulu_update_check_for_update() {
 
     if [[ $down > 0 ]]; then
       echo "$(color green 'Zulu index updates available') Run zulu update to update the index"
+      cd $old
       return
     fi
   fi
 
   echo $(color green 'No update available')
+  cd $old
   return 1
 }
 
