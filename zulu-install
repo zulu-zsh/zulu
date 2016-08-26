@@ -12,7 +12,7 @@ function _zulu_install_usage() {
 # Install a package
 ###
 function _zulu_install_package() {
-  local package json repo dir file link
+  local package json repo dir file link packagetype dependencies
 
   package="$1"
 
@@ -25,6 +25,13 @@ function _zulu_install_package() {
 
   # Get the JSON from the index
   json=$(cat "$index/$package")
+
+  dependencies=$(jsonval $json 'dependencies')
+  if [[ "$dependencies" != "" ]]; then
+    for dependency in "$dependencies"; do
+      _zulu_install_package $dependency
+    done
+  fi
 
   # Get the repository URL from the JSON
   repo=$(jsonval $json 'repository')
