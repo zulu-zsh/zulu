@@ -22,11 +22,15 @@ function _zulu_usage() {
   echo "  fpath <args>          Functions for adding/removing dirs from \$fpath"
 }
 
+function _zulu_version() {
+  cat "$base/core/.version"
+}
+
 ###
 # The main zulu command. Loads and executes all other commands
 ###
 (( $+functions[zulu] )) || function zulu() {
-  local cmd base
+  local cmd base help version
 
   # Set up some source paths
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
@@ -39,11 +43,16 @@ function _zulu_usage() {
   }
 
   # Parse CLI options
-  zparseopts -D h=help -help=help
+  zparseopts -D h=help -help=help v=version -version=version
 
   # Print help
   if [[ $help ]]; then
     _zulu_usage
+    return
+  fi
+
+  if [[ $version ]]; then
+    _zulu_version
     return
   fi
 
