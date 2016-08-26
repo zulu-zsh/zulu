@@ -16,12 +16,15 @@ function _zulu_self-update_usage() {
 # Update the zulu core
 ###
 function _zulu_self-update_core() {
+  local old="$(pwd)"
+
   cd $core
   git fetch origin && git rebase origin
-  cd -
+  cd $old
 }
 
 function _zulu_self-update_check_for_update() {
+  local old="$(pwd)"
   cd "$base/core"
 
   if command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
@@ -31,11 +34,13 @@ function _zulu_self-update_check_for_update() {
 
     if [[ $down > 0 ]]; then
       echo "$(color green 'New zulu version available') Run zulu self-update to upgrade"
+      cd $old
       return
     fi
   fi
 
   echo $(color green 'No update available')
+  cd $old
   return 1
 }
 
