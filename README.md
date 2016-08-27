@@ -16,7 +16,7 @@ Zulu comes with its own install script, which is the recommended method of insta
 ### One-liner
 
 ```sh
-curl https://git.io/zulu-install | zsh && zsh
+curl -L https://git.io/zulu-install | zsh && zsh
 ```
 
 ### For the cautious
