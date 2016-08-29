@@ -51,27 +51,33 @@ zulu list
 
 # List all available packages
 zulu list --all
+
+# Search for packages
+zulu search suggest
+
+# Get more info for a package
+zulu info autosuggestions
 ```
 
 Zulu intelligently autocompletes package names for you when using any of the above commands
 
-### Managing `$PATH` and `$fpath`
+### Managing `$path`, `$fpath` and `$cdpath`
 
-Zulu can manage the list of directories in `$PATH` and `$fpath` for you, negating the need for modifying init files and reloading the environment.
+Zulu can manage the list of directories in `$path`, `$fpath` and `$cdpath` for you, negating the need for modifying init files and reloading the environment.
 
 Path commands support both absolute and relative paths.
 
 ```sh
-# Add a directory to $PATH
+# Add a directory to $path
 zulu path add /path/to/dir
 
-# Add current durectory to $PATH
-zulu path add .
+# Add current durectory to $cdpath
+zulu cdpath add .
 
 # Remove a directory from $fpath
 zulu fpath rm /path/to/dir
 
-# List all directories in $PATH
+# List all directories in $path
 zulu path
 ```
 
