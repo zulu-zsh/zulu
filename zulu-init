@@ -541,12 +541,22 @@ function _zulu_init() {
   # Ensure path arrays do not contain duplicates.
   typeset -gU cdpath fpath mailpath path
 
+  # Load zulu internal commands
   _zulu_load_commands
-  _zulu_load_packages
 
   # Populate $PATH and $fpath
   zulu path reset
   zulu fpath reset
+
+  # Set up the environment
+  _zulu_init_setup_key_bindings
+  _zulu_init_setup_history
+  _zulu_init_setup_completion
+
+  # Load installed packages
+  _zulu_load_packages
+
+  # Load aliases
   zulu alias load
 
   # Autoload zsh theme
@@ -556,8 +566,5 @@ function _zulu_init() {
     prompt $theme
   fi
 
-  _zulu_init_setup_key_bindings
-  _zulu_init_setup_history
-  _zulu_init_setup_completion
   _zulu_check_for_update
 }

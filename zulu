@@ -13,13 +13,18 @@ function _zulu_usage() {
   echo $(color yellow "Commands:")
   echo "  install <package>     Install a package"
   echo "  uninstall <package>   Uninstall a package"
+  echo "  upgrade <package>     Upgrade a package"
   echo "  link <package>        Create symlinks for a package"
   echo "  unlink <package>      Remove symlinks for a package"
   echo "  list                  List packages"
   echo "  info                  Show information for a package"
+  echo "  search                Search the package index"
   echo "  alias <args>          Functions for adding/removing aliases"
   echo "  path <args>           Functions for adding/removing dirs from \$PATH"
   echo "  fpath <args>          Functions for adding/removing dirs from \$fpath"
+  echo "  cdpath <args>         Functions for adding/removing dirs from \$cdpath"
+  echo "  update                Update the package index"
+  echo "  self-update           Update zulu"
 }
 
 function _zulu_version() {

@@ -38,7 +38,7 @@ function _zulu_list_all() {
   for package in $(/bin/ls $index); do
     if [[ $simple ]]; then
       name="$package"
-      lim=28
+      lim=30
     else
       if [[ -d "$base/packages/$package" ]]; then
         name="$(color green '✔') $package"
