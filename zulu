@@ -66,7 +66,7 @@ function _zulu_version() {
   # The init command needs to be loaded itself
   if [[ $cmd = 'init' ]]; then
     if (( ! $+functions[_zulu_init] )); then
-      source "$base/core/zulu-init"
+      source "$base/core/commands/init"
     fi
   fi
 

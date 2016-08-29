@@ -522,7 +522,7 @@ function _zulu_check_for_update() {
 ###
 function _zulu_load_commands() {
   source "$base/core/helpers"
-  for cmd in $(find "$base/core" -name "zulu-*"); do
+  for cmd in $(find "$base/core/commands"); do
     source $cmd
   done
 }
