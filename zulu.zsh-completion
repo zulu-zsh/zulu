@@ -68,7 +68,6 @@ config_dir=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
 _zulu_package_file="$config/packages"
 _zulu_index="$base/index"
 
-
 ###
 # Define a default caching policy for zulu: we rebuild the cache
 # if the cache file is older than zulu's package index.
@@ -95,8 +94,8 @@ _zulu_get_packages() {
     _zulu_package_list=()
     IFS=$'\n' package_list=($(zulu list --all --describe --simple))
 
-    for i in $package_list; do
-      _zulu_package_list+="$(echo $i | cut -c 1-30 | tr -d " "):$(echo $i | cut -c 31-)"
+    for i in "$package_list[@]"; do
+      _zulu_package_list+=("$(echo $i | cut -c 1-30 | tr -d " "):$(echo $i | cut -c 31-)")
     done
 
     _store_cache $cacheid _zulu_package_list
@@ -114,8 +113,8 @@ _zulu_get_installed_packages() {
     _zulu_installed_package_list=()
     IFS=$'\n' package_list=($(zulu list --installed --describe --simple))
 
-    for i in $package_list; do
-      _zulu_installed_package_list+="$(echo $i | cut -c 1-30 | tr -d " "):$(echo $i | cut -c 31-)"
+    for i in "$package_list[@]"; do
+      _zulu_installed_package_list+=("$(echo $i | cut -c 1-30 | tr -d " "):$(echo $i | cut -c 31-)")
     done
 
     _store_cache $cacheid _zulu_installed_package_list
@@ -133,8 +132,8 @@ _zulu_get_not_installed_packages() {
     _zulu_not_installed_package_list=()
     IFS=$'\n' package_list=($(zulu list --not-installed --describe --simple))
 
-    for i in $package_list; do
-      _zulu_not_installed_package_list+="$(echo $i | cut -c 1-30 | tr -d " "):$(echo $i | cut -c 31-)"
+    for i in "$package_list[@]"; do
+      _zulu_not_installed_package_list+=("$(echo $i | cut -c 1-30 | tr -d " "):$(echo $i | cut -c 31-)")
     done
 
     _store_cache $cacheid _zulu_not_installed_package_list
