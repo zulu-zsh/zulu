@@ -28,7 +28,7 @@ function _zulu_self-update_check_for_update() {
 
   cd "$base/core"
 
-  git fetch origin
+  git fetch origin &>/dev/null
 
   if command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
     count="$(command git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)"
