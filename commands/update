@@ -28,19 +28,21 @@ function _zulu_update_check_for_update() {
 
   cd "$base/index"
 
+  git fetch origin
+
   if command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
     count="$(command git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)"
 
     down="$count[(w)2]"
 
     if [[ $down > 0 ]]; then
-      echo "$(color green 'Zulu index updates available') Run zulu update to update the index"
+      echo "$(color green "Zulu index updates available") Run zulu update to update the index"
       cd $old
       return
     fi
   fi
 
-  echo $(color green 'No update available')
+  echo "$(color green "No update available        ")"
   cd $old
   return 1
 }
@@ -64,11 +66,15 @@ function _zulu_update() {
   fi
 
   if [[ $check ]]; then
+    _zulu_spinner_start "Checking for updates..."
     _zulu_update_check_for_update
+    _zulu_spinner_stop
     return
   fi
 
+  _zulu_spinner_start "Checking for updates..."
   if _zulu_update_check_for_update > /dev/null; then
+    _zulu_spinner_stop
     _zulu_spinner_start "Updating package index..."
     out=$(_zulu_update_index 2>&1)
 
@@ -84,5 +90,6 @@ function _zulu_update() {
     return
   fi
 
-  echo $(color green 'No update available')
+  _zulu_spinner_stop
+  echo "$(color green "No update available        ")"
 }

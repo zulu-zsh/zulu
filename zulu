@@ -41,12 +41,6 @@ function _zulu_version() {
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
 
-  # Zulu uses color (https://github.com/molovo/color) when installed
-  # Here's a simple fallback if it's not
-  type color > /dev/null || function color() {
-    echo "${(@)@:2}"
-  }
-
   # Parse CLI options
   zparseopts -D h=help -help=help v=version -version=version
 
