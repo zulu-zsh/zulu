@@ -28,6 +28,8 @@ function _zulu_update_check_for_update() {
 
   cd "$base/index"
 
+  git fetch origin
+
   if command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
     count="$(command git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)"
 
