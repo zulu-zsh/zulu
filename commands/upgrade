@@ -12,13 +12,15 @@ function _zulu_upgrade_usage() {
 # Upgrade a package
 ###
 function _zulu_upgrade_package() {
-  local package json repo dir file link
+  local package json repo dir file link oldpwd=$(pwd)
 
   package="$1"
 
   # Pull from the repository
   cd "$base/packages/$package"
   git fetch origin && git rebase origin && git submodule update --init --recursive
+
+  cd $oldpwd
 }
 
 ###
@@ -55,6 +57,8 @@ function _zulu_upgrade() {
 
   # Do a second loop, to do the actual upgrade
   local i=1
+  local oldpwd=$(pwd)
+
   for package in "$packages[@]"; do
     cd "$base/packages/$package"
 
@@ -69,6 +73,8 @@ function _zulu_upgrade() {
       fi
     fi
   done
+
+  cd $oldpwd
 
   if [[ ${#to_update} -eq 0 ]]; then
     echo $(color green 'Nothing to upgrade')
