@@ -43,6 +43,8 @@ function _zulu_upgrade() {
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="${base}/index"
 
+  _zulu_spinner_start "Checking for updates..."
+
   packages=($@)
   packagefile="$config/packages"
 
@@ -78,8 +80,10 @@ function _zulu_upgrade() {
 
   cd $oldpwd
 
+  _zulu_spinner_stop
+
   if [[ ${#to_update} -eq 0 ]]; then
-    echo $(color green 'Nothing to upgrade')
+    echo "$(color green "Nothing to upgrade        ")"
     return 0
   fi
 

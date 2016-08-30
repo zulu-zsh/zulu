@@ -36,13 +36,13 @@ function _zulu_self-update_check_for_update() {
     down="$count[(w)2]"
 
     if [[ $down > 0 ]]; then
-      echo "$(color green 'New zulu version available') Run zulu self-update to upgrade"
+      echo "$(color green "New zulu version available") Run zulu self-update to upgrade"
       cd $old
       return
     fi
   fi
 
-  echo $(color green 'No update available')
+  echo "$(color green "No update available        ")"
   cd $old
   return 1
 }
@@ -66,11 +66,15 @@ function _zulu_self-update() {
   fi
 
   if [[ $check ]]; then
+    _zulu_spinner_start "Checking for updates..."
     _zulu_self-update_check_for_update
+    _zulu_spinner_stop
     return
   fi
 
+  _zulu_spinner_start "Checking for updates..."
   if _zulu_self-update_check_for_update > /dev/null; then
+    _zulu_spinner_stop
     _zulu_spinner_start "Updating zulu core..."
     out=$(_zulu_self-update_core 2>&1)
 
@@ -90,5 +94,6 @@ function _zulu_self-update() {
     return
   fi
 
-  echo $(color green 'No update available')
+  _zulu_spinner_stop
+  echo "$(color green "No update available        ")"
 }
