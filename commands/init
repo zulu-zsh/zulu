@@ -56,6 +56,9 @@ function _zulu_init_setup_completion() {
   zstyle ':completion:*' group-name ''
   zstyle ':completion:*' verbose yes
 
+  # Don't show already completed options in the list
+  zstyle ':completion:*:*:*:*:*' ignore-line 'yes'
+
   # Fuzzy match mistyped completions.
   zstyle ':completion:*' completer _complete _match _approximate
   zstyle ':completion:*:match:*' original only
