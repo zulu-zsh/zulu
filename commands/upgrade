@@ -52,7 +52,7 @@ function _zulu_upgrade() {
 
   # If no context is passed, upgrade the contents of the packagefile
   if [[ ${#packages} -eq 0 ]]; then
-    packages=($(cat $packagefile))
+    packages=($(/bin/ls "$base/packages"))
   fi
 
   # Do a second loop, to do the actual upgrade
