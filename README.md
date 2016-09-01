@@ -129,6 +129,8 @@ Copyright (c) 2016 James Dinsdale <hi@molovo.co> (molovo.co)
 
 Zulu is licensed under The MIT License (MIT)
 
+Icon is [Shield](https://thenounproject.com/search/?q=zulu&i=163736) by Ivan Colic from The Noun Project
+
 ## Team
 
 * [James Dinsdale](http://molovo.co)
