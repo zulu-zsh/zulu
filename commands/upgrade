@@ -95,6 +95,9 @@ function _zulu_upgrade() {
   case $input in
     y)
       for package in "$to_update[@]"; do
+        if [[ -z $package ]]; then
+          continue
+        fi
         # Unlink package first
         zulu unlink $package
 
