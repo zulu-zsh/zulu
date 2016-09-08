@@ -533,7 +533,11 @@ function _zulu_load_commands() {
 function _zulu_load_packages() {
   # Source files in the init directory
   for f in $(find "$base/init"); do
-    source $(realpath $f)
+    if [[ -L $f ]]; then
+      source $(readlink $f)
+    else
+      source $f
+    fi
   done
 }
 
