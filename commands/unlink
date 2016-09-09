@@ -1,7 +1,25 @@
 #!/usr/bin/env zsh
 
+###
+# Print usage information
+###
+function _zulu_unlink_usage() {
+  echo $(color yellow "Usage:")
+  echo "  zulu unlink <package>"
+}
+
+###
+# The zulu unlink function
+###
 function _zulu_unlink() {
-  local package json dir file link base
+  local help package json dir file link base
+
+  zparseopts -D h=help -help=help
+
+  if [[ $help ]]; then
+    _zulu_unlink_usage
+    return
+  fi
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config_dir=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}

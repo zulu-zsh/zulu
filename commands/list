@@ -14,17 +14,6 @@ function _zulu_list_usage() {
   echo "  -n, --not-installed  List non-installed packages"
   echo "  -d, --describe       Include package description in output"
   echo "  -s, --simple         Hide the 'package installed' indicator"
-  echo
-  echo $(color yellow "Commands:")
-  echo "  install <package>     Install a package"
-  echo "  uninstall <package>   Uninstall a package"
-  echo "  link <package>        Create symlinks for a package"
-  echo "  unlink <package>      Remove symlinks for a package"
-  echo "  list                  List packages"
-  echo "  info                  Show information for a package"
-  echo "  alias <args>          Functions for adding/removing aliases"
-  echo "  path <args>           Functions for adding/removing dirs from \$PATH"
-  echo "  fpath <args>          Functions for adding/removing dirs from \$fpath"
 }
 
 function _zulu_list_all() {

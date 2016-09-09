@@ -1,7 +1,25 @@
 #!/usr/bin/env zsh
 
+###
+# Print usage information
+###
+function _zulu_link_usage() {
+  echo $(color yellow "Usage:")
+  echo "  zulu link <package>"
+}
+
+###
+# The zulu link function
+###
 function _zulu_link() {
-  local package json dir file link base index
+  local help package json dir file link base index
+
+  zparseopts -D h=help -help=help
+
+  if [[ $help ]]; then
+    _zulu_link_usage
+    return
+  fi
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
@@ -36,6 +54,7 @@ function _zulu_link() {
       for file link ("${(@kv)files}") chmod u+x "$root/$file"
     fi
 
+    # Source init scripts
     if [[ "$dir" = "init" ]]; then
       for file link ("${(@kv)files}") source "$base/init/$link"
     fi
