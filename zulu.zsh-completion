@@ -6,6 +6,7 @@
 _zulu_commands=(
   'install:Install a package'
   'uninstall:Uninstall a package'
+  'bundle:Manage packagefile'
   'upgrade:Upgrade a package'
   'update:Update the package index'
   'self-update:Update the zulu core framework'
@@ -218,6 +219,14 @@ _zulu() {
             '(-a --all)'{-a,--all}'[list all packages]' \
             '(-s --simple)'{-s,--simple}'[do not show installed indicators]' \
             '(-d --describe)'{-d,--describe}'[show package descriptions]'
+          ;;
+        (bundle)
+          _arguments -A \
+            '(-h --help)'{-h,--help}'[show help text and exit]' \
+            '(-f --file)'{-f,--file}'[specify a packagefile]' \
+            '(-c --cleanup)'{-c,--cleanup}'[uninstall packages not present in packagefile]' \
+            '(-d --dump)'{-d,--dump}'[dump installed packages to packagefile]' \
+            '(-x --force)'{-x,--force}'[force writing of packages to an existing file]'
           ;;
       esac
       ;;
