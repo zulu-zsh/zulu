@@ -84,11 +84,7 @@ function _zulu_install() {
     touch $packagefile
   fi
 
-  # If no context is passed, install the contents of the packagefile
-  if [[ ${#packages} -eq 0 ]]; then
-    packages=($(cat $packagefile))
-  fi
-
+  # If no package name is passed, throw an error
   if [[ ${#packages} -eq 0 ]]; then
     echo $(color red "Please specify a package name")
     echo
