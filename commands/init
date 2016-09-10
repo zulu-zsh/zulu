@@ -530,13 +530,23 @@ function _zulu_load_commands() {
   done
 }
 
+###
+# Source init scripts for installed packages
+###
 function _zulu_load_packages() {
   # Source files in the init directory
   for f in $(find "$base/init"); do
-    source $(realpath $f)
+    if [[ -L $f ]]; then
+      source $(readlink $f)
+    else
+      source $f
+    fi
   done
 }
 
+###
+# Set up the zulu environment
+###
 function _zulu_init() {
   local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   local config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}

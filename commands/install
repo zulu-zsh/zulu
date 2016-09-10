@@ -12,7 +12,7 @@ function _zulu_install_usage() {
 # Install a package
 ###
 function _zulu_install_package() {
-  local package json repo dir file link packagetype dependencies
+  local package json repo dir file link packagetype dependencies post_install
 
   package="$1"
 
@@ -40,6 +40,14 @@ function _zulu_install_package() {
   cd "$base/packages"
   git clone --recursive $repo $package
 
+  # Run any post install scripts
+  cd "$base/packages/$package"
+  post_install=$(jsonval $json 'postinstall')
+  echo "Post install: $post_install"
+  if [[ -n $post_install ]]; then
+    eval "$post_install"
+  fi
+
   packagefile="$config/packages"
   in_packagefile=$(cat $packagefile | grep -e '^'${package}'$')
   if [[ "$in_packagefile" = "" ]]; then
@@ -59,7 +67,7 @@ function _zulu_install() {
   zparseopts -D h=help -help=help
 
   # Output help and return if requested
-  if [[ $help ]]; then
+  if [[ -n $help ]]; then
     _zulu_install_usage
     return
   fi
@@ -76,11 +84,7 @@ function _zulu_install() {
     touch $packagefile
   fi
 
-  # If no context is passed, install the contents of the packagefile
-  if [[ ${#packages} -eq 0 ]]; then
-    packages=($(cat $packagefile))
-  fi
-
+  # If no package name is passed, throw an error
   if [[ ${#packages} -eq 0 ]]; then
     echo $(color red "Please specify a package name")
     echo

@@ -44,7 +44,7 @@ function _zulu_info() {
   zparseopts -D h=help -help=help
 
   # Output help and return if requested
-  if [[ $help ]]; then
+  if [[ -n $help ]]; then
     _zulu_install_usage
     return
   fi

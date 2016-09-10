@@ -71,7 +71,7 @@ function _zulu_alias() {
   zparseopts -D h=help -help=help
 
   # Output help and return if requested
-  if [[ $help ]]; then
+  if [[ -n $help ]]; then
     _zulu_alias_usage
     return
   fi

@@ -60,12 +60,12 @@ function _zulu_update() {
   zparseopts -D h=help -help=help c=check -check=check
 
   # Output help and return if requested
-  if [[ $help ]]; then
+  if [[ -n $help ]]; then
     _zulu_update_usage
     return
   fi
 
-  if [[ $check ]]; then
+  if [[ -n $check ]]; then
     _zulu_spinner_start "Checking for updates..."
     _zulu_update_check_for_update
     _zulu_spinner_stop

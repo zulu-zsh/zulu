@@ -23,10 +23,10 @@ function _zulu_path_parse() {
   if [[ -d "$PWD/$dir" ]]; then
     # If the directory exists in the current working directory
     # convert the relative path to absolute
-    echo "$(realpath $PWD/$dir)"
+    echo "$PWD/$dir"
   elif [[ -d "$dir" ]]; then
     # If the directory exists as an absolute path, we can use it directly
-    echo "$(realpath $dir)"
+    echo "$dir"
   elif [[ "$check_existing" != "false" ]]; then
     # The directory could not be found
     echo $dir
@@ -38,8 +38,8 @@ function _zulu_path_parse() {
 # Add a directory to $path
 ###
 function _zulu_path_add() {
-  local dir p paths=($(cat $pathfile))
-  local -a items
+  local dir p
+  local -a items paths; paths=($(cat $pathfile))
 
   # Check that each of the passed directories exist, and convert relative
   # paths to absolute
@@ -72,8 +72,8 @@ function _zulu_path_add() {
 # Remove a directory from $path
 ###
 function _zulu_path_rm() {
-  local dir p paths=($(cat $pathfile))
-  local -a items
+  local dir p
+  local -a items paths; paths=($(cat $pathfile))
 
   # Check that each of the passed directories exist, and convert relative
   # paths to absolute
@@ -125,7 +125,8 @@ function _zulu_path_store() {
 # Override the $path variable with the current contents of the pathfile
 ###
 function _zulu_path_reset() {
-  local separator out paths=($(cat $pathfile))
+  local separator out
+  local -a paths; paths=($(cat $pathfile))
 
   path=()
   for p in "${paths[@]}"; do
@@ -143,7 +144,7 @@ function _zulu_path() {
   zparseopts -D h=help -help=help
 
   # Output help and return if requested
-  if [[ $help ]]; then
+  if [[ -n $help ]]; then
     _zulu_path_usage
     return
   fi

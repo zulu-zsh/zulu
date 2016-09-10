@@ -45,12 +45,12 @@ function _zulu_version() {
   zparseopts -D h=help -help=help v=version -version=version
 
   # Print help
-  if [[ $help ]]; then
+  if [[ -n $help ]]; then
     _zulu_usage
     return
   fi
 
-  if [[ $version ]]; then
+  if [[ -n $version ]]; then
     _zulu_version
     return
   fi

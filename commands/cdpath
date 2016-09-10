@@ -23,10 +23,10 @@ function _zulu_cdpath_parse() {
   if [[ -d "$PWD/$dir" ]]; then
     # If the directory exists in the current working directory
     # convert the relative path to absolute
-    echo "$(realpath $PWD/$dir)"
+    echo "$PWD/$dir"
   elif [[ -d "$dir" ]]; then
     # If the directory exists as an absolute path, we can use it directly
-    echo "$(realpath $dir)"
+    echo "$dir"
   elif [[ "$check_existing" != "false" ]]; then
     # The directory could not be found
     echo $dir
@@ -143,7 +143,7 @@ function _zulu_cdpath() {
   zparseopts -D h=help -help=help
 
   # Output help and return if requested
-  if [[ $help ]]; then
+  if [[ -n $help ]]; then
     _zulu_cdpath_usage
     return
   fi
