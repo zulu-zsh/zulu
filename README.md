@@ -9,6 +9,11 @@ Zulu is a total environment manager for ZSH.
 * No need to modify config files or reload ZSH when installing packages, creating aliases or modifying your `$PATH`.
 * Any git repository can be a package, check out [the index](//github.com/zulu-zsh/index) and [contribute](//github.com/zulu-zsh/zulu/blob/master/CONTRIBUTING.md).
 
+## Requirements
+
+* ZSH `5.0.2` or above
+* git `1.9.1` or above
+
 ## Installation
 
 > **WARNING**: Although the majority of Zulu's functionality works as expected, it is in the early stages of development, and as such bugs are likely to be present. Please continue with caution, and [report any issues](https://github.com/zulu-zsh/zulu/issues/new) you may have.
