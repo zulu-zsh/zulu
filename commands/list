@@ -25,7 +25,7 @@ function _zulu_list_all() {
   index="$base/index"
 
   for package in $(/bin/ls $index); do
-    if [[ $simple ]]; then
+    if [[ -n $simple ]]; then
       name="$package"
       lim=30
     else
@@ -38,7 +38,7 @@ function _zulu_list_all() {
       fi
     fi
 
-    if [[ $describe ]]; then
+    if [[ -n $describe ]]; then
       json="$(cat $index/$package)"
       description=$(jsonval $json 'description')
       printf '%s' "$name"
@@ -60,7 +60,7 @@ function _zulu_list_installed() {
   index="$base/index"
 
   for package in $(/bin/ls "$base/packages"); do
-    if [[ $describe ]]; then
+    if [[ -n $describe ]]; then
       json="$(cat $index/$package)"
       description=$(jsonval $json 'description')
 
@@ -84,7 +84,7 @@ function _zulu_list_not_installed() {
 
   for package in $(/bin/ls $index); do
     if [[ ! -d "$base/packages/$package" ]]; then
-      if [[ $describe ]]; then
+      if [[ -n $describe ]]; then
         json="$(cat $index/$package)"
         description=$(jsonval $json 'description')
 
@@ -118,17 +118,17 @@ function _zulu_list() {
                 -simple=simple
 
   # Output help and return if requested
-  if [[ $help ]]; then
+  if [[ -n $help ]]; then
     _zulu_list_usage
     return
   fi
 
-  if [[ $all ]]; then
+  if [[ -n $all ]]; then
     _zulu_list_all
     return
   fi
 
-  if [[ $not_installed ]]; then
+  if [[ -n $not_installed ]]; then
     _zulu_list_not_installed
     return
   fi

@@ -24,7 +24,7 @@ function _zulu_bundle_dump() {
   # Check if the packagefile exists
   if [[ -f $packagefile ]]; then
     # If the --force option was passed, overwrite it
-    if [[ $force ]]; then
+    if [[ -n $force ]]; then
       echo "$installed" >! $packagefile
       return
     fi
@@ -72,7 +72,7 @@ function _zulu_bundle() {
                 x=force -force=force
 
   # Output help and return if requested
-  if [[ $help ]]; then
+  if [[ -n $help ]]; then
     _zulu_bundle_usage
     return
   fi
@@ -85,13 +85,13 @@ function _zulu_bundle() {
   packagefile="$config/packages"
 
   # If a file is passed, use that as the packagefile
-  if [[ $file ]]; then
+  if [[ -n $file ]]; then
     shift file
     packagefile="$file"
   fi
 
   # Check for the dump option
-  if [[ $dump ]]; then
+  if [[ -n $dump ]]; then
     _zulu_bundle_dump
     return $?
   fi
@@ -104,7 +104,7 @@ function _zulu_bundle() {
   fi
 
   # Check for the cleanup option
-  if [[ $cleanup ]]; then
+  if [[ -n $cleanup ]]; then
     _zulu_bundle_cleanup
     return $?
   fi
