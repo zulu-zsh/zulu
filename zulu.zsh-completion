@@ -202,7 +202,7 @@ _zulu() {
               ;;
           esac
           ;;
-        (uninstall|link|unlink|upgrade)
+        (uninstall|link|unlink)
           _arguments \
             '*: :_zulu_installed_packages'
           ;;
@@ -210,6 +210,14 @@ _zulu() {
           _arguments -A \
             '(-h --help)'{-h,--help}'[show help text and exit]' \
             '(-c --check)'{-c,--check}'[check if an update is available]'
+          ;;
+        (upgrade)
+          _arguments \
+            '*: :_zulu_installed_packages'
+
+          _arguments -A \
+            '(-h --help)'{-h,--help}'[show help text and exit]' \
+            '(-c --check)'{-c,--check}'[check if upgrades are available]'
           ;;
         (list)
           _arguments -A \
