@@ -6,6 +6,10 @@
 function _zulu_upgrade_usage() {
   echo $(color yellow "Usage:")
   echo "  zulu upgrade [<packages...>]"
+  echo
+  echo $(color yellow "Options:")
+  echo "  -c, --check       Check if upgrades are available"
+  echo "  -h, --help        Output this help text and exit"
 }
 
 ###
@@ -36,7 +40,8 @@ function _zulu_upgrade() {
   local base index packages out count down to_update=()
 
   # Parse options
-  zparseopts -D h=help -help=help
+  zparseopts -D h=help -help=help \
+                c=check -check=check
 
   # Output help and return if requested
   if [[ -n $help ]]; then
@@ -90,6 +95,11 @@ function _zulu_upgrade() {
 
   if [[ ${#to_update} -eq 0 ]]; then
     echo "$(color green "Nothing to upgrade        ")"
+    return 0
+  fi
+
+  if [[ -n $check ]]; then
+    echo "$(color green 'Package upgrades available') Run zulu upgrade to upgrade"
     return 0
   fi
 
