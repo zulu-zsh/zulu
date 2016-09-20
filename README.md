@@ -187,6 +187,17 @@ zulu update --check
 zulu self-update --check
 ```
 
+## Uninstalling
+
+Tried zulu and it's not for you? We won't hold it against you. Here's how you can remove it:
+
+```sh
+rm -rf "${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}"
+rm -rf "${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}"
+```
+
+Then just remove the initialisation lines from your `.zshrc` and zulu has been uninstalled.
+
 ## Contributing
 
 All contributions are welcome, and encouraged. Please read our [contribution guidelines](contributing.md) and [code of conduct](code-of-conduct.md) for more information.
