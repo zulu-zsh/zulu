@@ -18,9 +18,9 @@ Zulu is a total environment manager for ZSH.
 
 > **WARNING**: Although the majority of Zulu's functionality works as expected, it is in the early stages of development, and as such bugs are likely to be present. Please continue with caution, and [report any issues](https://github.com/zulu-zsh/zulu/issues/new) you may have.
 
-Zulu comes with its own install script, which is the recommended method of install. If you wish to do things yourself, follow the steps in the [install script](http://github.com/zulu-zsh/install/blob/master/install).
-
 ### One-liner
+
+Zulu comes with its own install script, which is the recommended method of install.
 
 ```sh
 curl -L https://git.io/zulu-install | zsh && zsh
@@ -32,6 +32,67 @@ curl -L https://git.io/zulu-install | zsh && zsh
 git clone https://github.com/zulu-zsh/install zulu-install
 chmod u+x zulu-install/install
 . ./zulu-install/install
+```
+
+### Manual Installation
+
+Sure you don't want to use that install script? Ok then, here we go.
+
+```sh
+# Edit these as needed. Make sure to add them to your .zshrc if you change them
+ZULU_DIR=~/.zulu
+ZULU_CONFIG_DIR=~/.config/zulu
+
+# Create directories needed for packages
+mkdir -p ${ZULU_DIR}/{bin,share,init,packages}
+touch ${ZULU_DIR}/{bin,share,init,packages}/.gitkeep
+
+# Create config directory
+mkdir -p ${ZULU_CONFIG_DIR}
+
+# Clone the core and index repositories
+git clone https://github.com/zulu-zsh/zulu ${ZULU_DIR}/core
+git clone https://github.com/zulu-zsh/index ${ZULU_DIR}/index
+
+# Store contents of $path
+pathfile="${ZULU_CONFIG_DIR}/path"
+echo "${ZULU_DIR}/bin" > $pathfile
+for p in "${path[@]}"; do
+  echo "$p" >> $pathfile
+done
+
+# Store contents of $fpath
+pathfile="${ZULU_CONFIG_DIR}/fpath"
+echo "${ZULU_DIR}/share" > $pathfile
+for p in "${fpath[@]}"; do
+  echo "$p" >> $pathfile
+done
+
+# Store contents of $cdpath
+pathfile="${ZULU_CONFIG_DIR}/cdpath"
+echo "" > $pathfile
+for p in "${cdpath[@]}"; do
+  echo "$p" >> $pathfile
+done
+
+# Store aliases
+local aliasfile="${ZULU_CONFIG_DIR}/alias"
+echo "" > $aliasfile
+IFS=$'\n'; for a in `alias`; do
+  echo "alias $a\n" >> $aliasfile
+done
+
+# Install the completion for zulu commands
+ln -s ${ZULU_DIR}/core/zulu.zsh-completion ${ZULU_DIR}/share/_zulu
+
+# Install the initialisation script to run on startup
+echo "# Initialise zulu plugin manager" >> ${ZDOTDIR:-$HOME}/.zshrc
+echo 'source "${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}/core/zulu"' >> ${ZDOTDIR:-$HOME}/.zshrc
+echo "zulu init" >> ${ZULU_DIR:-$HOME}/.zshrc
+
+# Hooray! Zulu is installed. Load it now
+source ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}/core/zulu
+zulu init
 ```
 
 ## Usage
