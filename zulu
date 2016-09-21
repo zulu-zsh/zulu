@@ -65,6 +65,19 @@ function _zulu_version() {
     fi
   fi
 
+  if [[ -z $cmd ]]; then
+    echo " _____         ___"
+    echo "/__  /  __  __/  /_  __"
+    echo "  / /  / / / /  / / / /"
+    echo " / /__/ /_/ /  / /_/ /"
+    echo "/____/\\____/__/\\____/"
+    echo
+    echo "Version $(zulu --version)"
+    echo
+    _zulu_usage
+    return
+  fi
+
   # Check if the requested command exists
   if (( ! $+functions[_zulu_${cmd}] )); then
     # If it doesn't, print usage information and exit
