@@ -13,6 +13,7 @@ function _zulu_usage() {
   echo
   echo $(color yellow "Commands:")
   echo "  install <package>     Install a package"
+  echo "  bundle                Install all packages from packagefile"
   echo "  uninstall <package>   Uninstall a package"
   echo "  upgrade <package>     Upgrade a package"
   echo "  link <package>        Create symlinks for a package"
