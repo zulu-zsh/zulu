@@ -57,7 +57,7 @@ function _zulu_link() {
 
     # Source init scripts
     if [[ "$dir" = "init" ]]; then
-      for file link ("${(@kv)files}") source "$base/init/$link"
+      for file link ("${(@kv)files}") source $(readlink "$base/init/$link")
     fi
   done
 
