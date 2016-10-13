@@ -22,9 +22,9 @@ function _zulu_list_all() {
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="$base/index"
+  index="$base/index/packages"
 
-  for package in $(/bin/ls $index); do
+  for package in $(/bin/ls $index | grep -v '.md'); do
     if [[ -n $simple ]]; then
       name="$package"
       lim=30
@@ -57,7 +57,7 @@ function _zulu_list_installed() {
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="$base/index"
+  index="$base/index/packages"
 
   for package in $(/bin/ls "$base/packages"); do
     if [[ -n $describe ]]; then
@@ -80,9 +80,9 @@ function _zulu_list_not_installed() {
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="$base/index"
+  index="$base/index/packages"
 
-  for package in $(/bin/ls $index); do
+  for package in $(/bin/ls $index | grep -v '.md'); do
     if [[ ! -d "$base/packages/$package" ]]; then
       if [[ -n $describe ]]; then
         json="$(cat $index/$package)"

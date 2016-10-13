@@ -54,7 +54,7 @@ function _zulu_uninstall() {
   # Set up some variables
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config_dir=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="${base}/index"
+  index="${base}/index/packages"
 
   # If no context is passed, output the contents of the pathfile
   if [[ "$1" = "" ]]; then
