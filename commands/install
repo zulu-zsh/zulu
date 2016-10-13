@@ -27,13 +27,6 @@ function _zulu_install_package() {
   # Get the JSON from the index
   json=$(cat "$index/$package")
 
-  dependencies=($(jsonval $json 'dependencies'))
-  if [[ ${#dependencies} -ne 0 ]]; then
-    for dependency in "$dependencies[@]"; do
-      _zulu_install_package $dependency
-    done
-  fi
-
   # Get the repository URL from the JSON
   repo=$(jsonval $json 'repository')
 
@@ -103,6 +96,34 @@ function _zulu_install() {
 
   # Do a second loop, to do the actual install
   for package in "$packages[@]"; do
+    # Get the JSON from the index
+    json=$(cat "$index/$package")
+
+    # Get the list of dependencies from the index
+    dependencies=($(echo $(jsonval $json 'dependencies') | tr "," "\n" | sed 's/\[//g' | sed 's/\]//g'))
+
+    # If there are dependencies in the list
+    if [[ ${#dependencies} -ne 0 ]]; then
+      # Loop through each of the dependencies
+      for dependency in "$dependencies[@]"; do
+        # Check that the dependency is not already installed
+        if [[ ! -d "$base/packages/$dependency" ]]; then
+          _zulu_spinner_start "Installing dependency $dependency..."
+          out=$(_zulu_install_package "$dependency" 2>&1)
+
+          if [ $? -eq 0 ]; then
+            _zulu_spinner_stop
+            echo "$(color green '✔') Finished installing dependency $dependency        "
+            zulu link $dependency
+          else
+            _zulu_spinner_stop
+            echo "$(color red '✘') Error installing dependency $dependency        "
+            echo "$out"
+          fi
+        fi
+      done
+    fi
+
     _zulu_spinner_start "Installing $package..."
     out=$(_zulu_install_package "$package" 2>&1)
 
