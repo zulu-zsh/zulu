@@ -37,7 +37,8 @@ function _zulu_upgrade_package() {
 # Zulu command to handle package upgrades
 ###
 function _zulu_upgrade() {
-  local base index packages out count down to_update=()
+  local base index out count down
+  local -a packages to_update
 
   # Parse options
   zparseopts -D h=help -help=help \
