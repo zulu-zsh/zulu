@@ -84,7 +84,7 @@ function _zulu_upgrade() {
 
       if [[ $down > 0 ]]; then
         to_update[$i]="$package"
-        i+=1
+        i=$(( i + 1 ))
       fi
     fi
   done
