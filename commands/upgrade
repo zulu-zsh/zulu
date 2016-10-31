@@ -55,7 +55,7 @@ function _zulu_upgrade() {
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="${base}/index/packages"
 
-  _zulu_spinner_start "Checking for updates..."
+  revolver start "Checking for updates..."
 
   packages=($@)
   packagefile="$config/packages"
@@ -92,7 +92,7 @@ function _zulu_upgrade() {
 
   cd $oldpwd
 
-  _zulu_spinner_stop
+  revolver stop
 
   if [[ ${#to_update} -eq 0 ]]; then
     echo "$(color green "Nothing to upgrade        ")"
@@ -119,15 +119,14 @@ function _zulu_upgrade() {
         zulu unlink $package
 
         # Upgrade the package
-        _zulu_spinner_start "Upgrading $package..."
+        revolver start "Upgrading $package..."
         out=$(_zulu_upgrade_package "$package" 2>&1)
+        revolver stop
 
         if [ $? -eq 0 ]; then
-          _zulu_spinner_stop
           echo "$(color green '✔') Finished upgrading $package        "
           zulu link $package
         else
-          _zulu_spinner_stop
           echo "$(color red '✘') Error upgrading $package        "
           echo "$out"
         fi
