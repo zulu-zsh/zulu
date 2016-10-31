@@ -76,14 +76,13 @@ function _zulu_uninstall() {
   for package in "$@"; do
     zulu unlink $package
 
-    _zulu_spinner_start "Uninstalling $package..."
+    revolver start "Uninstalling $package..."
     out=$(_zulu_uninstall_package "$package" 2>&1)
+    revolver stop
 
     if [ $? -eq 0 ]; then
-      _zulu_spinner_stop
       echo "$(color green '✔') Finished uninstalling $package        "
     else
-      _zulu_spinner_stop
       echo "$(color red '✘') Error uninstalling $package        "
       echo "$out"
     fi

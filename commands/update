@@ -66,23 +66,21 @@ function _zulu_update() {
   fi
 
   if [[ -n $check ]]; then
-    _zulu_spinner_start "Checking for updates..."
+    revolver start "Checking for updates..."
     _zulu_update_check_for_update
-    _zulu_spinner_stop
+    revolver stop
     return
   fi
 
-  _zulu_spinner_start "Checking for updates..."
+  revolver start "Checking for updates..."
   if _zulu_update_check_for_update > /dev/null; then
-    _zulu_spinner_stop
-    _zulu_spinner_start "Updating package index..."
+    revolver update "Updating package index..."
     out=$(_zulu_update_index 2>&1)
+    revolver stop
 
     if [ $? -eq 0 ]; then
-      _zulu_spinner_stop
       echo "$(color green '✔') Package index updated        "
     else
-      _zulu_spinner_stop
       echo "$(color red '✘') Error updating package index        "
       echo "$out"
     fi
@@ -90,6 +88,6 @@ function _zulu_update() {
     return
   fi
 
-  _zulu_spinner_stop
+  revolver stop
   echo "$(color green "No update available        ")"
 }

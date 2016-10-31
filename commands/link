@@ -35,7 +35,7 @@ function _zulu_link() {
     return 1
   fi
 
-  _zulu_spinner_start "Linking $package..."
+  revolver start "Linking $package..."
 
   # Get the JSON from the index
   json=$(cat "$index/$package")
@@ -61,6 +61,6 @@ function _zulu_link() {
     fi
   done
 
-  _zulu_spinner_stop
+  revolver stop
   echo "$(color green '✔') Finished linking $package        "
 }
