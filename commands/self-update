@@ -66,23 +66,21 @@ function _zulu_self-update() {
   fi
 
   if [[ -n $check ]]; then
-    _zulu_spinner_start "Checking for updates..."
+    revolver start "Checking for updates..."
     _zulu_self-update_check_for_update
-    _zulu_spinner_stop
+    revolver stop
     return
   fi
 
-  _zulu_spinner_start "Checking for updates..."
+  revolver start "Checking for updates..."
   if _zulu_self-update_check_for_update > /dev/null; then
-    _zulu_spinner_stop
-    _zulu_spinner_start "Updating zulu core..."
+    revolver update "Updating zulu core..."
     out=$(_zulu_self-update_core 2>&1)
+    revolver stop
 
     if [ $? -eq 0 ]; then
-      _zulu_spinner_stop
       echo "$(color green '✔') Zulu core updated        "
     else
-      _zulu_spinner_stop
       echo "$(color red '✘') Error updating zulu core        "
       echo "$out"
 
@@ -94,6 +92,6 @@ function _zulu_self-update() {
     return
   fi
 
-  _zulu_spinner_stop
+  revolver stop
   echo "$(color green "No update available        ")"
 }

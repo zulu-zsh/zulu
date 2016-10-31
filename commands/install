@@ -108,15 +108,14 @@ function _zulu_install() {
       for dependency in "$dependencies[@]"; do
         # Check that the dependency is not already installed
         if [[ ! -d "$base/packages/$dependency" ]]; then
-          _zulu_spinner_start "Installing dependency $dependency..."
+          revolver start "Installing dependency $dependency..."
           out=$(_zulu_install_package "$dependency" 2>&1)
+          revolver stop
 
           if [ $? -eq 0 ]; then
-            _zulu_spinner_stop
             echo "$(color green '✔') Finished installing dependency $dependency        "
             zulu link $dependency
           else
-            _zulu_spinner_stop
             echo "$(color red '✘') Error installing dependency $dependency        "
             echo "$out"
           fi
@@ -124,15 +123,14 @@ function _zulu_install() {
       done
     fi
 
-    _zulu_spinner_start "Installing $package..."
+    revolver start "Installing $package..."
     out=$(_zulu_install_package "$package" 2>&1)
+    revolver stop
 
     if [ $? -eq 0 ]; then
-      _zulu_spinner_stop
       echo "$(color green '✔') Finished installing $package        "
       zulu link $package
     else
-      _zulu_spinner_stop
       echo "$(color red '✘') Error installing $package        "
       echo "$out"
     fi

@@ -35,7 +35,7 @@ function _zulu_unlink() {
     return 1
   fi
 
-  _zulu_spinner_start "Unlinking $package..."
+  revolver start "Unlinking $package..."
 
   # Get the JSON from the index
   json=$(cat "$index/$package")
@@ -51,6 +51,6 @@ function _zulu_unlink() {
     for file link ("${(@kv)files}") [[ -L "$base/$dir/$link" ]] && rm "$base/$dir/$link"
   done
 
-  _zulu_spinner_stop
+  revolver stop
   echo "$(color green '✔') Finished unlinking $package        "
 }
