@@ -524,7 +524,6 @@ function _zulu_check_for_update() {
 # Load the zulu commands
 ###
 function _zulu_load_commands() {
-  source "$base/core/helpers"
   for cmd in $(find "$base/core/commands"); do
     source $cmd
   done
@@ -560,6 +559,9 @@ function _zulu_init() {
   # Populate $PATH and $fpath
   zulu path reset
   zulu fpath reset
+
+  # Source helper functions
+  source "$base/core/helpers"
 
   # Set up the environment
   _zulu_init_setup_key_bindings
