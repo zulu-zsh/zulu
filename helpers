@@ -44,3 +44,11 @@
     white|w)    echo "\033[${b};37m${@}\033[0;m" ;;
   esac
 }
+###
+# If the revolver command is not installed, create an empty
+# function to prevent COMMAND_NOT_FOUND errors
+###
+$(type revolver 2>&1 > /dev/null)
+if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/revolver"} ]]; then
+  function revolver() {echo ${(@)@:2}}
+fi
