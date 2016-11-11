@@ -1,6 +1,7 @@
 # Zulu
 
 [![Join the chat at https://gitter.im/zulu-zsh/zulu](https://badges.gitter.im/zulu-zsh/zulu.svg)](https://gitter.im/zulu-zsh/zulu?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the slack community at https://zulu-zsh.slack.com](https://zulu-slack.herokuapp.com/badge.svg)](https://zulu-slack.herokuapp.com)
 
 Zulu is a total environment manager for ZSH.
 
