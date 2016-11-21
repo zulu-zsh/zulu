@@ -201,7 +201,7 @@ Then just remove the initialisation lines from your `.zshrc` and zulu has been u
 
 ## Contributing
 
-All contributions are welcome, and encouraged. Please read our [contribution guidelines](contributing.md) and [code of conduct](code-of-conduct.md) for more information.
+All contributions are welcome, and encouraged. Please read our [contribution guidelines](CONTRIBUTING.md) and [code of conduct](CODE-OF-CONDUCT.md) for more information.
 
 ## License
 
