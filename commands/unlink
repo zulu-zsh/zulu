@@ -4,7 +4,7 @@
 # Print usage information
 ###
 function _zulu_unlink_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu unlink <package>"
 }
 
@@ -24,18 +24,18 @@ function _zulu_unlink() {
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config_dir=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="$base/index"
+  index="$base/index/packages"
 
   package="$1"
 
   # Check if the package is already installed
   root="$base/packages/$package"
   if [[ ! -d "$root" ]]; then
-    echo $(color red "Package '$package' is not installed")
+    echo $(_zulu_color red "Package '$package' is not installed")
     return 1
   fi
 
-  _zulu_spinner_start "Unlinking $package..."
+  _zulu_revolver start "Unlinking $package..."
 
   # Get the JSON from the index
   json=$(cat "$index/$package")
@@ -51,6 +51,6 @@ function _zulu_unlink() {
     for file link ("${(@kv)files}") [[ -L "$base/$dir/$link" ]] && rm "$base/$dir/$link"
   done
 
-  _zulu_spinner_stop
-  echo "$(color green '✔') Finished unlinking $package        "
+  _zulu_revolver stop
+  echo "$(_zulu_color green '✔') Finished unlinking $package        "
 }

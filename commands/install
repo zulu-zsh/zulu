@@ -4,7 +4,7 @@
 # Output usage information
 ###
 function _zulu_install_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu install <packages...>"
 }
 
@@ -12,26 +12,20 @@ function _zulu_install_usage() {
 # Install a package
 ###
 function _zulu_install_package() {
-  local package json repo dir file link packagetype dependencies post_install
+  local package json repo dir file link packagetype
+  local -a dependencies
 
   package="$1"
 
   # Check if the package is already installed
   root="$base/packages/$package"
   if [[ -d "$root" ]]; then
-    echo $(color red "Package '$package' is already installed")
+    echo $(_zulu_color red "Package '$package' is already installed")
     return 1
   fi
 
   # Get the JSON from the index
   json=$(cat "$index/$package")
-
-  dependencies=$(jsonval $json 'dependencies')
-  if [[ "$dependencies" != "" ]]; then
-    for dependency in "$dependencies"; do
-      _zulu_install_package $dependency
-    done
-  fi
 
   # Get the repository URL from the JSON
   repo=$(jsonval $json 'repository')
@@ -39,14 +33,6 @@ function _zulu_install_package() {
   # Clone the repository
   cd "$base/packages"
   git clone --recursive $repo $package
-
-  # Run any post install scripts
-  cd "$base/packages/$package"
-  post_install=$(jsonval $json 'postinstall')
-  echo "Post install: $post_install"
-  if [[ -n $post_install ]]; then
-    eval "$post_install"
-  fi
 
   packagefile="$config/packages"
   in_packagefile=$(cat $packagefile | grep -e '^'${package}'$')
@@ -75,7 +61,7 @@ function _zulu_install() {
   # Set up some variables
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="${base}/index"
+  index="${base}/index/packages"
 
   packages=($@)
   packagefile="$config/packages"
@@ -86,7 +72,7 @@ function _zulu_install() {
 
   # If no package name is passed, throw an error
   if [[ ${#packages} -eq 0 ]]; then
-    echo $(color red "Please specify a package name")
+    echo $(_zulu_color red "Please specify a package name")
     echo
     _zulu_install_usage
     return 1
@@ -95,23 +81,49 @@ function _zulu_install() {
   # Do a first loop, to ensure all packages exist
   for package in "$packages[@]"; do
     if [[ ! -f "$index/$package" ]]; then
-      echo $(color red "Package '$package' is not in the index")
+      echo $(_zulu_color red "Package '$package' is not in the index")
       return 1
     fi
   done
 
   # Do a second loop, to do the actual install
   for package in "$packages[@]"; do
-    _zulu_spinner_start "Installing $package..."
+    # Get the JSON from the index
+    json=$(cat "$index/$package")
+
+    # Get the list of dependencies from the index
+    dependencies=($(echo $(jsonval $json 'dependencies') | tr "," "\n" | sed 's/\[//g' | sed 's/\]//g'))
+
+    # If there are dependencies in the list
+    if [[ ${#dependencies} -ne 0 ]]; then
+      # Loop through each of the dependencies
+      for dependency in "$dependencies[@]"; do
+        # Check that the dependency is not already installed
+        if [[ ! -d "$base/packages/$dependency" ]]; then
+          _zulu_revolver start "Installing dependency $dependency..."
+          out=$(_zulu_install_package "$dependency" 2>&1)
+          _zulu_revolver stop
+
+          if [ $? -eq 0 ]; then
+            echo "$(_zulu_color green '✔') Finished installing dependency $dependency        "
+            zulu link $dependency
+          else
+            echo "$(_zulu_color red '✘') Error installing dependency $dependency        "
+            echo "$out"
+          fi
+        fi
+      done
+    fi
+
+    _zulu_revolver start "Installing $package..."
     out=$(_zulu_install_package "$package" 2>&1)
+    _zulu_revolver stop
 
     if [ $? -eq 0 ]; then
-      _zulu_spinner_stop
-      echo "$(color green '✔') Finished installing $package        "
+      echo "$(_zulu_color green '✔') Finished installing $package        "
       zulu link $package
     else
-      _zulu_spinner_stop
-      echo "$(color red '✘') Error installing $package        "
+      echo "$(_zulu_color red '✘') Error installing $package        "
       echo "$out"
     fi
   done

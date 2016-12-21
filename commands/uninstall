@@ -4,7 +4,7 @@
 # Output usage information
 ###
 function _zulu_uninstall_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu uninstall <packages...>"
 }
 
@@ -19,7 +19,7 @@ function _zulu_uninstall_package() {
   # Check if the package is already uninstalled
   root="$base/packages/$package"
   if [[ ! -d "$root" ]]; then
-    echo $(color red "Package '$package' is not installed")
+    echo $(_zulu_color red "Package '$package' is not installed")
     return 1
   fi
 
@@ -54,11 +54,11 @@ function _zulu_uninstall() {
   # Set up some variables
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config_dir=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="${base}/index"
+  index="${base}/index/packages"
 
   # If no context is passed, output the contents of the pathfile
   if [[ "$1" = "" ]]; then
-    echo $(color red "Please specify a package name")
+    echo $(_zulu_color red "Please specify a package name")
     echo
     _zulu_uninstall_usage
     return 1
@@ -67,7 +67,7 @@ function _zulu_uninstall() {
   # Do a first loop, to ensure all packages exist
   for package in "$@"; do
     if [[ ! -f "$index/$package" ]]; then
-      echo $(color red "Package '$package' is not in the index")
+      echo $(_zulu_color red "Package '$package' is not in the index")
       return 1
     fi
   done
@@ -76,15 +76,14 @@ function _zulu_uninstall() {
   for package in "$@"; do
     zulu unlink $package
 
-    _zulu_spinner_start "Uninstalling $package..."
+    _zulu_revolver start "Uninstalling $package..."
     out=$(_zulu_uninstall_package "$package" 2>&1)
+    _zulu_revolver stop
 
     if [ $? -eq 0 ]; then
-      _zulu_spinner_stop
-      echo "$(color green '✔') Finished uninstalling $package        "
+      echo "$(_zulu_color green '✔') Finished uninstalling $package        "
     else
-      _zulu_spinner_stop
-      echo "$(color red '✘') Error uninstalling $package        "
+      echo "$(_zulu_color red '✘') Error uninstalling $package        "
       echo "$out"
     fi
   done

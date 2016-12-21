@@ -4,10 +4,10 @@
 # Print usage information
 ###
 function _zulu_bundle_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu bundle [options]"
   echo
-  echo $(color yellow "Options:")
+  echo $(_zulu_color yellow "Options:")
   echo "  -h, --help           Output this help text and exit"
   echo "  -f, --file           Specify a packagefile"
   echo "  -c, --cleanup        Uninstall packages not in packagefile"
@@ -30,7 +30,7 @@ function _zulu_bundle_dump() {
     fi
 
     # Throw an error
-    echo $(color red "Packagefile at $packagefile already exists")
+    echo $(_zulu_color red "Packagefile at $packagefile already exists")
     echo 'Use `zulu bundle --dump --force` to overwrite'
     return 1
   fi
@@ -99,7 +99,7 @@ function _zulu_bundle() {
   # Check that the packagefile exists, and throw an
   # error if it does not
   if [[ ! -f $packagefile ]]; then
-    echo $(color red 'Packagefile cannot be found')
+    echo $(_zulu_color red 'Packagefile cannot be found')
     return 1
   fi
 

@@ -4,14 +4,14 @@
 # Print usage information
 ###
 function _zulu_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu [options] <command>"
   echo
-  echo $(color yellow "Options:")
+  echo $(_zulu_color yellow "Options:")
   echo "  -h, --help          Output this help text and exit"
   echo "  -v, --version       Output version information and exit"
   echo
-  echo $(color yellow "Commands:")
+  echo $(_zulu_color yellow "Commands:")
   echo "  install <package>     Install a package"
   echo "  bundle                Install all packages from packagefile"
   echo "  uninstall <package>   Uninstall a package"
@@ -82,7 +82,7 @@ function _zulu_version() {
   # Check if the requested command exists
   if (( ! $+functions[_zulu_${cmd}] )); then
     # If it doesn't, print usage information and exit
-    echo $(color red "Command '$cmd' can not be found.")
+    echo $(_zulu_color red "Command '$cmd' can not be found.")
     echo
     _zulu_usage
     return 1

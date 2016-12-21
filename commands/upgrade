@@ -4,10 +4,10 @@
 # Output usage information
 ###
 function _zulu_upgrade_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu upgrade [<packages...>]"
   echo
-  echo $(color yellow "Options:")
+  echo $(_zulu_color yellow "Options:")
   echo "  -c, --check       Check if upgrades are available"
   echo "  -h, --help        Output this help text and exit"
 }
@@ -16,19 +16,13 @@ function _zulu_upgrade_usage() {
 # Upgrade a package
 ###
 function _zulu_upgrade_package() {
-  local package json repo dir post_install file link oldpwd=$(pwd)
+  local package json repo dir file link oldpwd=$(pwd)
 
   package="$1"
 
   # Pull from the repository
   cd "$base/packages/$package"
-  git fetch origin && git rebase origin && git submodule update --init --recursive
-
-  json=$(cat "${ZULU_DIR:-"$HOME/.zulu"}/index/$package")
-  post_install=$(jsonval $json 'postinstall')
-  if [[ -n $post_install ]]; then
-    "$post_install"
-  fi
+  git rebase origin && git submodule update --init --recursive
 
   cd $oldpwd
 }
@@ -37,8 +31,9 @@ function _zulu_upgrade_package() {
 # Zulu command to handle package upgrades
 ###
 function _zulu_upgrade() {
-  local base index out count down
+  local base index out count down oldpwd i
   local -a packages to_update
+  local -A _pids
 
   # Parse options
   zparseopts -D h=help -help=help \
@@ -53,9 +48,9 @@ function _zulu_upgrade() {
   # Set up some variables
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="${base}/index"
+  index="${base}/index/packages"
 
-  _zulu_spinner_start "Checking for updates..."
+  _zulu_revolver start "Checking for updates..."
 
   packages=($@)
   packagefile="$config/packages"
@@ -69,14 +64,29 @@ function _zulu_upgrade() {
     packages=($(/bin/ls "$base/packages"))
   fi
 
-  # Do a second loop, to do the actual upgrade
-  local i=1
-  local oldpwd=$(pwd)
+  oldpwd=$(pwd)
+  _pids=()
 
+  # Do a first loop, to kick off a fetch asynchronously
   for package in "$packages[@]"; do
     cd "$base/packages/$package"
 
-    git fetch origin &>/dev/null
+    {
+      git fetch origin >/dev/null 2>&1
+    } &!
+    _pids[${package}]=$!
+  done
+
+  # Do a second loop, to wait until all subprocesses have finished
+  for package pid in "${(@kv)_pids}"; do
+    while kill -0 $pid >/dev/null 2>&1; do
+    done
+  done
+
+  # Do a third loop, to check if updates are available
+  i=1
+  for package in "$packages[@]"; do
+    cd "$base/packages/$package"
 
     if command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
       count="$(command git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)"
@@ -92,21 +102,21 @@ function _zulu_upgrade() {
 
   cd $oldpwd
 
-  _zulu_spinner_stop
+  _zulu_revolver stop
 
   if [[ ${#to_update} -eq 0 ]]; then
-    echo "$(color green "Nothing to upgrade        ")"
+    echo "$(_zulu_color green "Nothing to upgrade        ")"
     return 0
   fi
 
   if [[ -n $check ]]; then
-    echo "$(color green 'Package upgrades available') Run zulu upgrade to upgrade"
+    echo "$(_zulu_color green 'Package upgrades available') Run zulu upgrade to upgrade"
     return 0
   fi
 
-  echo $(color yellow 'The following packages will be upgraded')
+  echo $(_zulu_color yellow 'The following packages will be upgraded')
   echo "$to_update[@]"
-  echo $(color yellow bold 'Continue (y|N)')
+  echo $(_zulu_color yellow bold 'Continue (y|N)')
   read -rs -k 1 input
 
   case $input in
@@ -119,22 +129,21 @@ function _zulu_upgrade() {
         zulu unlink $package
 
         # Upgrade the package
-        _zulu_spinner_start "Upgrading $package..."
+        _zulu_revolver start "Upgrading $package..."
         out=$(_zulu_upgrade_package "$package" 2>&1)
+        _zulu_revolver stop
 
         if [ $? -eq 0 ]; then
-          _zulu_spinner_stop
-          echo "$(color green '✔') Finished upgrading $package        "
+          echo "$(_zulu_color green '✔') Finished upgrading $package        "
           zulu link $package
         else
-          _zulu_spinner_stop
-          echo "$(color red '✘') Error upgrading $package        "
+          echo "$(_zulu_color red '✘') Error upgrading $package        "
           echo "$out"
         fi
       done
       ;;
     *)
-      echo $(color red 'Upgrade cancelled')
+      echo $(_zulu_color red 'Upgrade cancelled')
       return 1
       ;;
   esac

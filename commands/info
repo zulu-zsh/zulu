@@ -4,7 +4,7 @@
 # Output usage information
 ###
 function _zulu_info_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu info <package>"
 }
 
@@ -23,9 +23,9 @@ function _zulu_info_package() {
   packagetype=$(jsonval $json 'type')
 
   installed=""
-  [[ -d "$base/packages/$package" ]] && installed="$(color green '✔ Installed')"
+  [[ -d "$base/packages/$package" ]] && installed="$(_zulu_color green '✔ Installed')"
 
-  echo "$(color white underline "$name") $installed"
+  echo "$(_zulu_color white underline "$name") $installed"
   echo $description
   echo
 
@@ -52,10 +52,10 @@ function _zulu_info() {
   # Set up some variables
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="${base}/index"
+  index="${base}/index/packages"
 
   if [[ ! -f "$index/$package" ]]; then
-    echo $(color red "Package '$package' is not in the index")
+    echo $(_zulu_color red "Package '$package' is not in the index")
     return 1
   fi
 

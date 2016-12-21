@@ -4,7 +4,7 @@
 # Output usage information
 ###
 function _zulu_theme_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu theme <theme_name>"
 }
 

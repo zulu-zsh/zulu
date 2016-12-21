@@ -4,10 +4,10 @@
 # Print usage information
 ###
 function _zulu_self-update_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu self-update [options]"
   echo
-  echo $(color yellow "Options:")
+  echo $(_zulu_color yellow "Options:")
   echo "  -c, --check       Check if an update is available"
   echo "  -h, --help        Output this help text and exit"
 }
@@ -36,13 +36,13 @@ function _zulu_self-update_check_for_update() {
     down="$count[(w)2]"
 
     if [[ $down > 0 ]]; then
-      echo "$(color green "New zulu version available") Run zulu self-update to upgrade"
+      echo "$(_zulu_color green "New zulu version available") Run zulu self-update to upgrade"
       cd $old
       return
     fi
   fi
 
-  echo "$(color green "No update available        ")"
+  echo "$(_zulu_color green "No update available        ")"
   cd $old
   return 1
 }
@@ -66,24 +66,22 @@ function _zulu_self-update() {
   fi
 
   if [[ -n $check ]]; then
-    _zulu_spinner_start "Checking for updates..."
+    _zulu_revolver start "Checking for updates..."
     _zulu_self-update_check_for_update
-    _zulu_spinner_stop
+    _zulu_revolver stop
     return
   fi
 
-  _zulu_spinner_start "Checking for updates..."
+  _zulu_revolver start "Checking for updates..."
   if _zulu_self-update_check_for_update > /dev/null; then
-    _zulu_spinner_stop
-    _zulu_spinner_start "Updating zulu core..."
+    _zulu_revolver update "Updating zulu core..."
     out=$(_zulu_self-update_core 2>&1)
+    _zulu_revolver stop
 
     if [ $? -eq 0 ]; then
-      _zulu_spinner_stop
-      echo "$(color green '✔') Zulu core updated        "
+      echo "$(_zulu_color green '✔') Zulu core updated        "
     else
-      _zulu_spinner_stop
-      echo "$(color red '✘') Error updating zulu core        "
+      echo "$(_zulu_color red '✘') Error updating zulu core        "
       echo "$out"
 
       return 1
@@ -94,6 +92,6 @@ function _zulu_self-update() {
     return
   fi
 
-  _zulu_spinner_stop
-  echo "$(color green "No update available        ")"
+  _zulu_revolver stop
+  echo "$(_zulu_color green "No update available        ")"
 }

@@ -4,10 +4,10 @@
 # Output usage information
 ###
 function _zulu_path_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu path <context> <dir>"
   echo
-  echo $(color yellow "Context:")
+  echo $(_zulu_color yellow "Context:")
   echo "  add <dir>   Add a directory to \$path"
   echo "  rm <dir>    Remove a directory from \$path"
   echo "  reset       Replace the current session \$path with the stored dirs"
@@ -51,9 +51,9 @@ function _zulu_path_add() {
       # Add the directory to the array of items
       items+="$dir"
 
-      echo "$(color green '✔') $dir added to \$path"
+      echo "$(_zulu_color green '✔') $dir added to \$path"
     else
-      echo "$(color red '✘') $dir cannot be found"
+      echo "$(_zulu_color red '✘') $dir cannot be found"
     fi
 
   done
@@ -94,7 +94,7 @@ function _zulu_path_rm() {
       fi
     done
 
-    echo "$(color green '✔') $dir removed from \$path"
+    echo "$(_zulu_color green '✔') $dir removed from \$path"
   done
 
   # Store the new paths in the pathfile, and override $path
