@@ -16,19 +16,13 @@ function _zulu_upgrade_usage() {
 # Upgrade a package
 ###
 function _zulu_upgrade_package() {
-  local package json repo dir post_install file link oldpwd=$(pwd)
+  local package json repo dir file link oldpwd=$(pwd)
 
   package="$1"
 
   # Pull from the repository
   cd "$base/packages/$package"
   git rebase origin && git submodule update --init --recursive
-
-  json=$(cat "$index/$package")
-  post_install=$(jsonval $json 'postinstall')
-  if [[ -n $post_install ]]; then
-    "$post_install"
-  fi
 
   cd $oldpwd
 }

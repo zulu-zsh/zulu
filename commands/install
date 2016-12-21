@@ -12,7 +12,7 @@ function _zulu_install_usage() {
 # Install a package
 ###
 function _zulu_install_package() {
-  local package json repo dir file link packagetype post_install
+  local package json repo dir file link packagetype
   local -a dependencies
 
   package="$1"
@@ -33,14 +33,6 @@ function _zulu_install_package() {
   # Clone the repository
   cd "$base/packages"
   git clone --recursive $repo $package
-
-  # Run any post install scripts
-  cd "$base/packages/$package"
-  post_install=$(jsonval $json 'postinstall')
-  echo "Post install: $post_install"
-  if [[ -n $post_install ]]; then
-    eval "$post_install"
-  fi
 
   packagefile="$config/packages"
   in_packagefile=$(cat $packagefile | grep -e '^'${package}'$')
