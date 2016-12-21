@@ -24,9 +24,9 @@
 # If the revolver command is not installed, create a simple polyfill
 # function to prevent COMMAND_NOT_FOUND errors
 ###
-$(type color 2>&1 > /dev/null)
-if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/color"} ]]; then
-  function color() {
+(( $+functions[_zulu_color] )) || function _zulu_color {
+  $(type color 2>&1 > /dev/null)
+  if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/color"} ]]; then
     local color=$1 style=$2 b=0
 
     shift
@@ -49,14 +49,23 @@ if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/color"} ]]; then
       cyan|c)     echo "\033[${b};36m${@}\033[0;m" ;;
       white|w)    echo "\033[${b};37m${@}\033[0;m" ;;
     esac
-  }
-fi
+
+    return
+  fi
+
+  color "$@"
+}
 
 ###
 # If the revolver command is not installed, create an empty
 # function to prevent COMMAND_NOT_FOUND errors
 ###
-$(type revolver 2>&1 > /dev/null)
-if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/revolver"} ]]; then
-  function revolver() {echo ${(@)@:2}}
-fi
+(( $+functions[_zulu_revolver] )) || function _zulu_revolver {
+  $(type revolver 2>&1 > /dev/null)
+  if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/revolver"} ]]; then
+    echo ${(@)@:2}
+    return
+  fi
+
+  revolver "$@"
+}

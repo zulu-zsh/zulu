@@ -4,10 +4,10 @@
 # Output usage information
 ###
 function _zulu_alias_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu alias <context> [args]"
   echo
-  echo $(color yellow "Contexts:")
+  echo $(_zulu_color yellow "Contexts:")
   echo "  add <alias> <command>   Add an alias"
   echo "  rm <alias>              Remove an alias"
   echo "  load                    Load all aliases from alias file"
@@ -24,7 +24,7 @@ _zulu_alias_add() {
 
   existing=$(cat $aliasfile | grep "alias $alias=")
   if [[ $existing != "" ]]; then
-    echo $(color red "Alias '$alias' already exists")
+    echo $(_zulu_color red "Alias '$alias' already exists")
     return 1
   fi
 
@@ -44,7 +44,7 @@ _zulu_alias_rm() {
 
   existing=$(cat $aliasfile | grep "alias $alias=")
   if [[ $existing = "" ]]; then
-    echo $(color red "Alias '$alias' does not exist")
+    echo $(_zulu_color red "Alias '$alias' does not exist")
     return 1
   fi
 

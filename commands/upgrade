@@ -4,10 +4,10 @@
 # Output usage information
 ###
 function _zulu_upgrade_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu upgrade [<packages...>]"
   echo
-  echo $(color yellow "Options:")
+  echo $(_zulu_color yellow "Options:")
   echo "  -c, --check       Check if upgrades are available"
   echo "  -h, --help        Output this help text and exit"
 }
@@ -56,7 +56,7 @@ function _zulu_upgrade() {
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="${base}/index/packages"
 
-  revolver start "Checking for updates..."
+  _zulu_revolver start "Checking for updates..."
 
   packages=($@)
   packagefile="$config/packages"
@@ -77,13 +77,15 @@ function _zulu_upgrade() {
   for package in "$packages[@]"; do
     cd "$base/packages/$package"
 
-    git fetch origin 2>&1 >/dev/null &!
+    {
+      git fetch origin 2>&1 >/dev/null
+    } &!
     _pids[${package}]=$!
   done
 
   # Do a second loop, to wait until all subprocesses have finished
   for package pid in "${(@kv)_pids}"; do
-    while kill -0 $pid >/dev/null 2>&1; do
+    while kill -0 $pid 2>&1 >/dev/null; do
     done
   done
 
@@ -106,21 +108,21 @@ function _zulu_upgrade() {
 
   cd $oldpwd
 
-  revolver stop
+  _zulu_revolver stop
 
   if [[ ${#to_update} -eq 0 ]]; then
-    echo "$(color green "Nothing to upgrade        ")"
+    echo "$(_zulu_color green "Nothing to upgrade        ")"
     return 0
   fi
 
   if [[ -n $check ]]; then
-    echo "$(color green 'Package upgrades available') Run zulu upgrade to upgrade"
+    echo "$(_zulu_color green 'Package upgrades available') Run zulu upgrade to upgrade"
     return 0
   fi
 
-  echo $(color yellow 'The following packages will be upgraded')
+  echo $(_zulu_color yellow 'The following packages will be upgraded')
   echo "$to_update[@]"
-  echo $(color yellow bold 'Continue (y|N)')
+  echo $(_zulu_color yellow bold 'Continue (y|N)')
   read -rs -k 1 input
 
   case $input in
@@ -133,21 +135,21 @@ function _zulu_upgrade() {
         zulu unlink $package
 
         # Upgrade the package
-        revolver start "Upgrading $package..."
+        _zulu_revolver start "Upgrading $package..."
         out=$(_zulu_upgrade_package "$package" 2>&1)
-        revolver stop
+        _zulu_revolver stop
 
         if [ $? -eq 0 ]; then
-          echo "$(color green '✔') Finished upgrading $package        "
+          echo "$(_zulu_color green '✔') Finished upgrading $package        "
           zulu link $package
         else
-          echo "$(color red '✘') Error upgrading $package        "
+          echo "$(_zulu_color red '✘') Error upgrading $package        "
           echo "$out"
         fi
       done
       ;;
     *)
-      echo $(color red 'Upgrade cancelled')
+      echo $(_zulu_color red 'Upgrade cancelled')
       return 1
       ;;
   esac

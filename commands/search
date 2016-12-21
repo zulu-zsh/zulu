@@ -4,7 +4,7 @@
 # Output usage information
 ###
 function _zulu_search_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu search <term>"
 }
 

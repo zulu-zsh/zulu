@@ -4,10 +4,10 @@
 # Print usage information
 ###
 function _zulu_list_usage() {
-  echo $(color yellow "Usage:")
+  echo $(_zulu_color yellow "Usage:")
   echo "  zulu list [options]"
   echo
-  echo $(color yellow "Options:")
+  echo $(_zulu_color yellow "Options:")
   echo "  -h, --help           Output this help text and exit"
   echo "  -a, --all            List all packages in the index"
   echo "  -i, --installed      List only installed packages (default)"
@@ -30,7 +30,7 @@ function _zulu_list_all() {
       lim=30
     else
       if [[ -d "$base/packages/$package" ]]; then
-        name="$(color green '✔') $package"
+        name="$(_zulu_color green '✔') $package"
         lim=36
       else
         name="  $package"
