@@ -78,14 +78,14 @@ function _zulu_upgrade() {
     cd "$base/packages/$package"
 
     {
-      git fetch origin 2>&1 >/dev/null
+      git fetch origin >/dev/null 2>&1
     } &!
     _pids[${package}]=$!
   done
 
   # Do a second loop, to wait until all subprocesses have finished
   for package pid in "${(@kv)_pids}"; do
-    while kill -0 $pid 2>&1 >/dev/null; do
+    while kill -0 $pid >/dev/null 2>&1; do
     done
   done
 
