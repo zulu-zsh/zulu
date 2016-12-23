@@ -63,7 +63,6 @@
 (( $+functions[_zulu_revolver] )) || function _zulu_revolver {
   $(type revolver 2>&1 > /dev/null)
   if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/revolver"} ]]; then
-    echo ${(@)@:2}
     return
   fi
 
