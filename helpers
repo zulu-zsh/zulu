@@ -63,7 +63,11 @@
 (( $+functions[_zulu_revolver] )) || function _zulu_revolver {
   $(type revolver 2>&1 > /dev/null)
   if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/revolver"} ]]; then
-    echo ${(@)@:2}
+    # Check for a revolver process file, and remove it if it exists.
+    # Revolver will handle the missing state and kill any orphaned process.
+    if [[ -f "${ZDOTDIR:-$HOME}/.revolver/${$}" ]]; then
+      rm "${ZDOTDIR:-$HOME}/.revolver/${$}"
+    fi
     return
   fi
 
