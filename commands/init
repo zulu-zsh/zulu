@@ -184,6 +184,9 @@ function _zulu_init_setup_history() {
     # Source module files.
     [[ -f "$base/init/zsh-history-substring-search.zsh" ]] || return 1
 
+    zle -N history-substring-search-up
+    zle -N history-substring-search-down
+
     #
     # Search
     #
@@ -565,11 +568,13 @@ function _zulu_init() {
 
   # Set up the environment
   _zulu_init_setup_key_bindings
-  _zulu_init_setup_history
   _zulu_init_setup_completion
 
   # Load installed packages
   _zulu_load_packages
+
+  # Set up history
+  _zulu_init_setup_history
 
   # Load aliases
   zulu alias load
