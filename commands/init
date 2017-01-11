@@ -171,6 +171,17 @@ function _zulu_init_setup_history() {
   setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
   setopt HIST_VERIFY               # Do not execute immediately upon history expansion.
   setopt HIST_BEEP                 # Beep when accessing non-existent history.
+}
+
+function _zulu_init_setup_history-substring-search() {
+
+  [[ -f "$base/init/zsh-history-substring-search.zsh" ]] || return 1
+
+  if [[ -L "$base/init/zsh-history-substring-search.zsh" ]]; then
+    source $(readlink "$base/init/zsh-history-substring-search.zsh")
+  else
+    source "$base/init/zsh-history-substring-search.zsh"
+  fi
 
   if (( $+widgets[history-substring-search-up] )); then
     #
@@ -180,9 +191,6 @@ function _zulu_init_setup_history() {
     #   Suraj N. Kurapati <sunaku@gmail.com>
     #   Sorin Ionescu <sorin.ionescu@gmail.com>
     #
-
-    # Source module files.
-    [[ -f "$base/init/zsh-history-substring-search.zsh" ]] || return 1
 
     #
     # Search
@@ -570,6 +578,8 @@ function _zulu_init() {
 
   # Load installed packages
   _zulu_load_packages
+
+  _zulu_init_setup_history-substring-search
 
   # Load aliases
   zulu alias load
