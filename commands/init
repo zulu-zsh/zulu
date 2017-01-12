@@ -586,5 +586,5 @@ function _zulu_init() {
     prompt $theme
   fi
 
-  #_zulu_check_for_update &!
+  _zulu_check_for_update
 }
