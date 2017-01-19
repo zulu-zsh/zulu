@@ -236,6 +236,11 @@ _zulu() {
             '(-d --dump)'{-d,--dump}'[dump installed packages to packagefile]' \
             '(-x --force)'{-x,--force}'[force writing of packages to an existing file]'
           ;;
+        (init)
+          _arguments -A \
+            '(-h --help)'{-h,--help}'[show help text and exit]' \
+            '(-c --check-for-update)'{-c,--check-for-update}'[check if updates are available]'
+          ;;
       esac
       ;;
   esac

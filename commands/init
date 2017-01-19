@@ -1,5 +1,14 @@
 #!/usr/bin/env zsh
 
+function _zulu_init_usage() {
+  echo $(_zulu_color yellow "Usage:")
+  echo "  zulu init [options]"
+  echo
+  echo $(_zulu_color yellow "Options:")
+  echo "  -h, --help               Output this help text and exit"
+  echo "  -c, --check-for-update   Check for updates on startup"
+}
+
 function _zulu_init_setup_completion() {
   #
   # Sets completion options.
@@ -552,9 +561,20 @@ function _zulu_load_packages() {
 function _zulu_init() {
   local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   local config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+  local help check_for_update
 
   # Ensure path arrays do not contain duplicates.
   typeset -gU cdpath fpath mailpath path
+
+  # Parse CLI options
+  zparseopts -D \
+    h=help -help=help \
+    c=check_for_update -check-for-update=check_for_update
+
+  if [[ -n $help ]]; then
+    _zulu_init_usage
+    return
+  fi
 
   # Load zulu internal commands
   _zulu_load_commands
@@ -586,5 +606,5 @@ function _zulu_init() {
     prompt $theme
   fi
 
-  _zulu_check_for_update
+  [[ -n $check_for_update ]] && _zulu_check_for_update
 }
