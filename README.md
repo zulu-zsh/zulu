@@ -168,7 +168,10 @@ zulu alias
 Zulu can switch themes for you, and will load the chosen theme on next login.
 
 ```sh
+# Install and select a theme
 zulu install filthy
+
+# Select an installed theme
 zulu theme filthy
 ```
 
