@@ -18,6 +18,7 @@ _zulu_commands=(
   'theme:Change the theme'
   'init:Reload zulu configuration'
   'alias:Functions for adding/removing aliases'
+  'func:Functions for adding/removing functions'
   'path:Functions for adding/removing directories from \$path'
   'cdpath:Functions for adding/removing directories from \$cdpath'
   'fpath:Functions for adding/removing directories from \$fpath'
@@ -57,6 +58,16 @@ _zulu_alias_commands=(
   'add:Add a new alias'
   'rm:Remove an existing alias'
   'load:Reload all aliases'
+)
+
+###
+# Commands in the func context
+###
+_zulu_func_commands=(
+  'add:Add a new function'
+  'edit:Edit an existing function'
+  'rm:Remove an existing function'
+  'load:Reload all functions'
 )
 
 ###
@@ -169,6 +180,10 @@ _zulu() {
           _arguments \
             '1: :_zulu_alias_cmds'
           ;;
+        (func)
+          _arguments \
+            '1: :_zulu_func_cmds'
+          ;;
         (fpath)
           _arguments \
             '1: :_zulu_fpath_cmds'
@@ -278,6 +293,10 @@ _zulu() {
 
 (( $+functions[_zulu_alias_cmds] )) || _zulu_alias_cmds() {
   _describe -t commands 'commands' _zulu_alias_commands "$@"
+}
+
+(( $+functions[_zulu_func_cmds] )) || _zulu_func_cmds() {
+  _describe -t commands 'commands' _zulu_func_commands "$@"
 }
 
 (( $+functions[_zulu_cmds] )) || _zulu_cmds() {

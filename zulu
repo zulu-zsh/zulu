@@ -22,6 +22,7 @@ function _zulu_usage() {
   echo "  info                  Show information for a package"
   echo "  search                Search the package index"
   echo "  alias <args>          Functions for adding/removing aliases"
+  echo "  func <args>           Functions for adding/removing functions"
   echo "  path <args>           Functions for adding/removing dirs from \$PATH"
   echo "  fpath <args>          Functions for adding/removing dirs from \$fpath"
   echo "  cdpath <args>         Functions for adding/removing dirs from \$cdpath"
