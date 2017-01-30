@@ -596,9 +596,10 @@ function _zulu_init() {
   # Set up history
   _zulu_init_setup_history
 
-  # Load aliases and functions
+  # Load aliases, functions and environment variables
   zulu alias load
   zulu func load
+  zulu var load
 
   # Autoload zsh theme
   if [[ -f "$config/theme" ]]; then

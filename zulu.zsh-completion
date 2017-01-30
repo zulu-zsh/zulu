@@ -19,6 +19,7 @@ _zulu_commands=(
   'init:Reload zulu configuration'
   'alias:Functions for adding/removing aliases'
   'func:Functions for adding/removing functions'
+  'var:Functions for adding/removing environment variables'
   'path:Functions for adding/removing directories from \$path'
   'cdpath:Functions for adding/removing directories from \$cdpath'
   'fpath:Functions for adding/removing directories from \$fpath'
@@ -68,6 +69,15 @@ _zulu_func_commands=(
   'edit:Edit an existing function'
   'rm:Remove an existing function'
   'load:Reload all functions'
+)
+
+###
+# Commands in the var context
+###
+_zulu_var_commands=(
+  'add:Add a new environment variable'
+  'rm:Remove an existing environment variable'
+  'load:Reload all environment variables'
 )
 
 ###
@@ -184,6 +194,10 @@ _zulu() {
           _arguments \
             '1: :_zulu_func_cmds'
           ;;
+        (var)
+          _arguments \
+            '1: :_zulu_var_cmds'
+          ;;
         (fpath)
           _arguments \
             '1: :_zulu_fpath_cmds'
@@ -297,6 +311,10 @@ _zulu() {
 
 (( $+functions[_zulu_func_cmds] )) || _zulu_func_cmds() {
   _describe -t commands 'commands' _zulu_func_commands "$@"
+}
+
+(( $+functions[_zulu_var_cmds] )) || _zulu_var_cmds() {
+  _describe -t commands 'commands' _zulu_var_commands "$@"
 }
 
 (( $+functions[_zulu_cmds] )) || _zulu_cmds() {
