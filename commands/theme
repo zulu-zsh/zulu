@@ -32,5 +32,14 @@ _zulu_theme() {
   # Ensure promptinit is loaded
   autoload -U promptinit && promptinit
 
-  prompt $theme
+  # Test if theme prompt function exists.
+  # If not, print a pretty warn message.
+  if which prompt_${theme}_setup >/dev/null 2>&1; then
+    prompt ${theme}
+    return
+  fi
+
+  echo $(color red "Failed to load theme '${theme}'")
+  echo "Please ensure your theme is in \$fpath and is called prompt_${theme}_setup"
+  return 1
 }
