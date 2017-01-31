@@ -165,6 +165,21 @@ zulu alias rm l
 zulu alias
 ```
 
+### Managing environment variables
+
+Zulu can also manage your environment variables. Using the `zulu var` commands will add or remove the variable, loading it into your existing session and ensuring it is sourced at the next initialisation in a single command.
+
+```sh
+# Add an environment variable
+zulu var add MY_AWESOME_VAR 'unicorns'
+
+# Remove an environment variable
+zulu var rm MY_AWESOME_VAR
+
+# List environment variables
+zulu var
+```
+
 ### Managing functions
 
 Zulu can manage user functions. Using the `zulu func` commands will allow you to
