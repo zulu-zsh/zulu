@@ -42,14 +42,17 @@ function _zulu_unlink() {
 
   # Loop through the 'bin' and 'share' objects
   dirs=('bin' 'init' 'share')
+  local oldPWD=$PWD
   for dir in $dirs[@]; do
-    # Convert the bin/share object into an associative array
-    typeset -A files; files=($(echo $(jsonval $json $dir) | tr "," "\n" | tr ":" " "))
-
-    # Loop through each of the values in the array, the key is a file within
-    # the package, the value is the name of a symlink to create in the directory
-    for file link ("${(@kv)files}") [[ -L "$base/$dir/$link" ]] && rm "$base/$dir/$link"
+    cd "$base/$dir"
+    # Unlink any file in $dir which points to the package's source
+    ls -la "$base/$dir" | \
+      grep "$base/packages/$package/" | \
+      awk '{print $9}' | \
+      xargs rm
   done
+
+  cd $oldPWD
 
   _zulu_revolver stop
   echo "$(_zulu_color green '✔') Finished unlinking $package        "
