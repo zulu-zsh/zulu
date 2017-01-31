@@ -47,7 +47,7 @@ mkdir -p ${ZULU_DIR}/{bin,share,init,packages}
 touch ${ZULU_DIR}/{bin,share,init,packages}/.gitkeep
 
 # Create config directory
-mkdir -p ${ZULU_CONFIG_DIR}
+mkdir -p "${ZULU_CONFIG_DIR}/functions"
 
 # Clone the core and index repositories
 git clone https://github.com/zulu-zsh/zulu ${ZULU_DIR}/core
@@ -150,7 +150,9 @@ zulu path
 
 ### Managing aliases
 
-Zulu can also manage your aliases.
+Zulu can also manage your aliases. Using the `zulu alias` commands will add or
+remove the alias, loading it into your existing session and ensuring it is
+sourced at the next initialisation in a single command.
 
 ```sh
 # Add an alias
@@ -163,12 +165,51 @@ zulu alias rm l
 zulu alias
 ```
 
+### Managing environment variables
+
+Zulu can also manage your environment variables. Using the `zulu var` commands will add or remove the variable, loading it into your existing session and ensuring it is sourced at the next initialisation in a single command.
+
+```sh
+# Add an environment variable
+zulu var add MY_AWESOME_VAR 'unicorns'
+
+# Remove an environment variable
+zulu var rm MY_AWESOME_VAR
+
+# List environment variables
+zulu var
+```
+
+### Managing functions
+
+Zulu can manage user functions. Using the `zulu func` commands will allow you to
+add new functions, creating some boilerplate and opening the resulting file in
+your `$EDITOR` for you to add the function body. When you save, the function is
+immediately sourced, and will be sourced in every future session automatically.
+
+```sh
+# Add a function
+zulu func add myawesomefunction
+
+# Edit a function
+zulu func edit myawesomefunction
+
+# Remove a function
+zulu func rm myawesomefunction
+
+# List functions
+zulu func
+```
+
 ### Choosing a theme
 
 Zulu can switch themes for you, and will load the chosen theme on next login.
 
 ```sh
+# Install and select a theme
 zulu install filthy
+
+# Select an installed theme
 zulu theme filthy
 ```
 
