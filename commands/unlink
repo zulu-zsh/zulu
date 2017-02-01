@@ -43,13 +43,24 @@ function _zulu_unlink() {
   # Loop through the 'bin' and 'share' objects
   dirs=('bin' 'init' 'share')
   local oldPWD=$PWD
+  local flags
+
+  case $OSTYPE in
+    darwin* )
+      flags=''
+      ;;
+    linux* )
+      flags='-r'
+      ;;
+  esac
+
   for dir in $dirs[@]; do
     cd "$base/$dir"
     # Unlink any file in $dir which points to the package's source
-    ls -la "$base/$dir" | \
+    ls -la | \
       grep "$base/packages/$package/" | \
       awk '{print $9}' | \
-      xargs rm
+      xargs $flags rm
   done
 
   cd $oldPWD
