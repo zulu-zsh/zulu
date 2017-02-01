@@ -46,9 +46,12 @@ function _zulu_link() {
     # Convert the bin/share object into an associative array
     typeset -A files; files=($(echo $(jsonval $json $dir) | tr "," "\n" | tr ":" " "))
 
+    # Continue on to the next directory if no files exist
+    [[ ${#files} -eq 0 ]] && continue
+
     # Loop through each of the values in the array, the key is a file within
     # the package, the value is the name of a symlink to create in the directory
-    for file link ("${(@kv)files}") ln -s "$root/$file" "$base/$dir/$link"
+    for file link (${(@kv)files}) ln -s $root/${~file} $base/$dir/$link
 
     # Make sure that commands to be included in bin are executable
     if [[ "$dir" = "bin" ]]; then
