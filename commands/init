@@ -5,8 +5,8 @@ function _zulu_init_usage() {
   echo "  zulu init [options]"
   echo
   echo $(_zulu_color yellow "Options:")
-  echo "  -h, --help               Output this help text and exit"
   echo "  -c, --check-for-update   Check for updates on startup"
+  echo "  -h, --help               Output this help text and exit"
 }
 
 function _zulu_init_setup_completion() {

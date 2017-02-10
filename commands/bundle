@@ -8,10 +8,10 @@ function _zulu_bundle_usage() {
   echo "  zulu bundle [options]"
   echo
   echo $(_zulu_color yellow "Options:")
-  echo "  -h, --help           Output this help text and exit"
-  echo "  -f, --file           Specify a packagefile"
   echo "  -c, --cleanup        Uninstall packages not in packagefile"
+  echo "  -f, --file           Specify a packagefile"
   echo "  -d, --dump           Dump installed packages to packagefile"
+  echo "  -h, --help           Output this help text and exit"
   echo "  -x, --force          Force writing of packages to an existing file"
 }
 

@@ -9,8 +9,8 @@ function _zulu_var_usage() {
   echo
   echo $(_zulu_color yellow "Contexts:")
   echo "  add <var> <command>   Add an environment variable"
-  echo "  rm <var>              Remove an environment variable"
   echo "  load                  Load all environment variables from env file"
+  echo "  rm <var>              Remove an environment variable"
 }
 
 ###

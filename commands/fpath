@@ -9,8 +9,8 @@ function _zulu_fpath_usage() {
   echo
   echo $(_zulu_color yellow "Context:")
   echo "  add <dir>   Add a directory to \$fpath"
-  echo "  rm <dir>    Remove a directory from \$fpath"
   echo "  reset       Replace the current session \$fpath with the stored dirs"
+  echo "  rm <dir>    Remove a directory from \$fpath"
 }
 
 ###

@@ -8,11 +8,11 @@ function _zulu_list_usage() {
   echo "  zulu list [options]"
   echo
   echo $(_zulu_color yellow "Options:")
-  echo "  -h, --help           Output this help text and exit"
   echo "  -a, --all            List all packages in the index"
+  echo "  -d, --describe       Include package description in output"
+  echo "  -h, --help           Output this help text and exit"
   echo "  -i, --installed      List only installed packages (default)"
   echo "  -n, --not-installed  List non-installed packages"
-  echo "  -d, --describe       Include package description in output"
   echo "  -s, --simple         Hide the 'package installed' indicator"
 }
 

@@ -9,8 +9,8 @@ function _zulu_alias_usage() {
   echo
   echo $(_zulu_color yellow "Contexts:")
   echo "  add <alias> <command>   Add an alias"
-  echo "  rm <alias>              Remove an alias"
   echo "  load                    Load all aliases from alias file"
+  echo "  rm <alias>              Remove an alias"
 }
 
 ###
