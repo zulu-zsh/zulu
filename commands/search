@@ -19,7 +19,7 @@ function _zulu_search() {
 
   # Output help and return if requested
   if [[ -n $help ]]; then
-    _zulu_install_usage
+    _zulu_search_usage
     return
   fi
 
