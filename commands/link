@@ -37,6 +37,9 @@ function _zulu_link() {
 
   _zulu_revolver start "Linking $package..."
 
+  # Reset $IFS, just in case
+  IFS=$' '
+
   # Get the JSON from the index
   json=$(cat "$index/$package")
 
