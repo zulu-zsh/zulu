@@ -37,6 +37,10 @@ function _zulu_link() {
 
   _zulu_revolver start "Linking $package..."
 
+  # Reset $IFS, just in case
+  local oldIFS=$IFS
+  IFS=$' '
+
   # Get the JSON from the index
   json=$(cat "$index/$package")
 
@@ -71,4 +75,6 @@ function _zulu_link() {
 
   _zulu_revolver stop
   echo "$(_zulu_color green '✔') Finished linking $package        "
+
+  IFS=$oldIFS
 }
