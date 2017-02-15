@@ -41,18 +41,20 @@ function _zulu_link() {
 
   _zulu_revolver start "Linking $package..."
 
-  # Reset $IFS, just in case
-  local oldIFS=$IFS
-  IFS=$' '
-
   # Get the JSON from the index
   json=$(cat "$index/$package")
 
   # Loop through the 'bin' and 'share' objects
   dirs=('bin' 'init' 'share')
   for dir in $dirs[@]; do
+    # Reset $IFS, just in case
+    local oldIFS=$IFS
+    IFS=$' '
+
     # Convert the bin/share object into an associative array
     typeset -A files; files=($(echo $(jsonval $json $dir) | tr "," "\n" | tr ":" " "))
+
+    IFS=$oldIFS
 
     # Continue on to the next directory if no files exist
     [[ ${#files} -eq 0 ]] && continue
@@ -81,6 +83,4 @@ function _zulu_link() {
 
   _zulu_revolver stop
   echo "$(_zulu_color green '✔') Finished linking $package        "
-
-  IFS=$oldIFS
 }
