@@ -130,7 +130,7 @@ function _zulu_install() {
     if [ $? -eq 0 ]; then
       local -a link_flags; link_flags=()
 
-      if [[ $no_autoselect_themes ]]; then
+      if [[ -n $no_autoselect_themes ]]; then
         link_flags=($link_flags '--no-autoselect-themes')
       fi
 
