@@ -179,6 +179,11 @@ _zulu() {
     (args)
       case "$words[1]" in
         (install)
+          _arguments -A \
+            '(-h --help)'{-h,--help}'[show help text and exit]' \
+            '--ignore-dependencies[Don'\''t automatically install dependencies]' \
+            '--no-autoselect-themes[Don'\''t autoselect themes after installing]'
+
           _arguments \
             '*: :_zulu_not_installed_packages'
           ;;
@@ -231,7 +236,15 @@ _zulu() {
               ;;
           esac
           ;;
-        (uninstall|link|unlink)
+        (link)
+          _arguments -A \
+            '(-h --help)'{-h,--help}'[show help text and exit]' \
+            '--no-autoselect-themes[Don'\''t autoselect themes after installing]'
+
+          _arguments \
+            '*: :_zulu_installed_packages'
+          ;;
+        (uninstall|unlink)
           _arguments \
             '*: :_zulu_installed_packages'
           ;;
