@@ -6,16 +6,20 @@
 function _zulu_link_usage() {
   echo $(_zulu_color yellow "Usage:")
   echo "  zulu link <package>"
+  echo
+  echo $(_zulu_color yellow "Options:")
+  echo "      --no-autoselect-themes      Don't autoselect themes after installing"
 }
 
 ###
 # The zulu link function
 ###
 function _zulu_link() {
-  local help package json dir file link base index
+  local help package json dir file link base index no_autoselect_themes
   local -a dirs
 
-  zparseopts -D h=help -help=help
+  zparseopts -D h=help -help=help \
+    -no-autoselect-themes=no_autoselect_themes
 
   if [[ -n $help ]]; then
     _zulu_link_usage
@@ -69,8 +73,10 @@ function _zulu_link() {
   done
 
   package_type=$(jsonval $json 'type')
-  if [[ $package_type = 'theme' ]]; then
-    zulu theme $package
+  if [[ -z $no_autoselect_themes ]]; then
+    if [[ $package_type = 'theme' ]]; then
+      zulu theme $package
+    fi
   fi
 
   _zulu_revolver stop
