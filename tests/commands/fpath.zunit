@@ -8,15 +8,15 @@
 }
 
 @test 'Tests "zulu fpath reset" reloads from fpathfile' {
-  assert "$PWD" not_in "${(@f)fpath}"
+  assert "$PWD" not_in "$fpath[@]"
 
   fpath+=$PWD
 
-  assert "$PWD" in "${(@f)fpath}"
+  assert "$PWD" in "$fpath[@]"
 
   zulu fpath reset
 
-  assert "$PWD" not_in "${(@f)fpath}"
+  assert "$PWD" not_in "$fpath[@]"
 }
 
 @test 'Test "zulu fpath add" allows scripts to be autoloaded' {

@@ -8,15 +8,15 @@
 }
 
 @test 'Tests "zulu path reset" reloads from pathfile' {
-  assert "$PWD" not_in "${(@f)path}"
+  assert "$PWD" not_in "${path[@]}"
 
   path+=$PWD
 
-  assert "$PWD" in "${(@f)path}"
+  assert "$PWD" in "${path[@]}"
 
   zulu path reset
 
-  assert "$PWD" not_in "${(@f)path}"
+  assert "$PWD" not_in "${path[@]}"
 }
 
 @test 'Test "zulu path add" allows scripts to be executed' {

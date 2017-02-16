@@ -8,15 +8,15 @@
 }
 
 @test 'Tests "zulu cdpath reset" reloads from cdpathfile' {
-  assert "$PWD" not_in "${(@f)cdpath}"
+  assert "$PWD" not_in "${cdpath[@]}"
 
   cdpath+=$PWD
 
-  assert "$PWD" in "${(@f)cdpath}"
+  assert "$PWD" in "${cdpath[@]}"
 
   zulu cdpath reset
 
-  assert "$PWD" not_in "${(@f)cdpath}"
+  assert "$PWD" not_in "${cdpath[@]}"
 }
 
 @test 'Test "zulu cdpath add" allows directories to be entered' {
