@@ -1,0 +1,42 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu path" returns correct contents' {
+  run zulu path
+
+  assert $state equals 0
+  assert "${output//\n/ }" same_as "$path"
+}
+
+@test 'Tests "zulu path reset" reloads from pathfile' {
+  assert "$PWD" not_in "${(@f)path}"
+
+  path+=$PWD
+
+  assert "$PWD" in "${(@f)path}"
+
+  zulu path reset
+
+  assert "$PWD" not_in "${(@f)path}"
+}
+
+@test 'Test "zulu path add" allows scripts to be executed' {
+  echo "#!/usr/bin/env zsh
+
+echo 'It worked'" > tests/_support/a_test_script
+  chmod u+x tests/_support/a_test_script
+
+  run a_test_script
+
+  assert $state equals 127
+  assert "$output" matches 'run:[0-9]+: command not found: a_test_script'
+
+  zulu path add tests/_support
+
+  run a_test_script
+
+  assert $state equals 0
+  assert "$output" same_as 'It worked'
+
+  zulu path rm tests/_support
+  rm tests/_support/a_test_script
+}

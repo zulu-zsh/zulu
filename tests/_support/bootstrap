@@ -1,0 +1,36 @@
+#!/usr/bin/env zsh
+
+# Set Zulu directories
+export ZULU_DIR="$PWD/tests/_support/.zulu"
+export ZULU_CONFIG_DIR="$PWD/tests/_support/.config/zulu"
+export ZULU_INSTALL_SCRIPT="$PWD/tests/_support/zulu-install.zsh"
+
+# We're going to create a fresh install of Zulu in tests/_support so
+# that the environment is fully configured, and then remove the core,
+# replacing it with a symlink to this repository
+
+# Check if Zulu is already installed in the support directory
+if [[ ! -d "$ZULU_DIR" ]]; then
+  # Check if the Zulu install script has already been downloaded
+  if [[ ! -f "$ZULU_INSTALL_SCRIPT" ]]; then
+    curl -L https://zulu.sh/install > $ZULU_INSTALL_SCRIPT
+  fi
+
+  # Source the Zulu install script
+  source "$PWD/tests/_support/zulu-install.zsh"
+fi
+
+# If the core directory is still present, remove it and
+# create a symlink to the current directory so that we
+# can test the Zulu version in this repository
+if [[ ! -L "$ZULU_DIR/core" ]]; then
+  if [[ -d "$ZULU_DIR/core" ]]; then
+    rm -rf "$ZULU_DIR/core"
+  fi
+
+  ln -s "$PWD" "$ZULU_DIR/core"
+fi
+
+# Source the embedded Zulu installation
+source "$ZULU_DIR/core/zulu"
+zulu init

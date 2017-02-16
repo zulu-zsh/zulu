@@ -1,0 +1,47 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu fpath" returns correct contents' {
+  run zulu fpath
+
+  assert $state equals 0
+  assert "${output//\n/ }" same_as "$fpath"
+}
+
+@test 'Tests "zulu fpath reset" reloads from fpathfile' {
+  assert "$PWD" not_in "${(@f)fpath}"
+
+  fpath+=$PWD
+
+  assert "$PWD" in "${(@f)fpath}"
+
+  zulu fpath reset
+
+  assert "$PWD" not_in "${(@f)fpath}"
+}
+
+@test 'Test "zulu fpath add" allows scripts to be autoloaded' {
+  echo "#!/usr/bin/env zsh
+
+  function _a_test_function() {
+    echo 'It worked'
+  }
+
+_a_test_function" > tests/_support/a_test_function
+  chmod u+x tests/_support/a_test_function
+
+  autoload -Uz a_test_function
+  run a_test_function
+
+  assert $state equals 1
+  assert "$output" matches 'run:[0-9]+: a_test_function: function definition file not found'
+
+  zulu fpath add tests/_support
+
+  run a_test_function
+
+  assert $state equals 0
+  assert "$output" same_as 'It worked'
+
+  zulu fpath rm tests/_support
+  rm tests/_support/a_test_function
+}
