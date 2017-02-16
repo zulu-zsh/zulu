@@ -38,8 +38,8 @@ function _zulu_cdpath_parse() {
 # Add a directory to $cdpath
 ###
 function _zulu_cdpath_add() {
-  local dir p paths=($(cat $pathfile))
-  local -a items
+  local dir p
+  local -a items paths; paths=($(cat $pathfile))
 
   # Check that each of the passed directories exist, and convert relative
   # paths to absolute
@@ -72,8 +72,8 @@ function _zulu_cdpath_add() {
 # Remove a directory from $cdpath
 ###
 function _zulu_cdpath_rm() {
-  local dir p paths=($(cat $pathfile))
-  local -a items
+  local dir p
+  local -a items paths; paths=($(cat $pathfile))
 
   # Check that each of the passed directories exist, and convert relative
   # paths to absolute
@@ -125,7 +125,8 @@ function _zulu_cdpath_store() {
 # Override the $cdpath variable with the current contents of the pathfile
 ###
 function _zulu_cdpath_reset() {
-  local separator out paths=($(cat $pathfile))
+  local separator out
+  local -a paths; paths=($(cat $pathfile))
 
   cdpath=()
   for p in "${paths[@]}"; do
