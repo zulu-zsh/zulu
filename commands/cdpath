@@ -128,7 +128,7 @@ function _zulu_cdpath_reset() {
   local separator out
   local -a paths; paths=($(cat $pathfile))
 
-  cdpath=()
+  typeset -gUa cdpath; cdpath=()
   for p in "${paths[@]}"; do
     cdpath+="$p"
   done
