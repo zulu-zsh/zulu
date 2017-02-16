@@ -128,7 +128,7 @@ function _zulu_path_reset() {
   local separator out
   local -a paths; paths=($(cat $pathfile))
 
-  path=()
+  typeset -gUa path; path=()
   for p in "${paths[@]}"; do
     path+="$p"
   done
