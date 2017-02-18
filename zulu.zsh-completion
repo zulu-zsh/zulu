@@ -21,6 +21,7 @@ _zulu_commands=(
   'func:Functions for adding/removing functions'
   'var:Functions for adding/removing environment variables'
   'path:Functions for adding/removing directories from \$path'
+  'manpath:Functions for adding/removing directories from \$manpath'
   'cdpath:Functions for adding/removing directories from \$cdpath'
   'fpath:Functions for adding/removing directories from \$fpath'
 )
@@ -49,6 +50,15 @@ _zulu_fpath_commands=(
 _zulu_cdpath_commands=(
   'add:Add a directory to $cdpath'
   'rm:Remove a directory from $cdpath'
+  'reset:Restore $cdpath from pathfile'
+)
+
+###
+# Commands in the manpath context
+###
+_zulu_manpath_commands=(
+  'add:Add a directory to $manpath'
+  'rm:Remove a directory from $manpath'
   'reset:Restore $cdpath from pathfile'
 )
 
@@ -236,6 +246,17 @@ _zulu() {
               ;;
           esac
           ;;
+        (manpath)
+          _arguments \
+            '1: :_zulu_manpath_cmds'
+
+          case "$words[2]" in
+            (add|rm)
+              _arguments \
+                '*:directory:_files -/'
+              ;;
+          esac
+          ;;
         (link)
           _arguments -A \
             '(-h --help)'{-h,--help}'[show help text and exit]' \
@@ -316,6 +337,10 @@ _zulu() {
 
 (( $+functions[_zulu_cdpath_cmds] )) || _zulu_cdpath_cmds() {
   _describe -t commands 'commands' _zulu_cdpath_commands "$@"
+}
+
+(( $+functions[_zulu_manpath_cmds] )) || _zulu_manpath_cmds() {
+  _describe -t commands 'commands' _zulu_manpath_commands "$@"
 }
 
 (( $+functions[_zulu_alias_cmds] )) || _zulu_alias_cmds() {
