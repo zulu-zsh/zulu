@@ -2,13 +2,26 @@ addons:
   apt:
     packages:
       - zsh
+      - ncurses-dev
+      - autoconf
+      - yodl
       - man
 dist: trusty
+matrix:
+  include:
+    - env: ZVM_VERSION='5.0.8'
+    - env: ZVM_VERSION='5.1.1'
+    - env: ZVM_VERSION='5.2'
+    - env: ZVM_VERSION='5.3.1'
 install:
-- mkdir .bin
-- curl -L https://raw.githubusercontent.com/molovo/revolver/master/revolver > .bin/revolver
-- curl -L https://raw.githubusercontent.com/molovo/color/master/color.zsh > .bin/color
-- curl -L https://raw.githubusercontent.com/molovo/zunit/master/zunit > .bin/zunit
-- chmod u+x .bin/{color,revolver,zunit}
-- export PATH="$PWD/.bin:$PATH"
+  - mkdir .bin
+  - curl -L https://raw.githubusercontent.com/molovo/revolver/master/revolver > .bin/revolver
+  - curl -L https://raw.githubusercontent.com/molovo/color/master/color.zsh > .bin/color
+  - curl -L https://raw.githubusercontent.com/molovo/zunit/master/zunit > .bin/zunit
+  - curl -L https://raw.githubusercontent.com/molovo/zvm/master/zvm > .bin/zvm
+  - curl -L https://raw.githubusercontent.com/molovo/zvm/master/zvm-shell-integration.zsh > zvm-shell-integration.zsh
+  - chmod u+x .bin/{color,revolver,zunit,zvm}
+  - export PATH="$HOME/.zvm/bin:$PWD/.bin:$PATH"
+before_script:
+  - zvm use ${ZVM_VERSION}
 script: zunit
