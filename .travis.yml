@@ -1,7 +1,8 @@
 addons:
   apt:
     packages:
-      zsh
+      - zsh
+      - man
 dist: trusty
 install:
 - mkdir .bin
