@@ -579,9 +579,11 @@ function _zulu_init() {
   # Load zulu internal commands
   _zulu_load_commands
 
-  # Populate $PATH and $fpath
+  # Populate paths
   zulu path reset
   zulu fpath reset
+  zulu cdpath reset
+  zulu manpath reset
 
   # Source helper functions
   source "$base/core/helpers"
