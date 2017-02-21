@@ -520,16 +520,29 @@ function _zulu_init_setup_key_bindings() {
 ###
 function _zulu_check_for_update() {
   local out
+  local -a commands pids
 
-  out=$(_zulu_self-update_check_for_update)
-  if [[ $? -eq 0 ]]; then
-    echo $out
-  fi
+  commands=(
+    '_zulu_self-update_check_for_update'
+    '_zulu_update_check_for_update'
+    '_zulu_upgrade --check'
+  )
+  pids=()
 
-  out=$(_zulu_update_check_for_update)
-  if [[ $? -eq 0 ]]; then
-    echo $out
-  fi
+  for command in $commands; do
+    {
+      out=$(${=command})
+      if [[ $? -eq 0 ]]; then
+        echo $out
+      fi
+    } &!
+    pids+=$!
+  done
+
+  for pid in $pids; do
+    while kill -0 $pid >/dev/null 2>&1; do
+    done
+  done
 }
 
 ###
