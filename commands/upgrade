@@ -20,11 +20,19 @@ function _zulu_upgrade_package() {
 
   package="$1"
 
+  # Don't let zvm change the ZSH version for use while we're checking
+  local old_ZVM_AUTO_USE=${ZVM_AUTO_USE}
+  unset ZVM_AUTO_USE
+
   # Pull from the repository
   cd "$base/packages/$package"
+
   git rebase origin && git submodule update --init --recursive
 
   cd $oldpwd
+
+  # Restore the ZVM_AUTO_USE setting
+  export ZVM_AUTO_USE=${old_ZVM_AUTO_USE}
 }
 
 ###
@@ -44,6 +52,10 @@ function _zulu_upgrade() {
     _zulu_upgrade_usage
     return
   fi
+
+  # Don't let zvm change the ZSH version for use while we're checking
+  local old_ZVM_AUTO_USE=${ZVM_AUTO_USE}
+  unset ZVM_AUTO_USE
 
   # Set up some variables
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
@@ -102,11 +114,14 @@ function _zulu_upgrade() {
 
   cd $oldpwd
 
+  # Restore the ZVM_AUTO_USE setting
+  export ZVM_AUTO_USE=${old_ZVM_AUTO_USE}
+
   _zulu_revolver stop
 
   if [[ ${#to_update} -eq 0 ]]; then
     echo "$(_zulu_color green "Nothing to upgrade        ")"
-    return 0
+    return 1
   fi
 
   if [[ -n $check ]]; then
