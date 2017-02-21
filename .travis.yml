@@ -25,3 +25,5 @@ install:
 before_script:
   - zvm use ${ZVM_VERSION}
 script: zunit
+notifications:
+  email: false
