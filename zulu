@@ -43,6 +43,8 @@ function _zulu_version() {
 (( $+functions[zulu] )) || function zulu() {
   local cmd base help version
 
+  autoload -Uz is-at-least
+
   # Set up some source paths
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
