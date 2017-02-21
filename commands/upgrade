@@ -77,23 +77,32 @@ function _zulu_upgrade() {
   fi
 
   oldpwd=$(pwd)
-  _pids=()
 
-  # Do a first loop, to kick off a fetch asynchronously
-  for package in "$packages[@]"; do
-    cd "$base/packages/$package"
+  # If the ZSH version we are using supports it,
+  # perform update checks asynchronously
+  if is-at-least '5.1'; then
+    _pids=()
+    # Do a first loop, to kick off a fetch asynchronously
+    for package in "$packages[@]"; do
+      cd "$base/packages/$package"
 
-    {
-      git fetch origin >/dev/null 2>&1
-    } &!
-    _pids[${package}]=$!
-  done
-
-  # Do a second loop, to wait until all subprocesses have finished
-  for package pid in "${(@kv)_pids}"; do
-    while kill -0 $pid >/dev/null 2>&1; do
+      {
+        git fetch origin >/dev/null 2>&1
+      } &!
+      _pids[${package}]=$!
     done
-  done
+
+    # Do a second loop, to wait until all subprocesses have finished
+    for package pid in "${(@kv)_pids}"; do
+      while kill -0 $pid >/dev/null 2>&1; do
+      done
+    done
+  else
+    for package in "$packages[@]"; do
+      cd "$base/packages/$package"
+      git fetch origin >/dev/null 2>&1
+    done
+  fi
 
   # Do a third loop, to check if updates are available
   i=1
