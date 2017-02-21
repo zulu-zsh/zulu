@@ -527,22 +527,34 @@ function _zulu_check_for_update() {
     '_zulu_update_check_for_update'
     '_zulu_upgrade --check'
   )
-  pids=()
 
-  for command in $commands; do
-    {
+  # If the ZSH version we are using supports it,
+  # perform update checks asynchronously
+  if is-at-least '5.1'; then
+    pids=()
+
+    for command in $commands; do
+      {
+        out=$(${=command})
+        if [[ $? -eq 0 ]]; then
+          echo $out
+        fi
+      } &!
+      pids+=$!
+    done
+
+    for pid in $pids; do
+      while kill -0 $pid >/dev/null 2>&1; do
+      done
+    done
+  else
+    for command in $commands; do
       out=$(${=command})
       if [[ $? -eq 0 ]]; then
         echo $out
       fi
-    } &!
-    pids+=$!
-  done
-
-  for pid in $pids; do
-    while kill -0 $pid >/dev/null 2>&1; do
     done
-  done
+  fi
 }
 
 ###
