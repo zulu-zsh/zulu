@@ -1,0 +1,29 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu alias add" creates a alias' {
+  run an_alias
+
+  assert $state equals 127
+  assert "$output" matches 'run:[0-9]+: command not found: an_alias'
+
+  zulu alias add an_alias 'echo "It worked"'
+
+  run an_alias
+
+  assert $state equals 0
+  assert "$output" same_as 'It worked'
+}
+
+@test 'Test "zulu alias rm" removes an alias' {
+  run an_alias
+
+  assert $state equals 0
+  assert "$output" same_as 'It worked'
+
+  zulu alias rm an_alias
+
+  run an_alias
+
+  assert $state equals 127
+  assert "$output" matches 'run:[0-9]+: command not found: an_alias'
+}

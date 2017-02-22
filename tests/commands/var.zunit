@@ -1,0 +1,29 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu var add" creates a var' {
+  run echo "$A_TEST_VAR"
+
+  assert $state equals 0
+  assert "$output" is_empty
+
+  zulu var add A_TEST_VAR 1
+
+  run echo "$A_TEST_VAR"
+
+  assert $state equals 0
+  assert "$output" same_as '1'
+}
+
+@test 'Test "zulu var rm" removes an alias' {
+  run echo "$A_TEST_VAR"
+
+  assert $state equals 0
+  assert "$output" same_as '1'
+
+  zulu var rm A_TEST_VAR
+
+  run echo "$A_TEST_VAR"
+
+  assert $state equals 0
+  assert "$output" is_empty
+}
