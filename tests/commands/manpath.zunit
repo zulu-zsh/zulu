@@ -20,6 +20,10 @@
 }
 
 @test 'Test "zulu manpath add" allows directories to be entered' {
+  if [[ $OSTYPE =~ 'darwin.*' ]]; then
+    skip 'Manpath is set at shell startup in OSX, so we cannot affect it here'
+  fi
+
   mkdir -p tests/_support/man1
   echo '.TH Testing' > tests/_support/man1/a_test_command.1
 
