@@ -24,6 +24,7 @@ install:
   - export PATH="$HOME/.zvm/bin:$PWD/.bin:$PATH"
 before_script:
   - zvm use ${ZVM_VERSION}
+  - ./build.zsh
 script: zunit
 notifications:
   email: false
