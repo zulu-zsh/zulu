@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 ###
 # Output usage information
 ###

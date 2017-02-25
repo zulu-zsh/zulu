@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 ###
 # Print usage information
 ###
@@ -64,13 +62,6 @@ function _zulu_version() {
   fi
 
   cmd="$1"
-
-  # The init command needs to be loaded itself
-  if [[ $cmd = 'init' ]]; then
-    if (( ! $+functions[_zulu_init] )); then
-      source "$base/core/commands/init"
-    fi
-  fi
 
   if [[ -z $cmd ]]; then
     echo " _____         ___"
