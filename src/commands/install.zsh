@@ -34,7 +34,7 @@ function _zulu_install_package() {
 
   # Clone the repository
   cd "$base/packages"
-  git clone --recursive $repo $package
+  git clone --recursive --depth=1 --shallow-submodules $repo $package
 
   packagefile="$config/packages"
   in_packagefile=$(cat $packagefile | grep -e '^'${package}'$')
