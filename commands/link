@@ -44,6 +44,26 @@ function _zulu_link() {
   # Get the JSON from the index
   json=$(cat "$index/$package")
 
+  # See if the package has a post_install script
+  post_install=$(jsonval $json 'post_install')
+  echo "Post install: $post_install" >&2
+  if [[ -n $post_install ]]; then
+    # Change to the package directory
+    oldPWD=$PWD
+    cd $root
+
+    # Eval the post_install script
+    output=$(eval "$post_install")
+    if [[ $? -ne 0 ]]; then
+      echo $(color red "Post install step for $package failed")
+      echo "$output"
+      cd $oldPWD
+      return 1
+    fi
+
+    cd $oldPWD
+  fi
+
   # Loop through the 'bin' and 'share' objects
   dirs=('bin' 'init' 'share')
   for dir in $dirs[@]; do
