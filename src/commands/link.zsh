@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 ###
 # Print usage information
 ###
@@ -81,17 +79,20 @@ function _zulu_link() {
 
     # Loop through each of the values in the array, the key is a file within
     # the package, the value is the name of a symlink to create in the directory
-    for file link (${(@kv)files}) ln -s $root/${~file} $base/$dir/$link
+    for file link in "${(@kv)files}"; do
+      # Create a symlink to the file, filtering out .zwc files
+      ln -s $root/${~file} $base/$dir/$link
 
-    # Make sure that commands to be included in bin are executable
-    if [[ "$dir" = "bin" ]]; then
-      for file link ("${(@kv)files}") chmod u+x "$root/$file"
-    fi
+      # Make sure that commands to be included in bin are executable
+      if [[ "$dir" = "bin" ]]; then
+        chmod u+x "$root/$file"
+      fi
 
-    # Source init scripts
-    if [[ "$dir" = "init" ]]; then
-      for file link ("${(@kv)files}") source $(readlink "$base/init/$link")
-    fi
+      # Source init scripts
+      if [[ "$dir" = "init" ]]; then
+        source $(readlink "$base/init/$link")
+      fi
+    done
   done
 
   package_type=$(jsonval $json 'type')

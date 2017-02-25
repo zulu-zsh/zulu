@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 ###
 # Print usage information
 ###
@@ -20,6 +18,7 @@ function _zulu_self-update_core() {
 
   cd $core
   git fetch origin && git rebase origin
+  ./build.zsh
   cd $old
 }
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 function _zulu_init_usage() {
   echo $(_zulu_color yellow "Usage:")
   echo "  zulu init [options]"
@@ -7,6 +5,7 @@ function _zulu_init_usage() {
   echo $(_zulu_color yellow "Options:")
   echo "  -c, --check-for-update   Check for updates on startup"
   echo "  -h, --help               Output this help text and exit"
+  echo "  -n, --no-compile         Skip compilation of scripts on startup"
 }
 
 function _zulu_init_setup_completion() {
@@ -558,20 +557,12 @@ function _zulu_check_for_update() {
 }
 
 ###
-# Load the zulu commands
-###
-function _zulu_load_commands() {
-  for cmd in $(find "$base/core/commands"); do
-    source $cmd
-  done
-}
-
-###
 # Source init scripts for installed packages
 ###
 function _zulu_load_packages() {
   # Source files in the init directory
-  for f in $(find "$base/init"); do
+  setopt EXTENDED_GLOB
+  for f in ${base}/init/**/*^(*.zwc)(#q@N); do
     if [[ -L $f ]]; then
       source $(readlink $f)
     else
@@ -586,32 +577,24 @@ function _zulu_load_packages() {
 function _zulu_init() {
   local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   local config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  local help check_for_update
-
-  # Ensure path arrays do not contain duplicates.
-  typeset -gU cdpath fpath mailpath path
+  local help check_for_update no_compile
 
   # Parse CLI options
   zparseopts -D \
     h=help -help=help \
-    c=check_for_update -check-for-update=check_for_update
+    c=check_for_update -check-for-update=check_for_update \
+    n=no_compile -no-compile=no_compile
 
   if [[ -n $help ]]; then
     _zulu_init_usage
     return
   fi
 
-  # Load zulu internal commands
-  _zulu_load_commands
-
   # Populate paths
   zulu path reset
   zulu fpath reset
   zulu cdpath reset
   zulu manpath reset
-
-  # Source helper functions
-  source "$base/core/helpers"
 
   # Set up the environment
   _zulu_init_setup_key_bindings
@@ -633,6 +616,12 @@ function _zulu_init() {
     autoload -U promptinit && promptinit
     local theme=$(cat "$config/theme")
     prompt $theme
+  fi
+
+  if [[ -z $no_compile ]]; then
+    {
+      zulu compile
+    } >/dev/null 2>&1 &!
   fi
 
   [[ -n $check_for_update ]] && _zulu_check_for_update

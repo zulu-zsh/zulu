@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 ###
 # Get the value for a key in a JSON object
 #
