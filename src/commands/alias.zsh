@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 ###
 # Output usage information
 ###
@@ -16,7 +14,7 @@ function _zulu_alias_usage() {
 ###
 # Add an alias
 ###
-_zulu_alias_add() {
+function _zulu_alias_add() {
   local existing alias cmd
 
   alias="$1"
@@ -31,13 +29,13 @@ _zulu_alias_add() {
   echo "alias $alias='$cmd'" >> $aliasfile
 
   zulu alias load
-  return
+  echo "$(_zulu_color green '✔') Alias '$alias' added"
 }
 
 ###
 # Remove an alias
 ###
-_zulu_alias_rm() {
+function _zulu_alias_rm() {
   local existing alias
 
   alias="$1"
@@ -50,14 +48,15 @@ _zulu_alias_rm() {
 
   echo "$(cat $aliasfile | grep -v "alias $alias=")" >! $aliasfile
   unalias $alias
+
   zulu alias load
-  return
+  echo "$(_zulu_color green '✔') Alias '$alias' removed"
 }
 
 ###
 # Load aliases
 ###
-_zulu_alias_load() {
+function _zulu_alias_load() {
   source $aliasfile
 }
 
