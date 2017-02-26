@@ -20,6 +20,7 @@ function _zulu_self-update_core() {
 
   cd $core
   git fetch origin && git rebase origin
+  [[ -f build.zsh ]] && ./build.zsh
   cd $old
 }
 
