@@ -135,7 +135,7 @@ function _zulu_upgrade() {
 
         if [ $? -eq 0 ]; then
           echo "$(_zulu_color green '✔') Finished upgrading $package        "
-          zulu link $package
+          zulu link --no-autoselect-themes $package
         else
           echo "$(_zulu_color red '✘') Error upgrading $package        "
           echo "$out"
