@@ -25,8 +25,6 @@ _zulu_theme() {
   config_dir=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   config="${config_dir}/theme"
 
-  echo "$theme" >! $config
-
   # Ensure promptinit is loaded
   autoload -U promptinit && promptinit
 
@@ -34,7 +32,11 @@ _zulu_theme() {
   # If not, print a pretty warn message.
   if which prompt_${theme}_setup >/dev/null 2>&1; then
     prompt ${theme}
-    return
+    if [[ $? -eq 0 ]]; then
+      echo "$theme" >! $config
+      echo "$(color green '✔') Theme set to $theme"
+      return
+    fi
   fi
 
   echo $(color red "Failed to load theme '${theme}'")
