@@ -1,0 +1,20 @@
+#!/usr/bin/env zunit
+
+@teardown {
+	# Always revert back to default theme after changing it
+	zulu theme filthy
+}
+
+@test 'Test "zulu theme" sets theme' {
+	run zulu theme adam1
+
+	assert $state equals 0
+	assert "$output" same_as "\033[0;32m✔\033[0;m Theme set to adam1"
+}
+
+@test 'Test "zulu theme" returns error for missing theme' {
+	run zulu theme notatheme
+
+	assert $state equals 1
+	assert "$output" matches '^\\\033\\[0\;31mFailed to load theme \\'\''notatheme\\'\''\\\033\\[0\;m'
+}
