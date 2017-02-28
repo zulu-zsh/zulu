@@ -6,8 +6,9 @@ function _zulu_upgrade_usage() {
   echo "  zulu upgrade [<packages...>]"
   echo
   echo $(_zulu_color yellow "Options:")
-  echo "  -c, --check       Check if upgrades are available"
-  echo "  -h, --help        Output this help text and exit"
+  echo "  -c, --check             Check if upgrades are available"
+  echo "  -h, --help              Output this help text and exit"
+  echo "  -y, --no-confirmation   Do not ask for confirmation before upgrading"
 }
 
 ###
@@ -37,13 +38,14 @@ function _zulu_upgrade_package() {
 # Zulu command to handle package upgrades
 ###
 function _zulu_upgrade() {
-  local base index out count down oldpwd i
+  local base index out count down oldpwd i input no_confirmation
   local -a packages to_update
   local -A _pids
 
   # Parse options
   zparseopts -D h=help -help=help \
-                c=check -check=check
+                c=check -check=check \
+                y=no_confirmation -no-confirmation=no_confirmation
 
   # Output help and return if requested
   if [[ -n $help ]]; then
@@ -138,8 +140,13 @@ function _zulu_upgrade() {
 
   echo $(_zulu_color yellow 'The following packages will be upgraded')
   echo "$to_update[@]"
-  echo $(_zulu_color yellow bold 'Continue (y|N)')
-  read -rs -k 1 input
+
+  if [[ -z $no_confirmation ]]; then
+    echo $(_zulu_color yellow bold 'Continue (y|N)')
+    read -rs -k 1 input
+  else
+    input='y'
+  fi
 
   case $input in
     y)

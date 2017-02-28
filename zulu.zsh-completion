@@ -280,7 +280,8 @@ _zulu() {
 
           _arguments -A \
             '(-h --help)'{-h,--help}'[show help text and exit]' \
-            '(-c --check)'{-c,--check}'[check if upgrades are available]'
+            '(-c --check)'{-c,--check}'[check if upgrades are available]' \
+            '(-y --no-confirmation)'{-y,--no-confirmation}'[do not ask for confirmation before upgrading]'
           ;;
         (list)
           _arguments -A \
