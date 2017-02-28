@@ -155,6 +155,25 @@ _zulu_get_installed_packages() {
 }
 
 # ~~~ CACHING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Using the cache mechanism of zsh to store themes
+(( $+functions[_zulu_get_installed_themes] )) ||
+_zulu_get_installed_themes() {
+  local theme_list cacheid='ZULU_INSTALLED_THEME_LIST'
+  if ( [[ ${+_zulu_installed_theme_list} -eq 0 ]] || _cache_invalid $cacheid ) \
+            && ! _retrieve_cache $cacheid;
+  then
+    _zulu_installed_theme_list=()
+    IFS=$'\n' theme_list=($(zulu list --installed --describe --simple --type theme))
+
+    for i in "$theme_list[@]"; do
+      _zulu_installed_theme_list+=("$(echo $i | cut -c 1-30 | tr -d " "):$(echo $i | cut -c 31-)")
+    done
+
+    _store_cache $cacheid _zulu_installed_theme_list
+  fi;
+}
+
+# ~~~ CACHING ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Using the cache mechanism of zsh to store packages
 (( $+functions[_zulu_get_not_installed_packages] )) ||
 _zulu_get_not_installed_packages() {
@@ -188,6 +207,10 @@ _zulu() {
   case "$state" in
     (args)
       case "$words[1]" in
+        (theme)
+          _arguments \
+            '*: :_zulu_installed_themes'
+          ;;
         (install)
           _arguments -A \
             '(-h --help)'{-h,--help}'[show help text and exit]' \
@@ -320,6 +343,12 @@ _zulu() {
   _zulu_get_installed_packages
   local expl
   _describe -t packages 'packages' _zulu_installed_package_list "$@"
+}
+
+(( $+functions[_zulu_installed_themes] )) || _zulu_installed_themes() {
+  _zulu_get_installed_themes
+  local expl
+  _describe -t themes 'themes' _zulu_installed_theme_list "$@"
 }
 
 (( $+functions[_zulu_not_installed_packages] )) || _zulu_not_installed_packages() {
