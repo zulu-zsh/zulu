@@ -44,7 +44,6 @@ function _zulu_link() {
 
   # See if the package has a post_install script
   post_install=$(jsonval $json 'post_install')
-  echo "Post install: $post_install" >&2
   if [[ -n $post_install ]]; then
     # Change to the package directory
     oldPWD=$PWD
