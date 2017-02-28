@@ -1,6 +1,7 @@
 #!/usr/bin/env zunit
 
 @test 'Test "zulu var add" creates a var' {
+  skip 'zulu var does not run inside a script yet'
   run echo "$A_TEST_VAR"
 
   assert $state equals 0
@@ -15,6 +16,7 @@
 }
 
 @test 'Test "zulu var rm" removes an alias' {
+  skip 'zulu var does not run inside a script yet'
   run echo "$A_TEST_VAR"
 
   assert $state equals 0
