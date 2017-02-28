@@ -26,7 +26,7 @@ function _zulu_upgrade_package() {
   # Pull from the repository
   cd "$base/packages/$package"
 
-  git rebase origin && git submodule update --init --recursive
+  git rebase -p --autostash FETCH_HEAD && git submodule update --init --recursive
 
   cd $oldpwd
 
