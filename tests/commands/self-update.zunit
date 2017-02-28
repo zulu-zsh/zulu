@@ -4,6 +4,12 @@
   oldPWD=$PWD
   cd tests/_support/.zulu/core
 
+  if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
+    cd $oldPWD
+    unset oldPWD
+    skip 'Cannot test self-update without an upstream'
+  fi
+
   # Stash any uncommitted changes and rewind one commit to ensure
   # updates are available
   git stash >/dev/null 2>&1
@@ -21,6 +27,18 @@
 }
 
 @test 'Test "zulu self-update" updates repository' {
+  oldPWD=$PWD
+  cd tests/_support/.zulu/core
+
+  if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
+    cd $oldPWD
+    unset oldPWD
+    skip 'Cannot test self-update without an upstream'
+  fi
+
+  cd $oldPWD
+  unset oldPWD
+
   run zulu self-update
 
   assert $state equals 0
@@ -30,6 +48,12 @@
 @test 'Test "zulu self-update" preserves local changes' {
   oldPWD=$PWD
   cd tests/_support/.zulu/core
+
+  if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
+    cd $oldPWD
+    unset oldPWD
+    skip 'Cannot test self-update without an upstream'
+  fi
 
   # Stash any uncommitted changes and rewind one commit to ensure
   # updates are available
