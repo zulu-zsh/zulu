@@ -59,6 +59,10 @@
 # function to prevent COMMAND_NOT_FOUND errors
 ###
 (( $+functions[_zulu_revolver] )) || function _zulu_revolver {
+  if [[ $ZULU_NO_PROGRESS -eq 1 ]]; then
+    return
+  fi
+
   $(type revolver 2>&1 > /dev/null)
   if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/revolver"} ]]; then
     # Check for a revolver process file, and remove it if it exists.
