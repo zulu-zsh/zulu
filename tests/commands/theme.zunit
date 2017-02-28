@@ -16,5 +16,6 @@
 	run zulu theme notatheme
 
 	assert $state equals 1
-	assert "$output" matches '^\\\033\\[0\;31mFailed to load theme \\'\''notatheme\\'\''\\\033\\[0\;m'
+	assert "${lines[1]}" same_as "\033[0;31mFailed to load theme 'notatheme'\033[0;m"
+	assert "${lines[2]}" same_as "Please ensure your theme is in \$fpath and is called prompt_notatheme_setup"
 }
