@@ -31,6 +31,15 @@ if [[ ! -L "$ZULU_DIR/core" ]]; then
   ln -s "$PWD" "$ZULU_DIR/core"
 fi
 
+# Check if an upstream is configured for this branch, and if
+# it isn't, set it now
+if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
+  # If $TRAVIS_BRANCH is set, then we can use that for the upstream
+  if [[ -n $TRAVIS_BRANCH ]]; then
+    git branch -u origin/$TRAVIS_BRANCH
+  fi
+fi
+
 export ZULU_NO_PROGRESS=1
 
 # Source the embedded Zulu installation
