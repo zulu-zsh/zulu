@@ -31,6 +31,8 @@ if [[ ! -L "$ZULU_DIR/core" ]]; then
   ln -s "$PWD" "$ZULU_DIR/core"
 fi
 
+export ZULU_NO_PROGRESS=1
+
 # Source the embedded Zulu installation
 source "$ZULU_DIR/core/zulu"
 zulu init
