@@ -12,17 +12,24 @@ function _zulu_list_usage() {
   echo "  -i, --installed      List only installed packages (default)"
   echo "  -n, --not-installed  List non-installed packages"
   echo "  -s, --simple         Hide the 'package installed' indicator"
+  echo "  -t, --type <type>    Limit results to packages of <type>"
 }
 
 function _zulu_list_all() {
-  local base index files json packages package name description pad palength
-
+  local base index files json packages package type name description pad palength
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="$base/index/packages"
 
   for package in $(/bin/ls $index | grep -v '.md'); do
+    json="$(cat $index/$package)"
+
+    type=$(jsonval $json 'type')
+    if [[ -n $package_type && $type != $package_type ]]; then
+      continue
+    fi
+
     if [[ -n $simple ]]; then
       name="$package"
       lim=30
@@ -37,7 +44,6 @@ function _zulu_list_all() {
     fi
 
     if [[ -n $describe ]]; then
-      json="$(cat $index/$package)"
       description=$(jsonval $json 'description')
       printf '%s' "$name"
       printf '%*.*s' 0 $(($lim - ${#name} )) "$(printf '%0.1s' " "{1..60})"
@@ -51,15 +57,21 @@ function _zulu_list_all() {
 }
 
 function _zulu_list_installed() {
-  local base index files json packages package description pad palength
+  local base index files json packages package type description pad palength
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="$base/index/packages"
 
   for package in $(/bin/ls "$base/packages"); do
+    json="$(cat $index/$package)"
+
+    type=$(jsonval $json 'type')
+    if [[ -n $package_type && $type != $package_type ]]; then
+      continue
+    fi
+
     if [[ -n $describe ]]; then
-      json="$(cat $index/$package)"
       description=$(jsonval $json 'description')
 
       printf '%s' "$package"
@@ -74,7 +86,7 @@ function _zulu_list_installed() {
 }
 
 function _zulu_list_not_installed() {
-  local base index files json packages package description pad palength
+  local base index files json packages package type description pad palength
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
@@ -82,8 +94,14 @@ function _zulu_list_not_installed() {
 
   for package in $(/bin/ls $index | grep -v '.md'); do
     if [[ ! -d "$base/packages/$package" ]]; then
+      json="$(cat $index/$package)"
+
+      type=$(jsonval $json 'type')
+      if [[ -n $package_type && $type != $package_type ]]; then
+        continue
+      fi
+
       if [[ -n $describe ]]; then
-        json="$(cat $index/$package)"
         description=$(jsonval $json 'description')
 
         printf '%s' "$package"
@@ -99,26 +117,26 @@ function _zulu_list_not_installed() {
 }
 
 function _zulu_list() {
-  local help all installed not_installed describe
+  local help all installed not_installed describe simple package_type
 
   # Parse options
-  zparseopts -D h=help \
-                -help=help \
-                i=installed \
-                -installed=installed \
-                n=not_installed \
-                -not-installed=not_installed \
-                a=all \
-                -all=all \
-                d=describe \
-                -describe=describe \
-                s=simple \
-                -simple=simple
+  zparseopts -D \
+    h=help -help=help \
+    i=installed -installed=installed \
+    n=not_installed -not-installed=not_installed \
+    a=all -all=all \
+    d=describe -describe=describe \
+    s=simple -simple=simple \
+    t:=package_type -type:=package_type
 
   # Output help and return if requested
   if [[ -n $help ]]; then
     _zulu_list_usage
     return
+  fi
+
+  if [[ -n $package_type ]]; then
+    shift package_type
   fi
 
   if [[ -n $all ]]; then
