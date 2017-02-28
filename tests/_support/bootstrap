@@ -40,6 +40,8 @@ if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
   fi
 fi
 
+# Ensure the progress indicator is hidden, so that we can
+# perform assertions against the output from commands
 export ZULU_NO_PROGRESS=1
 
 # Source the embedded Zulu installation
