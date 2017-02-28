@@ -17,8 +17,15 @@ function _zulu_self-update_core() {
   local old="$(pwd)"
 
   cd $core
-  git fetch origin && git rebase origin
+  git rebase -p --autostash FETCH_HEAD
+
+  if [[ $? -eq 0 ]]; then
+    echo "$(color red '✗') Zulu core failed to update"
+  fi
+
   [[ -f build.zsh ]] && ./build.zsh
+  source zulu
+  _zulu_init
   cd $old
 }
 
@@ -41,7 +48,7 @@ function _zulu_self-update_check_for_update() {
     fi
   fi
 
-  echo "$(_zulu_color green "No update available        ")"
+  echo $(_zulu_color green 'No update available')
   cd $old
   return 1
 }
@@ -85,8 +92,6 @@ function _zulu_self-update() {
 
       return 1
     fi
-
-    _zulu_load_commands
 
     return
   fi
