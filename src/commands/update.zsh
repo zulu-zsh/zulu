@@ -17,7 +17,7 @@ function _zulu_update_index() {
   local old="$(pwd)"
 
   cd $index
-  git fetch origin && git rebase origin
+  git rebase -p --autostash FETCH_HEAD
   cd $old
 }
 
