@@ -1,0 +1,84 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu upgrade --check" finds package updates' {
+  oldPWD=$PWD
+  cd tests/_support/.zulu/packages/filthy
+
+  if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
+    cd $oldPWD
+    unset oldPWD
+    skip 'Cannot test upgrade without an upstream'
+  fi
+
+  # Stash any uncommitted changes and rewind one commit to ensure
+  # updates are available
+  git stash >/dev/null 2>&1
+  git reset --hard HEAD~1 >/dev/null 2>&1
+
+  cd $oldPWD
+  unset oldPWD
+
+  # Check for updates
+  run zulu upgrade --check
+
+  # Assert that updates were found
+  assert $state equals 0
+  assert "${output%"${output##*[![:space:]]}"}" same_as '\033[0;32mPackage upgrades available\033[0;m Run zulu upgrade to upgrade'
+}
+
+@test 'Test "zulu upgrade" updates package repository' {
+  oldPWD=$PWD
+  cd tests/_support/.zulu/packages/filthy
+
+  if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
+    cd $oldPWD
+    unset oldPWD
+    skip 'Cannot test upgrade without an upstream'
+  fi
+
+  cd $oldPWD
+  unset oldPWD
+
+  run zulu upgrade -y
+
+  assert $state equals 0
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking filthy"
+}
+
+@test 'Test "zulu upgrade" preserves local changes in package repository' {
+  oldPWD=$PWD
+  cd tests/_support/.zulu/packages/filthy
+
+  if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
+    cd $oldPWD
+    unset oldPWD
+    skip 'Cannot test self-update without an upstream'
+  fi
+
+  # Stash any uncommitted changes and rewind one commit to ensure
+  # updates are available
+  git stash >/dev/null 2>&1
+  git reset --hard HEAD~1 >/dev/null 2>&1
+
+  # Add a test line to the end of a source file
+  echo 'thisisatest' >> README.md
+
+  # Run the update
+  run zulu upgrade -y
+
+  # Assert the update was successful
+  assert $state equals 0
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking filthy"
+  # assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as '\033[0;32m✔\033[0;m Zulu core updated'
+
+  # Assert the additional line still exists in the file
+  assert "$(tail -1 README.md)" same_as 'thisisatest'
+
+  # Remove the additional line from the file
+  cp README.md README.md.tmp
+  sed '$ d' README.md.tmp >! README.md
+  rm README.md.tmp
+
+  cd $oldPWD
+  unset oldPWD
+}
