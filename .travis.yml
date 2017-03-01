@@ -9,10 +9,18 @@ addons:
 dist: trusty
 matrix:
   include:
-    - env: ZVM_VERSION='5.0.8'
-    - env: ZVM_VERSION='5.1.1'
-    - env: ZVM_VERSION='5.2'
-    - env: ZVM_VERSION='5.3.1'
+    - env:
+        - ZVM_VERSION='5.0.8'
+        - ZULU_NO_PROGRESS=1
+    - env:
+        - ZVM_VERSION='5.1.1'
+        - ZULU_NO_PROGRESS=1
+    - env:
+        - ZVM_VERSION='5.2'
+        - ZULU_NO_PROGRESS=1
+    - env:
+        - ZVM_VERSION='5.3.1'
+        - ZULU_NO_PROGRESS=1
 install:
   - mkdir .bin
   - mkdir .zunit
