@@ -96,7 +96,7 @@ _zulu_var_commands=(
 local base config
 
 base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
-config_dir=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
+config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
 
 _zulu_package_file="$config/packages"
 _zulu_index="$base/index"
