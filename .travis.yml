@@ -15,11 +15,15 @@ matrix:
     - env: ZVM_VERSION='5.3.1'
 install:
   - mkdir .bin
+  - mkdir .zunit
+  - git clone https://github.com/molovo/zunit .zunit
+  - cd .zunit
+  - ./build.zsh
+  - cp zunit ../.bin/zunit
+  - cd ..
   - curl -L https://raw.githubusercontent.com/molovo/revolver/master/revolver > .bin/revolver
   - curl -L https://raw.githubusercontent.com/molovo/color/master/color.zsh > .bin/color
-  - curl -L https://raw.githubusercontent.com/molovo/zunit/master/zunit > .bin/zunit
   - curl -L https://raw.githubusercontent.com/molovo/zvm/master/zvm > .bin/zvm
-  - curl -L https://raw.githubusercontent.com/molovo/zvm/master/zvm-shell-integration.zsh > zvm-shell-integration.zsh
   - chmod u+x .bin/{color,revolver,zunit,zvm}
   - export PATH="$HOME/.zvm/bin:$PWD/.bin:$PATH"
 before_script:
