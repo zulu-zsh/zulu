@@ -33,7 +33,7 @@ function _zulu_update_check_for_update() {
 
     down="$count[(w)2]"
 
-    if [[ $down > 0 ]]; then
+    if [[ $down -gt 0 ]]; then
       echo "$(_zulu_color green "Zulu index updates available") Run zulu update to update the index"
       cd $old
       return

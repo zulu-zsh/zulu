@@ -114,7 +114,7 @@ function _zulu_upgrade() {
 
       down="$count[(w)2]"
 
-      if [[ $down > 0 ]]; then
+      if [[ $down -gt 0 ]]; then
         to_update[$i]="$package"
         i=$(( i + 1 ))
       fi

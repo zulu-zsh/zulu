@@ -41,8 +41,8 @@ function _zulu_self-update_check_for_update() {
 
     down="$count[(w)2]"
 
-    if [[ $down > 0 ]]; then
-      echo "$(_zulu_color green "New zulu version available") Run zulu self-update to upgrade"
+    if [[ $down -gt 0 ]]; then
+      echo "$(_zulu_color green "New Zulu version available") Run zulu self-update to upgrade"
       cd $old
       return
     fi
