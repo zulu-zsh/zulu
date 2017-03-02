@@ -108,8 +108,11 @@ function _zulu_path_store() {
 
   # Separate the array by newlines, and print the contents to the pathfile
   separator=$'\n'
-  local IFS="$separator"; out="${items[*]/#/${separator}}"
+  local oldIFS=$IFS
+  IFS="$separator"; out="${items[*]/#/${separator}}"
   echo ${out:${#separator}} >! $pathfile
+  IFS=$oldIFS
+  unset oldIFS
 }
 
 ###
