@@ -61,7 +61,7 @@
   git reset --hard HEAD~1 >/dev/null 2>&1
 
   # Add a test line to the end of a source file
-  echo 'thisisatest' >> README.md
+  echo 'thisisatest' >> readme.md
 
   # Run the update
   run zulu update
@@ -71,12 +71,12 @@
   assert "${output%"${output##*[![:space:]]}"}" same_as '\033[0;32m✔\033[0;m Package index updated'
 
   # Assert the additional line still exists in the file
-  assert "$(tail -1 README.md)" same_as 'thisisatest'
+  assert "$(tail -1 readme.md)" same_as 'thisisatest'
 
   # Remove the additional line from the file
-  cp README.md README.md.tmp
-  sed '$ d' README.md.tmp >! README.md
-  rm README.md.tmp
+  cp readme.md readme.md.tmp
+  sed '$ d' readme.md.tmp >! readme.md
+  rm readme.md.tmp
 
   cd $oldPWD
   unset oldPWD
