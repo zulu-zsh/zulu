@@ -34,6 +34,12 @@ if [[ ! -L "$ZULU_DIR/core" ]]; then
   ln -s "$PWD" "$ZULU_DIR/core"
 fi
 
+# Check that Zulu has already been built, and if it
+# hasn't, do it now
+if [[ ! -f "$PWD/zulu" ]]; then
+  ./build.zsh
+fi
+
 # Check if an upstream is configured for this branch, and if
 # it isn't, set it now
 if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
@@ -48,9 +54,9 @@ fi
 export ZULU_NO_PROGRESS=1
 
 # Ensure IFS is reset
-IFS=$oldIFS
+export IFS=$oldIFS
 unset oldIFS
 
 # Source the embedded Zulu installation
-source "$ZULU_DIR/core/zulu"
+source "$PWD/zulu"
 zulu init
