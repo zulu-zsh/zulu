@@ -7,6 +7,7 @@ addons:
       - yodl
       - man
 cache:
+  apt: true
   directories:
     - $HOME/.zvm
 dist: trusty
