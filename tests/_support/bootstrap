@@ -44,6 +44,9 @@ fi
 # perform assertions against the output from commands
 export ZULU_NO_PROGRESS=1
 
+# Ensure IFS is set to the default
+IFS=$' \t\n'
+
 # Source the embedded Zulu installation
 source "$ZULU_DIR/core/zulu"
 zulu init
