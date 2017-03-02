@@ -5,6 +5,9 @@ export ZULU_DIR="$PWD/tests/_support/.zulu"
 export ZULU_CONFIG_DIR="$PWD/tests/_support/.config/zulu"
 export ZULU_INSTALL_SCRIPT="$PWD/tests/_support/zulu-install.zsh"
 
+# Store the value of $IFS before we do anything
+oldIFS=$IFS
+
 # We're going to create a fresh install of Zulu in tests/_support so
 # that the environment is fully configured, and then remove the core,
 # replacing it with a symlink to this repository
@@ -44,8 +47,9 @@ fi
 # perform assertions against the output from commands
 export ZULU_NO_PROGRESS=1
 
-# Ensure IFS is set to the default
-IFS=$' \t\n'
+# Ensure IFS is reset
+IFS=$oldIFS
+unset oldIFS
 
 # Source the embedded Zulu installation
 source "$ZULU_DIR/core/zulu"
