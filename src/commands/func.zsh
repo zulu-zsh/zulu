@@ -36,7 +36,7 @@ _zulu_func_add() {
 
 }" > "$funcdir/$func"
 
-  $EDITOR "$funcdir/$func"
+  ${=EDITOR} "$funcdir/$func"
 
   zulu func load
   return
@@ -60,7 +60,7 @@ _zulu_func_edit() {
     return 1
   fi
 
-  $EDITOR "$funcdir/$func"
+  ${=EDITOR} "$funcdir/$func"
 
   zulu func load
   return
