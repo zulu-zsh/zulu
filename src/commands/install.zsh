@@ -28,13 +28,25 @@ function _zulu_install_package() {
 
   # Get the JSON from the index
   json=$(cat "$index/$package")
+  if [[ $? -ne 0 ]]; then
+    echo 'Could not find package in index'
+    return 1
+  fi
 
   # Get the repository URL from the JSON
   repo=$(jsonval $json 'repository')
+  if [[ $? -ne 0 || -z $repo ]]; then
+    echo 'Could not find repository URL'
+    return 1
+  fi
 
   # Clone the repository
   cd "$base/packages"
   git clone --recursive --depth=1 --shallow-submodules $repo $package
+  if [[ $? -ne 0 ]]; then
+    echo 'Failed to clone repository'
+    return 1
+  fi
 
   packagefile="$config/packages"
   in_packagefile=$(cat $packagefile | grep -e '^'${package}'$')
@@ -107,9 +119,10 @@ function _zulu_install() {
           if [[ ! -d "$base/packages/$dependency" ]]; then
             _zulu_revolver start "Installing dependency $dependency..."
             out=$(_zulu_install_package "$dependency" 2>&1)
+            state=$?
             _zulu_revolver stop
 
-            if [ $? -eq 0 ]; then
+            if [ $state -eq 0 ]; then
               echo "$(_zulu_color green '✔') Finished installing dependency $dependency        "
               zulu link $dependency
             else
@@ -123,9 +136,10 @@ function _zulu_install() {
 
     _zulu_revolver start "Installing $package..."
     out=$(_zulu_install_package "$package" 2>&1)
+    state=$?
     _zulu_revolver stop
 
-    if [ $? -eq 0 ]; then
+    if [ $state -eq 0 ]; then
       local -a link_flags; link_flags=()
 
       if [[ -n $no_autoselect_themes ]]; then
