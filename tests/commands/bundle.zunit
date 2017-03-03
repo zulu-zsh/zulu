@@ -1,0 +1,16 @@
+#!/usr/bin/env zunit
+
+@teardown {
+  zulu uninstall async
+}
+
+@test 'Test "zulu bundle" installs package' {
+  # Add an extra package to the packagefile
+  echo 'async' >> "$PWD/tests/_support/.config/zulu/packages"
+
+  run zulu bundle
+
+  assert $state equals 0
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking async"
+  assert "$PWD/tests/_support/.zulu/packages/async" is_dir
+}
