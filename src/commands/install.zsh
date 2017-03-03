@@ -42,7 +42,7 @@ function _zulu_install_package() {
 
   # Clone the repository
   cd "$base/packages"
-  git clone --recursive --depth=1 --shallow-submodules $repo $package
+  git clone --recursive --depth=1 $repo $package
   if [[ $? -ne 0 ]]; then
     echo 'Failed to clone repository'
     return 1
