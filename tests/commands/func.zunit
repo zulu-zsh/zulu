@@ -1,0 +1,47 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu func add" creates empty definition' {
+  # zulu func opens the created definition in $EDITOR.
+  # By changing $EDITOR to 'cat', we can capture the output
+  # immediately, rather than having an actual editor lock
+  # up the shell waiting for user input
+  EDITOR='cat -e'
+  run zulu func add unicorn_generator
+
+  func="#!/usr/bin/env zsh\$
+(( \$+functions[unicorn_generator] )) || function unicorn_generator() {\$
+}\$"
+
+  assert $state equals 0
+  assert "${output//\n/ }" same_as "${func//\n/ }"
+}
+
+@test 'Test "zulu func edit" opens function definition' {
+  # zulu func opens the created definition in $EDITOR.
+  # By changing $EDITOR to 'cat', we can capture the output
+  # immediately, rather than having an actual editor lock
+  # up the shell waiting for user input
+  EDITOR='cat -e'
+  run zulu func edit unicorn_generator
+
+  func="#!/usr/bin/env zsh\$
+(( \$+functions[unicorn_generator] )) || function unicorn_generator() {\$
+}\$"
+
+  assert $state equals 0
+  assert "${output//\n/ }" same_as "${func//\n/ }"
+}
+
+@test 'Test "zulu func rm" removes function definition' {
+  # Ensure the function is loaded into the environment first
+  zulu func load
+
+  run zulu func rm unicorn_generator
+
+  assert $state equals 0
+  assert "$output" is_empty
+
+  run assert 'tests/_support/.config/zulu/functions/unicorn_generator' is_file
+
+  assert $state equals 1
+}
