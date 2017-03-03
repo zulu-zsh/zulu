@@ -10,11 +10,11 @@ echo "#!/usr/bin/env zsh\n" >> zulu
 setopt EXTENDED_GLOB
 
 # Print each of the source files into the target, removing any comments
-# and blank lines from the compiled executable
-cat src/**/(^zulu).zsh | grep -v -E '^(\s*#.*[^"]|\s*)$' >> zulu
+# from the compiled executable
+cat src/**/(^zulu).zsh | grep -v -E '^(\s*#.*[^"])$' >> zulu
 
 # Print the main command last
-cat src/zulu.zsh | grep -v -E '^(\s*#.*[^"]|\s*)$' >> zulu
+cat src/zulu.zsh | grep -v -E '^(\s*#.*[^"])$' >> zulu
 
 # Make sure the file is executable
 chmod u+x zulu
