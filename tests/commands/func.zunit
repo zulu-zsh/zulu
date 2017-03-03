@@ -9,7 +9,9 @@
   run zulu func add unicorn_generator
 
   func="#!/usr/bin/env zsh\$
+$
 (( \$+functions[unicorn_generator] )) || function unicorn_generator() {\$
+$
 }\$"
 
   assert $state equals 0
@@ -25,7 +27,9 @@
   run zulu func edit unicorn_generator
 
   func="#!/usr/bin/env zsh\$
+$
 (( \$+functions[unicorn_generator] )) || function unicorn_generator() {\$
+$
 }\$"
 
   assert $state equals 0
