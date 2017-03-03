@@ -15,19 +15,39 @@ function _zulu_var_usage() {
 # Add an var
 ###
 _zulu_var_add() {
-  local existing var cmd
+  local existing var cmd private
+
+  zparseopts -D \
+    p=private -private=private
 
   var="$1"
   cmd="${(@)@:2}"
 
-  existing=$(cat $envfile | grep "export $var=")
-  if [[ $existing != "" ]]; then
-    echo $(_zulu_color red "Environment variable '$var' already exists")
-    return 1
+  # Loop through each of the envfiles
+  for file in $envfile $envfile.private; do
+    # Search for the variable in the file
+    existing=$(cat $file | grep "export $var=")
+
+    # If the variable already exists in either file,
+    # throw an error
+    if [[ $existing != "" ]]; then
+      echo $(_zulu_color red "Environment variable '$var' already exists")
+      return 1
+    fi
+  done
+
+  # If the variable is private, set the correct envfile to use
+  if [[ -n $private ]]; then
+    envfile="$envfile.private"
   fi
 
+  # Save the variable to the envfile
   echo "export $var='$cmd'" >> $envfile
 
+  # Strip any blank lines for neatness
+  echo "$(cat $envfile | grep -vE '^\s*$')" >! $envfile
+
+  # Reload variables
   zulu var load
   return
 }
@@ -40,13 +60,26 @@ _zulu_var_rm() {
 
   var="$1"
 
-  existing=$(cat $envfile | grep "export $var=")
+  # Loop through each of the envfiles
+  for file in $envfile $envfile.private; do
+    # Search for the variable in the file
+    existing=$(cat $file | grep "export $var=")
+
+    # If we haven't found it, skip to the next file
+    [[ $existing = "" ]] && continue
+
+    # If we get here, we've found the variable, so we rewrite the file,
+    # stripping out the definition to remove
+    echo "$(cat $file | grep -v "export $var=" | grep -vE '^\s*$')" >! $file
+    break
+  done
+
+  # The variable wasn't found in either of the envfiles, so throw an error
   if [[ $existing = "" ]]; then
     echo $(_zulu_color red "Environment variable '$var' does not exist")
     return 1
   fi
 
-  echo "$(cat $envfile | grep -v "export $var=")" >! $envfile
   unset $var
   zulu var load
   return
@@ -57,16 +90,18 @@ _zulu_var_rm() {
 ###
 _zulu_var_load() {
   source $envfile
+  source $envfile.private
 }
 
 ###
 # Zulu command to handle path manipulation
 ###
 function _zulu_var() {
-  local ctx base envfile
+  local ctx base envfile private
 
   # Parse options
-  zparseopts -D h=help -help=help
+  zparseopts -D h=help -help=help \
+    p=private -private=private
 
   # Output help and return if requested
   if [[ -n $help ]]; then
@@ -79,19 +114,23 @@ function _zulu_var() {
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   envfile="${config}/env"
 
-  if [[ ! -f $envfile ]]; then
-    touch $envfile
-  fi
+  # Check if the envfiles exist, and if not create them
+  [[ -f $envfile ]] || touch $envfile
+  [[ -f "$envfile.private" ]] || touch "$envfile.private"
 
-  # If no context is passed, output the contents of the envfile
+  # If no context is passed, output the contents of the envfiles
   if [[ "$1" = "" ]]; then
     cat "$envfile"
+    echo
+    echo $(color yellow 'Private:')
+    cat "$envfile.private"
     return
   fi
 
   # Get the context
   ctx="$1"
+  shift
 
   # Call the relevant function
-  _zulu_var_${ctx} "${(@)@:2}"
+  _zulu_var_${ctx} ${private:+'--private'} "$@"
 }
