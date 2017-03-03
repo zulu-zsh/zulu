@@ -5,13 +5,12 @@
 
   assert $state equals 0
   assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished uninstalling crash"
-  assert "$PWD/tests/_support/.zulu/packages/crash" is_dir
 }
 
 @test 'Test "zulu uninstall" fails for not-installed package' {
   run zulu uninstall crash
 
-  assert $state equals 0
+  assert $state equals 1
   assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'crash' is not installed\033[0;m"
 }
 
