@@ -1,0 +1,8 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu install" installs package' {
+  run zulu install --no-autoselect-themes --ignore-dependencies crash
+
+  assert $state equals 0
+  assert "$PWD/tests/_support/.zulu/packages/crash" is_dir
+}

@@ -1,0 +1,7 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu uninstall" uninstalls package' {
+  run zulu uninstall crash
+
+  assert $state equals 0
+}
