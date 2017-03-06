@@ -6,6 +6,7 @@ function _zulu_init_usage() {
   echo "  -c, --check-for-update   Check for updates on startup"
   echo "  -h, --help               Output this help text and exit"
   echo "  -n, --no-compile         Skip compilation of scripts on startup"
+  echo "      --dev                Start Zulu in Development Mode"
 }
 
 function _zulu_init_setup_completion() {
@@ -583,11 +584,18 @@ function _zulu_init() {
   zparseopts -D \
     h=help -help=help \
     c=check_for_update -check-for-update=check_for_update \
-    n=no_compile -no-compile=no_compile
+    n=no_compile -no-compile=no_compile \
+    -dev=dev
 
   if [[ -n $help ]]; then
     _zulu_init_usage
     return
+  fi
+
+  if [[ -n $dev ]]; then
+    export ZULU_DEV_MODE=1
+  else
+    export ZULU_DEV_MODE=0
   fi
 
   # Populate paths
@@ -625,4 +633,6 @@ function _zulu_init() {
   fi
 
   [[ -n $check_for_update ]] && _zulu_check_for_update
+
+  return
 }
