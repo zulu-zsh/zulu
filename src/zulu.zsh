@@ -76,6 +76,11 @@ function _zulu_version() {
     return
   fi
 
+  # If we're in dev mode, re-source the command now
+  if (( $+functions[_zulu_${cmd}] )) && [[ $ZULU_DEV_MODE -eq 1 ]]; then
+    source "$base/core/src/commands/$cmd.zsh"
+  fi
+
   # Check if the requested command exists
   if (( ! $+functions[_zulu_${cmd}] )); then
     # If it doesn't, print usage information and exit
