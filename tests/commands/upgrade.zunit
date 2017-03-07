@@ -23,7 +23,7 @@
 
   # Assert that updates were found
   assert $state equals 0
-  assert "${output%"${output##*[![:space:]]}"}" same_as '\033[0;32mPackage upgrades available\033[0;m Run zulu upgrade to upgrade'
+  assert "$output" same_as '\033[0;32mPackage upgrades available\033[0;m Run zulu upgrade to upgrade'
 }
 
 @test 'Test "zulu upgrade" updates package repository' {
@@ -69,7 +69,6 @@
   # Assert the update was successful
   assert $state equals 0
   assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking filthy"
-  # assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as '\033[0;32m✔\033[0;m Zulu core updated'
 
   # Assert the additional line still exists in the file
   assert "$(tail -1 README.md)" same_as 'thisisatest'

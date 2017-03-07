@@ -23,7 +23,7 @@
 
   # Assert that updates were found
   assert $state equals 0
-  assert "${output%"${output##*[![:space:]]}"}" same_as '\033[0;32mNew Zulu version available\033[0;m Run zulu self-update to upgrade'
+  assert "$output" same_as '\033[0;32mNew Zulu version available\033[0;m Run zulu self-update to upgrade'
 }
 
 @test 'Test "zulu self-update" updates repository' {

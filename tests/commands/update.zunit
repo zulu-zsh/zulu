@@ -23,7 +23,7 @@
 
   # Assert that updates were found
   assert $state equals 0
-  assert "${output%"${output##*[![:space:]]}"}" same_as '\033[0;32mZulu index updates available\033[0;m Run zulu update to update the index'
+  assert "$output" same_as '\033[0;32mZulu index updates available\033[0;m Run zulu update to update the index'
 }
 
 @test 'Test "zulu update" updates repository' {
