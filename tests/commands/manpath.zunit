@@ -1,0 +1,52 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu manpath" returns correct contents' {
+  run zulu manpath
+
+  assert $state equals 0
+  assert "${output//\n/ }" same_as "$manpath"
+}
+
+@test 'Tests "zulu manpath reset" reloads from manpathfile' {
+  assert "$PWD" not_in "${manpath[@]}"
+
+  manpath+=$PWD
+
+  assert "$PWD" in "${manpath[@]}"
+
+  zulu manpath reset
+
+  assert "$PWD" not_in "${manpath[@]}"
+}
+
+@test 'Test "zulu manpath add" allows directories to be entered' {
+  if [[ $OSTYPE =~ 'darwin.*' ]]; then
+    skip 'Manpath is set at shell startup in OSX, so we cannot affect it here'
+  fi
+
+  mkdir -p tests/_support/man1
+  echo '.TH Testing' > tests/_support/man1/a_test_command.1
+
+  run man a_test_command
+
+  # BSD man and GNU man give different exit codes
+  case $OSTYPE in
+    darwin* )
+      assert $state equals 1
+      ;;
+    * )
+      assert $state equals 16
+      ;;
+  esac
+  assert "$output" same_as 'No manual entry for a_test_command'
+
+  zulu manpath add tests/_support
+
+  run man a_test_command
+
+  assert $state equals 0
+  assert "$output" matches '^Testing\(\).*'
+
+  zulu manpath rm tests/_support
+  rm -r tests/_support/man1
+}

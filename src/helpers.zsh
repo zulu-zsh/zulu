@@ -3,7 +3,7 @@
 #
 # IMPORTANT: There must be no newlines within nested objects
 ###
-(( $+functions[jsonval] )) || function jsonval {
+function jsonval {
   local temp json=$1 key=$2
 
   temp=$(echo $json | sed 's/\\\\\//\//g' | \
@@ -22,7 +22,7 @@
 # If the revolver command is not installed, create a simple polyfill
 # function to prevent COMMAND_NOT_FOUND errors
 ###
-(( $+functions[_zulu_color] )) || function _zulu_color {
+function _zulu_color {
   $(type color 2>&1 > /dev/null)
   if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/color"} ]]; then
     local color=$1 style=$2 b=0
@@ -58,7 +58,7 @@
 # If the revolver command is not installed, create an empty
 # function to prevent COMMAND_NOT_FOUND errors
 ###
-(( $+functions[_zulu_revolver] )) || function _zulu_revolver {
+function _zulu_revolver {
   if [[ $ZULU_NO_PROGRESS -eq 1 ]]; then
     return
   fi

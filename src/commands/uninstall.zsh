@@ -16,10 +16,6 @@ function _zulu_uninstall_package() {
 
   # Check if the package is already uninstalled
   root="$base/packages/$package"
-  if [[ ! -d "$root" ]]; then
-    echo $(_zulu_color red "Package '$package' is not installed")
-    return 1
-  fi
 
   # Remove the package source
   #
@@ -68,17 +64,24 @@ function _zulu_uninstall() {
       echo $(_zulu_color red "Package '$package' is not in the index")
       return 1
     fi
+
+    if [[ ! -d "$base/packages/$package" ]]; then
+      echo $(_zulu_color red "Package '$package' is not installed")
+      return 1
+    fi
   done
 
   # Do a second loop, to do the actual install
   for package in "$@"; do
     zulu unlink $package
+    [ $? -ne 0 ] && return 1
 
     _zulu_revolver start "Uninstalling $package..."
     out=$(_zulu_uninstall_package "$package" 2>&1)
+    state=$?
     _zulu_revolver stop
 
-    if [ $? -eq 0 ]; then
+    if [ $state -eq 0 ]; then
       echo "$(_zulu_color green '✔') Finished uninstalling $package        "
     else
       echo "$(_zulu_color red '✘') Error uninstalling $package        "

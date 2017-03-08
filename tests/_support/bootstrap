@@ -1,0 +1,62 @@
+#!/usr/bin/env zsh
+
+# Set Zulu directories
+export ZULU_DIR="$PWD/tests/_support/.zulu"
+export ZULU_CONFIG_DIR="$PWD/tests/_support/.config/zulu"
+export ZULU_INSTALL_SCRIPT="$PWD/tests/_support/zulu-install.zsh"
+
+# Store the value of $IFS before we do anything
+oldIFS=$IFS
+
+# We're going to create a fresh install of Zulu in tests/_support so
+# that the environment is fully configured, and then remove the core,
+# replacing it with a symlink to this repository
+
+# Check if Zulu is already installed in the support directory
+if [[ ! -d "$ZULU_DIR" ]]; then
+  # Check if the Zulu install script has already been downloaded
+  if [[ ! -f "$ZULU_INSTALL_SCRIPT" ]]; then
+    curl -L https://zulu.sh/install > $ZULU_INSTALL_SCRIPT
+  fi
+
+  # Source the Zulu install script
+  source "$PWD/tests/_support/zulu-install.zsh"
+fi
+
+# If the core directory is still present, remove it and
+# create a symlink to the current directory so that we
+# can test the Zulu version in this repository
+if [[ ! -L "$ZULU_DIR/core" ]]; then
+  if [[ -d "$ZULU_DIR/core" ]]; then
+    rm -rf "$ZULU_DIR/core"
+  fi
+
+  ln -s "$PWD" "$ZULU_DIR/core"
+fi
+
+# Check that Zulu has already been built, and if it
+# hasn't, do it now
+if [[ ! -f "$PWD/zulu" ]]; then
+  ./build.zsh
+fi
+
+# Check if an upstream is configured for this branch, and if
+# it isn't, set it now
+if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
+  # If $TRAVIS_BRANCH is set, then we can use that for the upstream
+  if [[ -n $TRAVIS_BRANCH ]]; then
+    git branch -u origin/$TRAVIS_BRANCH
+  fi
+fi
+
+# Ensure the progress indicator is hidden, so that we can
+# perform assertions against the output from commands
+export ZULU_NO_PROGRESS=1
+
+# Ensure IFS is reset
+export IFS=$oldIFS
+unset oldIFS
+
+# Source the embedded Zulu installation
+source "$PWD/zulu"
+zulu init

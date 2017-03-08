@@ -38,7 +38,7 @@ function _zulu_version() {
 ###
 # The main zulu command. Loads and executes all other commands
 ###
-(( $+functions[zulu] )) || function zulu() {
+function zulu() {
   local cmd base help version
 
   autoload -Uz is-at-least
