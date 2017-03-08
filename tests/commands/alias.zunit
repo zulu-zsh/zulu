@@ -1,31 +1,28 @@
 #!/usr/bin/env zunit
 
-@test 'Test "zulu alias add" creates a alias' {
-  skip 'zulu alias does not run inside a script yet'
-  run an_alias
-
-  assert $state equals 127
-  assert "$output" matches 'run:[0-9]+: command not found: an_alias'
-
-  zulu alias add an_alias 'echo "It worked"'
-
-  run an_alias
+@test 'Test "zulu alias add" creates an alias' {
+  run zulu alias add an_alias 'echo "It worked"'
 
   assert $state equals 0
-  assert "$output" same_as 'It worked'
+  assert "$output" same_as "\033[0;32m✔\033[0;m Alias 'an_alias' added"
+
+  run grep -E '^alias an_alias=' tests/_support/.config/zulu/alias
+
+  assert $state equals 0
+  assert "$output" same_as "alias an_alias='echo \"It worked\"'"
 }
 
 @test 'Test "zulu alias rm" removes an alias' {
-  skip 'zulu alias does not run inside a script yet'
-  run an_alias
+  zulu alias load
+
+  run zulu alias rm an_alias
 
   assert $state equals 0
-  assert "$output" same_as 'It worked'
+  assert "$output" same_as "\033[0;32m✔\033[0;m Alias 'an_alias' removed"
 
-  zulu alias rm an_alias
+  local -a output
+  run grep -E '^alias an_alias=' tests/_support/.config/zulu/alias
 
-  run an_alias
-
-  assert $state equals 127
-  assert "$output" matches 'run:[0-9]+: command not found: an_alias'
+  assert $state equals 1
+  assert "$output" is_empty
 }
