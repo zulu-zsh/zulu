@@ -10,9 +10,14 @@
     skip 'Cannot test upgrade without an upstream'
   fi
 
-  # Stash any uncommitted changes and rewind one commit to ensure
-  # updates are available
+  # Stash any uncommitted changes and
   git stash >/dev/null 2>&1
+
+  # Fetch commits from the remote, since the existing clone is a
+  # shallow one
+  git fetch --unshallow >/dev/null 2>&1
+
+  # Rewind one commit to ensure updates are available
   git reset --hard HEAD~1 >/dev/null 2>&1
 
   cd $oldPWD
