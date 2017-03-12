@@ -52,7 +52,7 @@ function _zulu_link() {
     # Eval the post_install script
     output=$(eval "$post_install")
     if [[ $? -ne 0 ]]; then
-      echo $(color red "Post install step for $package failed")
+      echo $(_zulu_color red "Post install step for $package failed")
       echo "$output"
       cd $oldPWD
       return 1

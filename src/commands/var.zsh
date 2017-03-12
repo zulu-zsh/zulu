@@ -122,7 +122,7 @@ function _zulu_var() {
   if [[ "$1" = "" ]]; then
     cat "$envfile"
     echo
-    echo $(color yellow 'Private:')
+    echo $(_zulu_color yellow 'Private:')
     cat "$envfile.private"
     return
   fi

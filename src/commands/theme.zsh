@@ -34,12 +34,12 @@ _zulu_theme() {
     prompt ${theme}
     if [[ $? -eq 0 ]]; then
       echo "$theme" >! $config
-      echo "$(color green '✔') Theme set to $theme"
+      echo "$(_zulu_color green '✔') Theme set to $theme"
       return
     fi
   fi
 
-  echo $(color red "Failed to load theme '${theme}'")
+  echo $(_zulu_color red "Failed to load theme '${theme}'")
   echo "Please ensure your theme is in \$fpath and is called prompt_${theme}_setup"
   return 1
 }

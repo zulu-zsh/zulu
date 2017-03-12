@@ -20,7 +20,7 @@ function _zulu_self-update_core() {
   git rebase -p --autostash FETCH_HEAD
 
   if [[ $? -eq 0 ]]; then
-    echo "$(color red '✗') Zulu core failed to update"
+    echo "$(_zulu_color red '✗') Zulu core failed to update"
   fi
 
   [[ -f build.zsh ]] && ./build.zsh
