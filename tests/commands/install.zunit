@@ -1,0 +1,30 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu install" installs package' {
+  run zulu install --no-autoselect-themes --ignore-dependencies crash
+
+  assert $state equals 0
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking crash"
+  assert "$PWD/tests/_support/.zulu/packages/crash" is_dir
+}
+
+@test 'Test "zulu install" fails for installed package' {
+  run zulu install --no-autoselect-themes --ignore-dependencies crash
+
+  assert $state equals 0
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'crash' is already installed\033[0;m"
+}
+
+@test 'Test "zulu install" fails for non-existent package' {
+  run zulu install --no-autoselect-themes --ignore-dependencies not-a-package
+
+  assert $state equals 1
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'not-a-package' is not in the index\033[0;m"
+}
+
+@test 'Test "zulu install" fails with no argument' {
+  run zulu install --no-autoselect-themes --ignore-dependencies
+
+  assert $state equals 1
+  assert "${lines[1]}" same_as "\033[0;31mPlease specify a package name\033[0;m"
+}

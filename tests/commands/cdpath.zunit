@@ -1,0 +1,38 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu cdpath" returns correct contents' {
+  run zulu cdpath
+
+  assert $state equals 0
+  assert "${output//\n/ }" same_as "$cdpath"
+}
+
+@test 'Tests "zulu cdpath reset" reloads from cdpathfile' {
+  assert "$PWD" not_in "${cdpath[@]}"
+
+  cdpath+=$PWD
+
+  assert "$PWD" in "${cdpath[@]}"
+
+  zulu cdpath reset
+
+  assert "$PWD" not_in "${cdpath[@]}"
+}
+
+@test 'Test "zulu cdpath add" allows directories to be entered' {
+  mkdir -p tests/_support/a_test_directory
+
+  run builtin cd a_test_directory
+
+  assert $state equals 1
+  assert "$output" matches 'run:cd:[0-9]+: no such file or directory: a_test_directory'
+
+  zulu cdpath add tests/_support
+
+  run builtin cd a_test_directory
+
+  assert $state equals 0
+
+  zulu cdpath rm tests/_support
+  rm -r tests/_support/a_test_directory
+}

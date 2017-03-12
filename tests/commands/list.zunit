@@ -1,0 +1,19 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu list" lists installed packages' {
+  run zulu list
+
+  local -a packages; packages=($(ls tests/_support/.zulu/packages))
+
+  assert $state equals 0
+  assert "${output//\n/ }" same_as "$packages"
+}
+
+@test 'Test "zulu list --all --simple" lists all packages' {
+  run zulu list --all --simple
+
+  local -a packages; packages=($(ls tests/_support/.zulu/index/packages))
+
+  assert $state equals 0
+  assert "${output//\n/ }" same_as "$packages"
+}

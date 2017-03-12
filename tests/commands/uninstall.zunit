@@ -1,0 +1,29 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu uninstall" uninstalls package' {
+  run zulu uninstall crash
+
+  assert $state equals 0
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished uninstalling crash"
+}
+
+@test 'Test "zulu uninstall" fails for not-installed package' {
+  run zulu uninstall crash
+
+  assert $state equals 1
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'crash' is not installed\033[0;m"
+}
+
+@test 'Test "zulu uninstall" fails for non-existent package' {
+  run zulu uninstall not-a-package
+
+  assert $state equals 1
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'not-a-package' is not in the index\033[0;m"
+}
+
+@test 'Test "zulu uninstall" fails with no argument' {
+  run zulu uninstall
+
+  assert $state equals 1
+  assert "${lines[1]}" same_as "\033[0;31mPlease specify a package name\033[0;m"
+}

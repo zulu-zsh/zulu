@@ -1,0 +1,61 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu var add" creates a variable' {
+  run zulu var add A_TEST_VAR 1
+
+  assert $state equals 0
+  assert "$output" is_empty
+
+  run grep -E '^export A_TEST_VAR=' tests/_support/.config/zulu/env
+
+  assert $state equals 0
+  assert "$output" same_as "export A_TEST_VAR='1'"
+
+  run grep -E '^export A_TEST_VAR=' tests/_support/.config/zulu/env.private
+
+  assert $state equals 1
+  assert "$output" is_empty
+}
+
+@test 'Test "zulu var rm" removes an variable' {
+  run zulu var rm A_TEST_VAR
+
+  assert $state equals 0
+  assert "$output" is_empty
+
+  local -a output
+  run grep -E '^export A_TEST_VAR=' tests/_support/.config/zulu/env
+
+  assert $state equals 1
+  assert "$output" is_empty
+}
+
+@test 'Test "zulu var add --private" creates a variable' {
+  run zulu var add --private A_TEST_VAR 1
+
+  assert $state equals 0
+  assert "$output" is_empty
+
+  run grep -E '^export A_TEST_VAR=' tests/_support/.config/zulu/env
+
+  assert $state equals 1
+  assert "$output" is_empty
+
+  run grep -E '^export A_TEST_VAR=' tests/_support/.config/zulu/env.private
+
+  assert $state equals 0
+  assert "$output" same_as "export A_TEST_VAR='1'"
+}
+
+@test 'Test "zulu var rm" removes a private variable' {
+  run zulu var rm A_TEST_VAR
+
+  assert $state equals 0
+  assert "$output" is_empty
+
+  local -a output
+  run grep -E '^export A_TEST_VAR=' tests/_support/.config/zulu/env.private
+
+  assert $state equals 1
+  assert "$output" is_empty
+}
