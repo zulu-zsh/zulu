@@ -21,13 +21,13 @@ function _zulu_config_set() {
 
   # Rewrite the config file, omitting the key
   # we're setting if it exists
-  echo $(cat $configfile | grep -v -E "^$key:") >! $configfile
+  echo "$(cat $configfile | grep -v -E "^$key:")" >! $configfile
 
   # Write the new value to the config file
   echo "$key: $value" >> $configfile
 
   # Write the config file again, stripping out any blank lines
-  echo $(cat $configfile | grep -v -E '^\s*$') >! $configfile
+  echo "$(cat $configfile | grep -v -E '^\s*$')" >! $configfile
 
   zulu config $key
 }
