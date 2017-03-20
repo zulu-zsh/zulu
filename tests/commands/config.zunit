@@ -1,25 +1,25 @@
 #!/usr/bin/env zunit
 
 @teardown {
-  cat /dev/null > tests/_support/.config/zulu/config.yml
+  echo "analytics: false" >! tests/_support/.config/zulu/config.yml
 }
 
 @test 'Test "zulu config list" returns contents of config.yml' {
-  echo "testing: true" > tests/_support/.config/zulu/config.yml
+  echo "testing: true" >> tests/_support/.config/zulu/config.yml
 
   run zulu config list
 
   assert $state equals 0
-  assert "$output" same_as "testing: true"
+  assert "$lines[${#lines}]" same_as "testing: true"
 }
 
 @test 'Test "zulu config" returns correct value' {
-  echo "testing: true" > tests/_support/.config/zulu/config.yml
+  echo "testing: true" >> tests/_support/.config/zulu/config.yml
 
   run zulu config testing
 
   assert $state equals 0
-  assert "$output" same_as "true"
+  assert "$lines[${#lines}]" same_as "true"
 }
 
 @test 'Test "zulu config set" sets value' {
@@ -31,7 +31,7 @@
   run zulu config list
 
   assert $state equals 0
-  assert "$output" same_as "rainbows: unicorns"
+  assert "$lines[${#lines}]" same_as "rainbows: unicorns"
 
   run zulu config rainbows
 
@@ -48,7 +48,7 @@
   run zulu config list
 
   assert $state equals 0
-  assert "$output" same_as "rainbows: unicorns"
+  assert "$lines[${#lines}]" same_as "rainbows: unicorns"
 
   run zulu config set rainbows pixies
 
@@ -58,7 +58,7 @@
   run zulu config list
 
   assert $state equals 0
-  assert "$output" same_as "rainbows: pixies"
+  assert "$lines[${#lines}]" same_as "rainbows: pixies"
 
   run zulu config rainbows
 
