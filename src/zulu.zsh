@@ -93,7 +93,9 @@ function zulu() {
 
   # If the user initiated this call, then track it
   if [[ $ZULU_DEV_MODE -ne 1 && "${${(s/:/)funcfiletrace[1]}[1]}" != "$base/core/zulu" ]]; then
-    _zulu_analytics_track "Ran command: $cmd $2"
+    {
+      _zulu_analytics_track "Ran command: $cmd $2"
+    } &!
   fi
 
   # Execute the requested command
