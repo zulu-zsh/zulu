@@ -573,18 +573,53 @@ function _zulu_load_packages() {
 }
 
 ###
+# Use Zulu next
+###
+function _zulu_init_switch_branch() {
+  local oldPWD=$PWD branch="$1"
+  cd $base/core
+
+  local current=$(git status --short --branch -uno --ignore-submodules=all | head -1 | awk '{print $2}' 2>/dev/null)
+
+  if [[ $current != $branch ]]; then
+    git reset --hard >/dev/null 2>&1
+    git checkout $branch >/dev/null 2>&1
+    ./build.zsh >/dev/null 2>&1
+    echo "\033[0;32m✔\033[0;m Switched to Zulu ${branch}"
+  fi
+
+  cd $oldPWD
+  unset oldPWD
+}
+
+###
+# Display a message to next users
+###
+function _zulu_init_next_message() {
+  echo
+  echo '\033[0;33mThanks for using Zulu next\033[0;m'
+  echo 'We rely on people like you testing new versions to keep Zulu as useful'
+  echo 'and as stable as possible. If you do run into any errors, please do'
+  echo 'report them so that they can be fixed before the next release.'
+  echo
+  echo 'Github Issues: https://github.com/zulu-zsh/zulu/issues'
+  echo 'Gitter Chat:   https://gitter.im/zulu-zsh/zulu'
+}
+
+###
 # Set up the zulu environment
 ###
 function _zulu_init() {
   local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   local config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  local help check_for_update no_compile
+  local help check_for_update no_compile next dev
 
   # Parse CLI options
   zparseopts -D \
     h=help -help=help \
     c=check_for_update -check-for-update=check_for_update \
     n=no_compile -no-compile=no_compile \
+    -next=next \
     -dev=dev
 
   if [[ -n $help ]]; then
@@ -592,10 +627,20 @@ function _zulu_init() {
     return
   fi
 
+  # Check for the --dev flag and turn dev mode on or off
   if [[ -n $dev ]]; then
     export ZULU_DEV_MODE=1
   else
     export ZULU_DEV_MODE=0
+  fi
+
+  # Check for the --next flag unless in dev mode
+  if [[ $ZULU_DEV_MODE -ne 1 ]]; then
+    if [[ -n $next ]]; then
+      _zulu_init_switch_branch 'next'
+    else
+      _zulu_init_switch_branch 'master'
+    fi
   fi
 
   # Populate paths
@@ -633,6 +678,11 @@ function _zulu_init() {
   fi
 
   [[ -n $check_for_update ]] && _zulu_check_for_update
+
+  # If Zulu next is enabled, show a message to the user
+  if [[ -n $next ]]; then
+    _zulu_init_next_message
+  fi
 
   return
 }
