@@ -25,6 +25,7 @@ _zulu_commands=(
   'cdpath:Functions for adding/removing directories from \$cdpath'
   'fpath:Functions for adding/removing directories from \$fpath'
   'config:Functions for getting/setting configuration values'
+  'sync:Sync zulu environment to a remote repository'
 )
 
 ###
@@ -98,6 +99,14 @@ _zulu_config_commands=(
   'list:List all config values'
   'get:Get a config value'
   'set:Set a config value'
+)
+
+###
+# Commands in the config context
+###
+_zulu_sync_commands=(
+  'push:Upload local changes'
+  'pull:Download remote changes'
 )
 
 ###
@@ -250,6 +259,10 @@ _zulu() {
           _arguments \
             '1: :_zulu_config_cmds'
           ;;
+        (sync)
+          _arguments \
+            '1: :_zulu_sync_cmds'
+          ;;
         (fpath)
           _arguments \
             '1: :_zulu_fpath_cmds'
@@ -401,6 +414,10 @@ _zulu() {
 
 (( $+functions[_zulu_config_cmds] )) || _zulu_config_cmds() {
   _describe -t commands 'commands' _zulu_config_commands "$@"
+}
+
+(( $+functions[_zulu_sync_cmds] )) || _zulu_sync_cmds() {
+  _describe -t commands 'commands' _zulu_sync_commands "$@"
 }
 
 (( $+functions[_zulu_cmds] )) || _zulu_cmds() {
