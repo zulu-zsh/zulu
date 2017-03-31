@@ -581,7 +581,7 @@ function _zulu_init_switch_branch() {
 
   local current=$(git status --short --branch -uno --ignore-submodules=all | head -1 | awk '{print $2}' 2>/dev/null)
 
-  if [[ $current != $branch ]]; then
+  if [[ ${current:0:${#branch}} != $branch ]]; then
     git reset --hard >/dev/null 2>&1
     git checkout $branch >/dev/null 2>&1
     ./build.zsh >/dev/null 2>&1
