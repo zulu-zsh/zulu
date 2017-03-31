@@ -24,6 +24,7 @@ function _zulu_usage() {
   echo "  theme <theme>         Select a prompt theme"
   echo "  search                Search the package index"
   echo "  self-update           Update zulu"
+  echo "  switch                Switch to a different version of a package"
   echo "  sync                  Sync your Zulu environment to a remote repository"
   echo "  uninstall <package>   Uninstall a package"
   echo "  unlink <package>      Remove symlinks for a package"
