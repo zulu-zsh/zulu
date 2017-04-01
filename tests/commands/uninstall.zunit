@@ -1,6 +1,10 @@
 #!/usr/bin/env zunit
 
 @test 'Test "zulu uninstall" uninstalls package' {
+  if [[ ! -d $PWD/tests/_support/.zulu/packages/crash ]]; then
+    skip 'Crash package not installed. Perhaps an earlier test failed?'
+  fi
+
   run zulu uninstall crash
 
   assert $state equals 0

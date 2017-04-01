@@ -26,6 +26,7 @@ _zulu_commands=(
   'fpath:Functions for adding/removing directories from \$fpath'
   'config:Functions for getting/setting configuration values'
   'sync:Sync zulu environment to a remote repository'
+  'switch:Checkout a different version of a package'
 )
 
 ###
@@ -234,10 +235,20 @@ _zulu() {
           _arguments -A \
             '(-h --help)'{-h,--help}'[show help text and exit]' \
             '--ignore-dependencies[Don'\''t automatically install dependencies]' \
-            '--no-autoselect-themes[Don'\''t autoselect themes after installing]'
+            '--no-autoselect-themes[Don'\''t autoselect themes after installing]' \
+            '(-b --branch)'{-b,--branch}'[specify a branch to install]' \
+            '(-t --tag)'{-t,--tag}'[specify a tag or commit to install]'
 
           _arguments \
             '*: :_zulu_not_installed_packages'
+          ;;
+        (switch)
+          _arguments -A \
+            '(-b --branch)'{-b,--branch}'[specify a branch to install]' \
+            '(-t --tag)'{-t,--tag}'[specify a tag or commit to install]'
+
+          _arguments \
+            '*: :_zulu_installed_packages'
           ;;
         (info)
           _arguments \
