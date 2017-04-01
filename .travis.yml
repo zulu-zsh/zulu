@@ -23,7 +23,7 @@ install:
   - curl -L https://raw.githubusercontent.com/molovo/revolver/master/revolver > .bin/revolver
   - curl -L https://raw.githubusercontent.com/molovo/color/master/color.zsh > .bin/color
   - curl -L https://raw.githubusercontent.com/molovo/zvm/master/zvm > .bin/zvm
-  - curl -L https://github.com/molovo/zunit/releases/download/v0.7.0-alpha/zunit > .bin/zunit
+  - curl -L https://github.com/molovo/zunit/releases/download/v0.7.0/zunit > .bin/zunit
   - chmod u+x .bin/{color,revolver,zunit,zvm}
   - export PATH="$HOME/.zvm/bin:$PWD/.bin:$PATH"
 before_script:
