@@ -62,4 +62,4 @@ unset oldIFS
 
 # Source the embedded Zulu installation
 source "$PWD/tests/_support/.zulu/core/zulu"
-zulu init
+zulu init --dev
