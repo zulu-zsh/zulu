@@ -24,6 +24,8 @@ function _zulu_usage() {
   echo "  theme <theme>         Select a prompt theme"
   echo "  search                Search the package index"
   echo "  self-update           Update zulu"
+  echo "  switch                Switch to a different version of a package"
+  echo "  sync                  Sync your Zulu environment to a remote repository"
   echo "  uninstall <package>   Uninstall a package"
   echo "  unlink <package>      Remove symlinks for a package"
   echo "  update                Update the package index"
@@ -88,6 +90,14 @@ function zulu() {
     echo
     _zulu_usage
     return 1
+  fi
+
+
+  # If the user initiated this call, then track it
+  if [[ $ZULU_DEV_MODE -ne 1 && "${${(s/:/)funcfiletrace[1]}[1]}" != "$base/core/zulu" ]]; then
+    {
+      _zulu_analytics_track "Ran command: $cmd $2"
+    } &!
   fi
 
   # Execute the requested command

@@ -1,0 +1,15 @@
+#!/usr/bin/env zunit
+
+@test 'Test "zulu switch --tag" checks out correct tag' {
+  run zulu switch --tag v0.6.1 zunit
+
+  assert $state equals 0
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Successfully switched zunit to v0.6.1"
+}
+
+@test 'Test "zulu switch --branch" checks out correct branch' {
+  run zulu switch --branch master zunit
+
+  assert $state equals 0
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Successfully switched zunit to master"
+}

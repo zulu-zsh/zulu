@@ -24,6 +24,9 @@ _zulu_commands=(
   'manpath:Functions for adding/removing directories from \$manpath'
   'cdpath:Functions for adding/removing directories from \$cdpath'
   'fpath:Functions for adding/removing directories from \$fpath'
+  'config:Functions for getting/setting configuration values'
+  'sync:Sync zulu environment to a remote repository'
+  'switch:Checkout a different version of a package'
 )
 
 ###
@@ -88,6 +91,23 @@ _zulu_var_commands=(
   'add:Add a new environment variable'
   'rm:Remove an existing environment variable'
   'load:Reload all environment variables'
+)
+
+###
+# Commands in the config context
+###
+_zulu_config_commands=(
+  'list:List all config values'
+  'get:Get a config value'
+  'set:Set a config value'
+)
+
+###
+# Commands in the config context
+###
+_zulu_sync_commands=(
+  'push:Upload local changes'
+  'pull:Download remote changes'
 )
 
 ###
@@ -215,10 +235,20 @@ _zulu() {
           _arguments -A \
             '(-h --help)'{-h,--help}'[show help text and exit]' \
             '--ignore-dependencies[Don'\''t automatically install dependencies]' \
-            '--no-autoselect-themes[Don'\''t autoselect themes after installing]'
+            '--no-autoselect-themes[Don'\''t autoselect themes after installing]' \
+            '(-b --branch)'{-b,--branch}'[specify a branch to install]' \
+            '(-t --tag)'{-t,--tag}'[specify a tag or commit to install]'
 
           _arguments \
             '*: :_zulu_not_installed_packages'
+          ;;
+        (switch)
+          _arguments -A \
+            '(-b --branch)'{-b,--branch}'[specify a branch to install]' \
+            '(-t --tag)'{-t,--tag}'[specify a tag or commit to install]'
+
+          _arguments \
+            '*: :_zulu_installed_packages'
           ;;
         (info)
           _arguments \
@@ -235,6 +265,14 @@ _zulu() {
         (var)
           _arguments \
             '1: :_zulu_var_cmds'
+          ;;
+        (config)
+          _arguments \
+            '1: :_zulu_config_cmds'
+          ;;
+        (sync)
+          _arguments \
+            '1: :_zulu_sync_cmds'
           ;;
         (fpath)
           _arguments \
@@ -383,6 +421,14 @@ _zulu() {
 
 (( $+functions[_zulu_var_cmds] )) || _zulu_var_cmds() {
   _describe -t commands 'commands' _zulu_var_commands "$@"
+}
+
+(( $+functions[_zulu_config_cmds] )) || _zulu_config_cmds() {
+  _describe -t commands 'commands' _zulu_config_commands "$@"
+}
+
+(( $+functions[_zulu_sync_cmds] )) || _zulu_sync_cmds() {
+  _describe -t commands 'commands' _zulu_sync_commands "$@"
 }
 
 (( $+functions[_zulu_cmds] )) || _zulu_cmds() {

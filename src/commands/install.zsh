@@ -8,16 +8,19 @@ function _zulu_install_usage() {
   echo $(_zulu_color yellow "Options:")
   echo "      --no-autoselect-themes      Don't autoselect themes after installing"
   echo "      --ignore-dependencies       Don't automatically install dependencies"
+  echo "  -b, --branch                    Specify a branch to install"
+  echo "  -t, --tag                       Specify a tag to install"
 }
 
 ###
 # Install a package
 ###
 function _zulu_install_package() {
-  local package json repo dir file link packagetype
+  local package ref json repo dir file link packagetype
   local -a dependencies
 
   package="$1"
+  ref="$2"
 
   # Check if the package is already installed
   root="$base/packages/$package"
@@ -42,7 +45,8 @@ function _zulu_install_package() {
 
   # Clone the repository
   cd "$base/packages"
-  git clone --recursive --depth=1 $repo $package
+
+  git clone --recursive --branch $ref $repo $package
   if [[ $? -ne 0 ]]; then
     echo 'Failed to clone repository'
     return 1
@@ -61,17 +65,25 @@ function _zulu_install_package() {
 # Zulu command to handle package installation
 ###
 function _zulu_install() {
-  local base index packages out help no_autoselect_themes ignore_dependencies
+  local base index packages out help no_autoselect_themes ignore_dependencies \
+    branch tag ref
 
   # Parse options
   zparseopts -D h=help -help=help \
     -no-autoselect-themes=no_autoselect_themes \
-    -ignore-dependencies=ignore_dependencies
+    -ignore-dependencies=ignore_dependencies \
+    b:=branch -branch:=branch \
+    t:=tag -tag:=tag
 
   # Output help and return if requested
   if [[ -n $help ]]; then
     _zulu_install_usage
     return
+  fi
+
+  if [[ -n $branch && -n $tag ]]; then
+    echo $(_zulu_color red 'You must only specify one of branch or tag')
+    return 1
   fi
 
   # Set up some variables
@@ -134,8 +146,19 @@ function _zulu_install() {
       fi
     fi
 
+    local ref='master'
+    if [[ -n $branch ]]; then
+      shift branch
+      ref=$branch
+    fi
+
+    if [[ -n $tag ]]; then
+      shift tag
+      ref=$tag
+    fi
+
     _zulu_revolver start "Installing $package..."
-    out=$(_zulu_install_package "$package" 2>&1)
+    out=$(_zulu_install_package "$package" "$ref" 2>&1)
     state=$?
     _zulu_revolver stop
 

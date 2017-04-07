@@ -7,6 +7,16 @@ function _zulu_info_usage() {
 }
 
 ###
+# Check if a package is installed
+###
+function _zulu_info_is_installed() {
+  local package="$1" base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
+
+  [[ -d "$base/packages/$package" ]]
+  return $?
+}
+
+###
 # Extract package information from the index entry
 ###
 function _zulu_info_package() {
@@ -20,8 +30,7 @@ function _zulu_info_package() {
   author=$(jsonval $json 'author')
   packagetype=$(jsonval $json 'type')
 
-  installed=""
-  [[ -d "$base/packages/$package" ]] && installed="$(_zulu_color green '✔ Installed')"
+  _zulu_info_is_installed $name && installed="$(_zulu_color green '✔ Installed')"
 
   echo "$(_zulu_color white underline "$name") $installed"
   echo $description

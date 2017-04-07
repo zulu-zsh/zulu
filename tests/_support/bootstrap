@@ -49,6 +49,9 @@ if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
   fi
 fi
 
+# Disable analytics whilst testing
+echo "analytics: false" >! "$ZULU_CONFIG_DIR/config.yml"
+
 # Ensure the progress indicator is hidden, so that we can
 # perform assertions against the output from commands
 export ZULU_NO_PROGRESS=1
@@ -58,5 +61,5 @@ export IFS=$oldIFS
 unset oldIFS
 
 # Source the embedded Zulu installation
-source "$PWD/zulu"
-zulu init
+source "$PWD/tests/_support/.zulu/core/zulu"
+zulu init --dev
