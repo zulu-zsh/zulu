@@ -2,7 +2,7 @@
 
 @teardown {
 	# Always revert back to default theme after changing it
-	zulu theme filthy
+	zulu theme zulu-theme
 }
 
 @test 'Test "zulu theme" sets theme' {
