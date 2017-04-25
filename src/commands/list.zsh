@@ -15,34 +15,51 @@ function _zulu_list_usage() {
   echo "  -t, --type <type>    Limit results to packages of <type>"
 }
 
-function _zulu_list_all() {
+function _zulu_list_packages() {
   local base index files json packages package type name description pad palength
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="$base/index/packages"
 
-  for package in $(/bin/ls $index | grep -v '.md'); do
+  for package in $(/bin/ls $index); do
     json="$(cat $index/$package)"
 
+    # If --installed is passed but the package is not installed,
+    # then skip past it
+    if [[ -n $installed ]] && ! _zulu_info_is_installed $package; then
+      continue
+    fi
+
+    # If --not-installed is passed but the package is installed,
+    # then skip past it
+    if [[ -n $not_installed ]] && _zulu_info_is_installed $package; then
+      continue
+    fi
+
+    # If --type is passed but the package is not or the
+    # requested type, then skip past it
     type=$(jsonval $json 'type')
     if [[ -n $package_type && $type != $package_type ]]; then
       continue
     fi
 
+    # Print out the name of the package, and the installed flag
+    # unless --simple is passed
     if [[ -n $simple ]]; then
       name="$package"
       lim=30
     else
-      if [[ -d "$base/packages/$package" ]]; then
+      if _zulu_info_is_installed $package; then
         name="$(_zulu_color green '✔') $package"
-        lim=36
+        lim=42
       else
         name="  $package"
         lim=30
       fi
     fi
 
+    # If --describe is specified, print the description
     if [[ -n $describe ]]; then
       description=$(jsonval $json 'description')
       printf '%s' "$name"
@@ -56,68 +73,17 @@ function _zulu_list_all() {
   return
 }
 
-function _zulu_list_installed() {
-  local base index files json packages package type description pad palength
-
-  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
-  config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="$base/index/packages"
-
-  for package in $(/bin/ls "$base/packages"); do
-    json="$(cat $index/$package)"
-
-    type=$(jsonval $json 'type')
-    if [[ -n $package_type && $type != $package_type ]]; then
-      continue
-    fi
-
-    if [[ -n $describe ]]; then
-      description=$(jsonval $json 'description')
-
-      printf '%s' "$package"
-      printf '%*.*s' 0 $((30 - ${#package} )) "$(printf '%0.1s' " "{1..60})"
-      printf '%s\n' "$description"
-    else
-      echo $package
-    fi
-  done
-
-  return
-}
-
-function _zulu_list_not_installed() {
-  local base index files json packages package type description pad palength
-
-  base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
-  config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  index="$base/index/packages"
-
-  for package in $(/bin/ls $index | grep -v '.md'); do
-    if [[ ! -d "$base/packages/$package" ]]; then
-      json="$(cat $index/$package)"
-
-      type=$(jsonval $json 'type')
-      if [[ -n $package_type && $type != $package_type ]]; then
-        continue
-      fi
-
-      if [[ -n $describe ]]; then
-        description=$(jsonval $json 'description')
-
-        printf '%s' "$package"
-        printf '%*.*s' 0 $((30 - ${#package} )) "$(printf '%0.1s' " "{1..60})"
-        printf '%s\n' "$description"
-      else
-        echo $package
-      fi
-    fi
-  done
-
-  return
-}
-
 function _zulu_list() {
   local help all installed not_installed describe simple package_type
+
+  # If no arguments are passed, just print a simple list
+  # of all installed packages
+  if [[ $# -eq 0 ]]; then
+    installed=true
+    simple=true
+    _zulu_list_packages
+    return
+  fi
 
   # Parse options
   zparseopts -D \
@@ -135,19 +101,11 @@ function _zulu_list() {
     return
   fi
 
+  # Check if the --type option is passed and shift the argument
   if [[ -n $package_type ]]; then
     shift package_type
   fi
 
-  if [[ -n $all ]]; then
-    _zulu_list_all
-    return
-  fi
-
-  if [[ -n $not_installed ]]; then
-    _zulu_list_not_installed
-    return
-  fi
-
-  _zulu_list_installed
+  # List the packages
+  _zulu_list_packages
 }
