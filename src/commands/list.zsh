@@ -13,6 +13,8 @@ function _zulu_list_usage() {
   echo "  -n, --not-installed  List non-installed packages"
   echo "  -s, --simple         Hide the 'package installed' indicator"
   echo "  -t, --type <type>    Limit results to packages of <type>"
+  echo "      --branch         Print the current branch (if one is checked out)"
+  echo "      --tag            Print the current tag (if one is checked out)"
 }
 
 function _zulu_list_packages() {
@@ -44,17 +46,60 @@ function _zulu_list_packages() {
       continue
     fi
 
+    # Prevent ZVM from changing the ZSH version
+    local old_ZVM_AUTO_USE=$ZVM_AUTO_USE
+    unset ZVM_AUTO_USE
+
+    local suffix=''
+
+    # If --branch is specified, get the current checked-out branch
+    # for the package and print it alongside the name
+    if [[ -n $branch ]] && _zulu_info_is_installed $package; then
+      local oldPWD=$PWD
+      cd "$base/packages/$package"
+
+      local current=$(git status --short --branch -uno --ignore-submodules=all | head -1 | awk '{print $2}' 2>/dev/null)
+      current=${current%...*}
+
+      if [[ $current != 'HEAD' && $current != 'master' ]]; then
+        suffix+=", branch: $current"
+      fi
+
+      cd $oldPWD
+      unset oldPWD
+    fi
+
+    # If --tag is specified, get the current checked-out tag
+    # for the package and print it alongside the name
+    if [[ -n $tag ]] && _zulu_info_is_installed $package; then
+      local oldPWD=$PWD
+      cd "$base/packages/$package"
+
+      local commit=$(git status HEAD -uno --ignore-submodules=all | head -1 | awk '{print $4}' 2>/dev/null)
+
+      if [[ -n $commit ]]; then
+        suffix+=", tag: $commit"
+      fi
+
+      cd $oldPWD
+      unset oldPWD
+    fi
+
+    # Restore the previous ZVM_AUTO_USE setting
+    export ZVM_AUTO_USE=$old_ZVM_AUTO_USE
+    unset old_ZVM_AUTO_USE
+
     # Print out the name of the package, and the installed flag
     # unless --simple is passed
     if [[ -n $simple ]]; then
-      name="$package"
+      name="$package$suffix"
       lim=30
     else
       if _zulu_info_is_installed $package; then
-        name="$(_zulu_color green '✔') $package"
+        name="$(_zulu_color green '✔') $package$suffix"
         lim=42
       else
-        name="  $package"
+        name="  $package$suffix"
         lim=30
       fi
     fi
@@ -74,7 +119,7 @@ function _zulu_list_packages() {
 }
 
 function _zulu_list() {
-  local help all installed not_installed describe simple package_type
+  local help all installed not_installed describe simple package_type branch tag
 
   # If no arguments are passed, just print a simple list
   # of all installed packages
@@ -93,7 +138,9 @@ function _zulu_list() {
     a=all -all=all \
     d=describe -describe=describe \
     s=simple -simple=simple \
-    t:=package_type -type:=package_type
+    t:=package_type -type:=package_type \
+    -branch=branch \
+    -tag=tag
 
   # Output help and return if requested
   if [[ -n $help ]]; then
