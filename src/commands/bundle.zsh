@@ -17,7 +17,7 @@ function _zulu_bundle_usage() {
 # Dump installed packages to file
 ###
 function _zulu_bundle_dump() {
-  local installed=$(zulu list --installed --short)
+  local installed=$(zulu list --installed --simple --branch --tag)
 
   # Check if the packagefile exists
   if [[ -f $packagefile ]]; then
