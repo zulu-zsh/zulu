@@ -1,6 +1,6 @@
 # Zulu
 
-Zulu: [![GitHub release](https://img.shields.io/github/release/zulu-zsh/zulu.svg)](https://github.com/zulu-zsh/zulu/releases/latest) [![Build Status](https://travis-ci.org/zulu-zsh/zulu.svg?branch=master)](https://travis-ci.org/zulu-zsh/zulu) | Index: [![Build Status](https://travis-ci.org/zulu-zsh/index.svg?branch=master)](https://travis-ci.org/zulu-zsh/index) | [![Join the chat at https://gitter.im/zulu-zsh/zulu](https://badges.gitter.im/zulu-zsh/zulu.svg)](https://gitter.im/zulu-zsh/zulu?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Join the slack community at https://zulu-zsh.slack.com](https://zulu-slack.herokuapp.com/badge.svg)](https://zulu-slack.herokuapp.com)
+Zulu: [![GitHub release](https://img.shields.io/github/release/zulu-zsh/zulu.svg)](https://github.com/zulu-zsh/zulu/releases/latest) [![Build Status](https://travis-ci.org/zulu-zsh/zulu.svg?branch=master)](https://travis-ci.org/zulu-zsh/zulu) | Index: [![Build Status](https://travis-ci.org/zulu-zsh/index.svg?branch=master)](https://travis-ci.org/zulu-zsh/index) | [![Join the chat at https://gitter.im/zulu-zsh/zulu](https://badges.gitter.im/zulu-zsh/zulu.svg)](https://gitter.im/zulu-zsh/zulu?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Thanks for using Zulu. Zulu is a environment manager for ZSH, which aims to make it easy to manage your shell without writing any code.
 
