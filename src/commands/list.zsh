@@ -17,16 +17,17 @@ function _zulu_list_usage() {
   echo "      --tag            Print the current tag (if one is checked out)"
 }
 
+###
+# Output a list of packages
+###
 function _zulu_list_packages() {
-  local base index files json packages package type name description pad palength
+  local base index files json packages package type name description pad lim
 
   base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="$base/index/packages"
 
   for package in $(/bin/ls $index); do
-    json="$(cat $index/$package)"
-
     # If --installed is passed but the package is not installed,
     # then skip past it
     if [[ -n $installed ]] && ! _zulu_info_is_installed $package; then
@@ -39,11 +40,20 @@ function _zulu_list_packages() {
       continue
     fi
 
-    # If --type is passed but the package is not or the
+    # We only need to read the package's index file if
+    # the --type or --describe options are passed
+    if [[ -n $package_type || -n $describe ]]; then
+      json="$(cat $index/$package)"
+    fi
+
+    # If --type is passed but the package is not of the
     # requested type, then skip past it
-    type=$(jsonval $json 'type')
-    if [[ -n $package_type && $type != $package_type ]]; then
-      continue
+    if [[ -n $package_type ]]; then
+      type=$(jsonval $json 'type')
+
+      if [[ $type != $package_type ]]; then
+        continue
+      fi
     fi
 
     # Prevent ZVM from changing the ZSH version
@@ -118,6 +128,9 @@ function _zulu_list_packages() {
   return
 }
 
+###
+# The main zulu list function
+###
 function _zulu_list() {
   local help all installed not_installed describe simple package_type branch tag
 
