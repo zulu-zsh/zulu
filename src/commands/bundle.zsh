@@ -42,7 +42,7 @@ function _zulu_bundle_dump() {
 # Uninstall packages not in packagefile
 ###
 function _zulu_bundle_cleanup() {
-  local -a installed; installed=($(zulu list --installed --simple))
+  local -a installed; installed=($(zulu list --installed --simple --branch --tag))
 
   # Loop through each of the installed packages
   for package in "${installed[@]}"; do
