@@ -52,12 +52,6 @@ function _zulu_install_package() {
     return 1
   fi
 
-  packagefile="$config/packages"
-  in_packagefile=$(cat $packagefile | grep -e '^'${package}'$')
-  if [[ "$in_packagefile" = "" ]]; then
-    echo "$package" >> $packagefile
-  fi
-
   return
 }
 
@@ -176,4 +170,7 @@ function _zulu_install() {
       echo "$out"
     fi
   done
+
+  # Write the new packagefile contents
+  zulu bundle --dump --force
 }
