@@ -10,9 +10,17 @@ function _zulu_uninstall_usage() {
 # Install a package
 ###
 function _zulu_uninstall_package() {
-  local package json repo dir file link
+  local package root
 
   package="$1"
+
+  # Double check that the package name has been passed
+  if [[ -z $package ]]; then
+    echo $(_zulu_color red "Please specify a package name")
+    echo
+    _zulu_uninstall_usage
+    return 1
+  fi
 
   # Check if the package is already uninstalled
   root="$base/packages/$package"
@@ -24,10 +32,7 @@ function _zulu_uninstall_package() {
   #       get populated for some reason
   rm -rf "$root"
 
-  packagefile="$config/packages"
-  echo "$(cat $packagefile | grep -v -e "^${package}$")" >! $packagefile
-
-  return
+  return $?
 }
 
 ###
@@ -88,4 +93,6 @@ function _zulu_uninstall() {
       echo "$out"
     fi
   done
+
+  zulu bundle --dump --force
 }

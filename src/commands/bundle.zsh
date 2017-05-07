@@ -17,7 +17,7 @@ function _zulu_bundle_usage() {
 # Dump installed packages to file
 ###
 function _zulu_bundle_dump() {
-  local installed=$(zulu list --installed --short)
+  local installed=$(zulu list --installed --simple --branch --tag)
 
   # Check if the packagefile exists
   if [[ -f $packagefile ]]; then
@@ -42,7 +42,7 @@ function _zulu_bundle_dump() {
 # Uninstall packages not in packagefile
 ###
 function _zulu_bundle_cleanup() {
-  local -a installed; installed=($(zulu list --installed --short))
+  local -a installed; installed=($(zulu list --installed --simple --branch --tag))
 
   # Loop through each of the installed packages
   for package in "${installed[@]}"; do
@@ -107,15 +107,47 @@ function _zulu_bundle() {
     return $?
   fi
 
+  local oldIFS=$IFS
+  IFS=$'\n'
+
   # Load the list of packages
   packages=($(cat $packagefile))
 
+  IFS=$oldIFS
+  unset oldIFS
+
   # Loop through the packages
   for package in "${packages[@]}"; do
-    # Check if the package is installed already
-    if [[ ! -d "$base/packages/$package" ]]; then
-      # Install the package
-      zulu install $package
+    local package_name='' flag='' argument='' install_flags=''
+
+    # Separate the package name from any meta information
+    local -a parts meta
+    parts=(${(ps/, /)package})
+    package_name="${parts[1]}"
+    meta=(${(ps/: /)parts[2]})
+
+    # Skip the package if it is already installed
+    if _zulu_info_is_installed $package_name; then
+      continue
     fi
+
+    # Separate the meta information into flags and arguments
+    if [[ ${#meta} -gt 0 ]]; then
+      flag="${meta[1]}"
+      argument="${meta[2]}"
+
+      # Create the correct install flags
+      case ${flag} in
+        branch )
+          install_flags="--branch $argument"
+          ;;
+        tag )
+          install_flags="--tag $argument"
+          ;;
+      esac
+    fi
+
+    # Install the package
+    zulu install ${(ps/ /)install_flags} $package_name
   done
 }
