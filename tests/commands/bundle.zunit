@@ -1,16 +1,22 @@
 #!/usr/bin/env zunit
 
+@setup {
+  if [[ -d "$PWD/tests/_support/.zulu/packages/dummy" ]]; then
+    zulu uninstall dummy
+  fi
+}
+
 @teardown {
-  zulu uninstall async
+  zulu uninstall dummy
 }
 
 @test 'Test "zulu bundle" installs package' {
   # Add an extra package to the packagefile
-  echo 'async' >> "$PWD/tests/_support/.config/zulu/packages"
+  echo 'dummy' >> "$PWD/tests/_support/.config/zulu/packages"
 
   run zulu bundle
 
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking async"
-  assert "$PWD/tests/_support/.zulu/packages/async" is_dir
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
+  assert "$PWD/tests/_support/.zulu/packages/dummy" is_dir
 }
