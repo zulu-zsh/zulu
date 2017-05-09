@@ -1,18 +1,42 @@
 #!/usr/bin/env zunit
 
-@test 'Test "zulu install" installs package' {
-  run zulu install --no-autoselect-themes --ignore-dependencies crash
+@setup {
+  if [[ -d "$PWD/tests/_support/.zulu/packages/dummy" ]]; then
+    zulu uninstall dummy
+  fi
+}
 
+@teardown {
+  if [[ -d "$PWD/tests/_support/.zulu/packages/dummy" ]]; then
+    zulu uninstall dummy
+  fi
+}
+
+@test 'Test "zulu install" installs package' {
+  # Install the dummy package
+  run zulu install --no-autoselect-themes --ignore-dependencies dummy
+
+  # Assert that the package installed successfully
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking crash"
-  assert "$PWD/tests/_support/.zulu/packages/crash" is_dir
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
+  assert "$PWD/tests/_support/.zulu/packages/dummy" is_dir
 }
 
 @test 'Test "zulu install" fails for installed package' {
-  run zulu install --no-autoselect-themes --ignore-dependencies crash
+  # Install the dummy package
+  run zulu install --no-autoselect-themes --ignore-dependencies dummy
 
+  # Assert that the package installed successfully
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'crash' is already installed\033[0;m"
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
+  assert "$PWD/tests/_support/.zulu/packages/dummy" is_dir
+
+  # Install the package again and record the output
+  run zulu install --no-autoselect-themes --ignore-dependencies dummy
+
+  # Assert that the package failed to install
+  assert $state equals 1
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'dummy' is already installed\033[0;m"
 }
 
 @test 'Test "zulu install" fails for non-existent package' {
@@ -30,17 +54,20 @@
 }
 
 @test 'Test "zulu install --branch" checks out correct branch' {
-  run zulu install --no-autoselect-themes --ignore-dependencies --branch next zunit
+  # Install the 'testing' branch of the dummy package
+  run zulu install --no-autoselect-themes --ignore-dependencies --branch testing dummy
 
+  # Assert that the package installed successfully
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking zunit"
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
 
+  # Change to the package directory and check the checked out branch
   local oldPWD=$PWD
-  cd "${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}/packages/zunit"
+  cd "${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}/packages/dummy"
 
   local branch=$(git status --short --branch -uno --ignore-submodules=all | head -1 | awk '{print $2}' 2>/dev/null)
 
-  assert "${branch%...*}" same_as 'next'
+  assert "${branch%...*}" same_as 'testing'
 
   cd $oldPWD
   unset oldPWD
