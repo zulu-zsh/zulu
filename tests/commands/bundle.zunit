@@ -1,13 +1,15 @@
 #!/usr/bin/env zunit
 
 @setup {
-  if [[ -d "$PWD/tests/_support/.zulu/packages/dummy" ]]; then
+  if _zulu_info_is_installed dummy; then
     zulu uninstall dummy
   fi
 }
 
 @teardown {
-  zulu uninstall dummy
+  if _zulu_info_is_installed dummy; then
+    zulu uninstall dummy
+  fi
 }
 
 @test 'Test "zulu bundle" installs package' {
