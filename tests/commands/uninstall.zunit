@@ -1,21 +1,36 @@
 #!/usr/bin/env zunit
 
-@test 'Test "zulu uninstall" uninstalls package' {
-  if [[ ! -d $PWD/tests/_support/.zulu/packages/crash ]]; then
-    skip 'Crash package not installed. Perhaps an earlier test failed?'
+@setup {
+  if ! _zulu_info_is_installed dummy; then
+    zulu install --no-autoselect-themes --ignore-dependencies dummy
   fi
+}
 
-  run zulu uninstall crash
+@teardown {
+  if _zulu_info_is_installed dummy; then
+    zulu uninstall dummy
+  fi
+}
+
+@test 'Test "zulu uninstall" uninstalls package' {
+  run zulu uninstall dummy
 
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished uninstalling crash"
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished uninstalling dummy"
 }
 
 @test 'Test "zulu uninstall" fails for not-installed package' {
-  run zulu uninstall crash
+  # Uninstall the package once
+  run zulu uninstall dummy
+
+  assert $state equals 0
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished uninstalling dummy"
+
+  # Run the uninstall again, this time it should fail
+  run zulu uninstall dummy
 
   assert $state equals 1
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'crash' is not installed\033[0;m"
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'dummy' is not installed\033[0;m"
 }
 
 @test 'Test "zulu uninstall" fails for non-existent package' {
