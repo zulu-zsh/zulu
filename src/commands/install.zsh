@@ -25,30 +25,44 @@ function _zulu_install_package() {
   # Check if the package is already installed
   root="$base/packages/$package"
   if [[ -d "$root" ]]; then
-    echo $(_zulu_color red "Package '$package' is already installed")
+    echo $(_zulu_color red "Package '$package' is already installed") >&2
     return 1
   fi
 
   # Get the JSON from the index
   json=$(cat "$index/$package")
   if [[ $? -ne 0 ]]; then
-    echo 'Could not find package in index'
+    echo 'Could not find package in index' >&2
     return 1
   fi
 
   # Get the repository URL from the JSON
   repo=$(jsonval $json 'repository')
   if [[ $? -ne 0 || -z $repo ]]; then
-    echo 'Could not find repository URL'
+    echo 'Could not find repository URL' >&2
     return 1
+  fi
+
+  local -a warnings
+  warnings=($(echo $(jsonval $json 'collision_warnings') | tr "," "\n"))
+
+  if [[ ${#warnings} -gt 0 ]]; then
+    echo $(_zulu_color yellow underline "Warnings from $package package:") >&2
+    for warning in "${(@F)warnings}"; do
+      local -a parts; parts=(${(s/:/)warning})
+      if _zulu_info_is_installed $parts[1]; then
+        echo $(_zulu_color yellow "Collides with ${warning}") >&2
+      fi
+    done
+    echo
   fi
 
   # Clone the repository
   cd "$base/packages"
 
-  git clone --recursive --branch $ref $repo $package
+  git clone --recursive --branch $ref $repo $package 2>&1
   if [[ $? -ne 0 ]]; then
-    echo 'Failed to clone repository'
+    echo 'Failed to clone repository' >&2
     return 1
   fi
 
@@ -152,7 +166,7 @@ function _zulu_install() {
     fi
 
     _zulu_revolver start "Installing $package..."
-    out=$(_zulu_install_package "$package" "$ref" 2>&1)
+    out=$(_zulu_install_package "$package" "$ref")
     state=$?
     _zulu_revolver stop
 
