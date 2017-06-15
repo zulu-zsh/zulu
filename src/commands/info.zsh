@@ -52,7 +52,7 @@ function _zulu_info() {
 
   # Output help and return if requested
   if [[ -n $help ]]; then
-    _zulu_install_usage
+    _zulu_info_usage
     return
   fi
 
