@@ -54,7 +54,7 @@ function _zulu_switch() {
 
   # Output help and return if requested
   if [[ -n $help ]]; then
-    _zulu_path_usage
+    _zulu_switch_usage
     return
   fi
 
