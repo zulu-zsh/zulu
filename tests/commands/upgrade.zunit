@@ -23,14 +23,14 @@
   fi
 
   # Stash any uncommitted changes and
-  git stash >/dev/null 2>&1
+  git stash 2>&1
 
   # Fetch commits from the remote, since the existing clone is a
   # shallow one
-  git fetch --unshallow >/dev/null 2>&1
+  git fetch --unshallow 2>&1
 
   # Rewind one commit to ensure updates are available
-  git reset --hard HEAD~1 >/dev/null 2>&1
+  git reset --hard HEAD~1 2>&1
 
   cd $oldPWD
   unset oldPWD
@@ -74,8 +74,8 @@
 
   # Stash any uncommitted changes and rewind one commit to ensure
   # updates are available
-  git stash >/dev/null 2>&1
-  git reset --hard HEAD~1 >/dev/null 2>&1
+  git stash 2>&1
+  git reset --hard HEAD~1 2>&1
 
   # Add a test line to the end of a source file
   echo 'thisisatest' >> README.md
