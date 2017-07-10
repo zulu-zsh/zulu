@@ -14,7 +14,6 @@ cache:
 dist: trusty
 matrix:
   include:
-    - env: ZVM_VERSION='5.0.8'
     - env: ZVM_VERSION='5.1.1'
     - env: ZVM_VERSION='5.2'
     - env: ZVM_VERSION='5.3.1'
