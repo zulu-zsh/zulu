@@ -87,9 +87,9 @@ function _zulu_uninstall() {
     _zulu_revolver stop
 
     if [ $state -eq 0 ]; then
-      echo "$(_zulu_color green '✔') Finished uninstalling $package        "
+      echo "$(_zulu_color green '✔') Finished uninstalling $package"
     else
-      echo "$(_zulu_color red '✘') Error uninstalling $package        "
+      echo "$(_zulu_color red '✘') Error uninstalling $package"
       echo "$out"
     fi
   done

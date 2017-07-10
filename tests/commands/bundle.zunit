@@ -19,6 +19,6 @@
   run zulu bundle
 
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
+  assert "${lines[${#lines}]}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
   assert "$PWD/tests/_support/.zulu/packages/dummy" is_dir
 }

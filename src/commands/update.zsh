@@ -40,7 +40,7 @@ function _zulu_update_check_for_update() {
     fi
   fi
 
-  echo "$(_zulu_color green "No update available        ")"
+  echo "$(_zulu_color green "No update available")"
   cd $old
   return 1
 }
@@ -77,9 +77,9 @@ function _zulu_update() {
     _zulu_revolver stop
 
     if [ $? -eq 0 ]; then
-      echo "$(_zulu_color green '✔') Package index updated        "
+      echo "$(_zulu_color green '✔') Package index updated"
     else
-      echo "$(_zulu_color red '✘') Error updating package index        "
+      echo "$(_zulu_color red '✘') Error updating package index"
       echo "$out"
     fi
 
@@ -87,5 +87,5 @@ function _zulu_update() {
   fi
 
   _zulu_revolver stop
-  echo "$(_zulu_color green "No update available        ")"
+  echo "$(_zulu_color green "No update available")"
 }

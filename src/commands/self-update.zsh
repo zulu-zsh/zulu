@@ -85,9 +85,9 @@ function _zulu_self-update() {
     _zulu_revolver stop
 
     if [ $? -eq 0 ]; then
-      echo "$(_zulu_color green '✔') Zulu core updated        "
+      echo "$(_zulu_color green '✔') Zulu core updated"
     else
-      echo "$(_zulu_color red '✘') Error updating zulu core        "
+      echo "$(_zulu_color red '✘') Error updating zulu core"
       echo "$out"
 
       return 1
@@ -97,5 +97,5 @@ function _zulu_self-update() {
   fi
 
   _zulu_revolver stop
-  echo "$(_zulu_color green "No update available        ")"
+  echo "$(_zulu_color green "No update available")"
 }

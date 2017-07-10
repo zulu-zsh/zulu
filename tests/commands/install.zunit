@@ -18,7 +18,7 @@
 
   # Assert that the package installed successfully
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
+  assert "${lines[${#lines}]}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
   assert "$PWD/tests/_support/.zulu/packages/dummy" is_dir
 }
 
@@ -28,7 +28,7 @@
 
   # Assert that the package installed successfully
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
+  assert "${lines[${#lines}]}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
   assert "$PWD/tests/_support/.zulu/packages/dummy" is_dir
 
   # Install the package again and record the output
@@ -36,14 +36,14 @@
 
   # Assert that the package failed to install
   assert $state equals 1
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31m✘\033[0;m Error installing dummy"
+  assert "${lines[${#lines}]}" same_as "\033[0;31m✘\033[0;m Error installing dummy"
 }
 
 @test 'Test "zulu install" fails for non-existent package' {
   run zulu install --no-autoselect-themes --ignore-dependencies not-a-package
 
   assert $state equals 1
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'not-a-package' is not in the index\033[0;m"
+  assert "${lines[${#lines}]}" same_as "\033[0;31mPackage 'not-a-package' is not in the index\033[0;m"
 }
 
 @test 'Test "zulu install" fails with no argument' {
@@ -59,7 +59,7 @@
 
   # Assert that the package installed successfully
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
+  assert "${lines[${#lines}]}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
 
   # Change to the package directory and check the checked out branch
   local oldPWD=$PWD

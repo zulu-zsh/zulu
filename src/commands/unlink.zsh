@@ -64,5 +64,5 @@ function _zulu_unlink() {
   cd $oldPWD
 
   _zulu_revolver stop
-  echo "$(_zulu_color green '✔') Finished unlinking $package        "
+  echo "$(_zulu_color green '✔') Finished unlinking $package"
 }

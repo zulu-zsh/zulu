@@ -129,7 +129,7 @@ function _zulu_upgrade() {
   _zulu_revolver stop
 
   if [[ ${#to_update} -eq 0 ]]; then
-    echo "$(_zulu_color green "Nothing to upgrade        ")"
+    echo "$(_zulu_color green "Nothing to upgrade")"
     return 1
   fi
 
@@ -163,10 +163,10 @@ function _zulu_upgrade() {
         _zulu_revolver stop
 
         if [ $? -eq 0 ]; then
-          echo "$(_zulu_color green '✔') Finished upgrading $package        "
+          echo "$(_zulu_color green '✔') Finished upgrading $package"
           zulu link --no-autoselect-themes $package
         else
-          echo "$(_zulu_color red '✘') Error upgrading $package        "
+          echo "$(_zulu_color red '✘') Error upgrading $package"
           echo "$out"
         fi
       done

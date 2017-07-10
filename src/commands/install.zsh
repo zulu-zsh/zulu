@@ -145,10 +145,10 @@ function _zulu_install() {
             _zulu_revolver stop
 
             if [ $state -eq 0 ]; then
-              echo "$(_zulu_color green '✔') Finished installing dependency $dependency        "
+              echo "$(_zulu_color green '✔') Finished installing dependency $dependency"
               zulu link $dependency
             else
-              echo "$(_zulu_color red '✘') Error installing dependency $dependency        "
+              echo "$(_zulu_color red '✘') Error installing dependency $dependency"
               echo "$out"
             fi
           fi
@@ -179,10 +179,10 @@ function _zulu_install() {
         link_flags=($link_flags '--no-autoselect-themes')
       fi
 
-      echo "$(_zulu_color green '✔') Finished installing $package        "
+      echo "$(_zulu_color green '✔') Finished installing $package"
       zulu link $link_flags $package
     else
-      echo "$(_zulu_color red '✘') Error installing $package        "
+      echo "$(_zulu_color red '✘') Error installing $package"
       echo "$out"
       error=1
     fi
