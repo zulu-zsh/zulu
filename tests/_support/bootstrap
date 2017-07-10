@@ -63,9 +63,3 @@ unset oldIFS
 # Source the embedded Zulu installation
 source "$PWD/tests/_support/.zulu/core/zulu"
 zulu init --dev
-
-if [[ ! -d "$ZULU_DIR/packages/filthy" ]]; then
-  # The filthy theme used to be a default, and so is used in multiple tests
-  # We need to make sure it is installed
-  zulu install filthy
-fi
