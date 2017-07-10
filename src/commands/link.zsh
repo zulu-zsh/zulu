@@ -102,5 +102,5 @@ function _zulu_link() {
   fi
 
   _zulu_revolver stop
-  echo "$(_zulu_color green '✔') Finished linking $package        "
+  echo "$(_zulu_color green '✔') Finished linking $package"
 }

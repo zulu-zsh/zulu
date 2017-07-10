@@ -61,7 +61,7 @@
   run zulu upgrade -y
 
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
+  assert "${lines[${#lines}]}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
 }
 
 @test 'Test "zulu upgrade" preserves local changes in package repository' {
@@ -87,7 +87,7 @@
 
   # Assert the update was successful
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
+  assert "${lines[${#lines}]}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
 
   # Assert the additional line still exists in the file
   assert "$(tail -1 README.md)" same_as 'thisisatest'

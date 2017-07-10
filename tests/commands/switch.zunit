@@ -16,12 +16,12 @@
   run zulu switch --tag v1.0.0 dummy
 
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Successfully switched dummy to v1.0.0"
+  assert "${lines[${#lines}]}" same_as "\033[0;32m✔\033[0;m Successfully switched dummy to v1.0.0"
 }
 
 @test 'Test "zulu switch --branch" checks out correct branch' {
   run zulu switch --branch testing dummy
 
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Successfully switched dummy to testing"
+  assert "${lines[${#lines}]}" same_as "\033[0;32m✔\033[0;m Successfully switched dummy to testing"
 }

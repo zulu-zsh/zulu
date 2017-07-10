@@ -16,7 +16,7 @@
   run zulu uninstall dummy
 
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished uninstalling dummy"
+  assert "${lines[${#lines}]}" same_as "\033[0;32m✔\033[0;m Finished uninstalling dummy"
 }
 
 @test 'Test "zulu uninstall" fails for not-installed package' {
@@ -24,20 +24,20 @@
   run zulu uninstall dummy
 
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished uninstalling dummy"
+  assert "${lines[${#lines}]}" same_as "\033[0;32m✔\033[0;m Finished uninstalling dummy"
 
   # Run the uninstall again, this time it should fail
   run zulu uninstall dummy
 
   assert $state equals 1
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'dummy' is not installed\033[0;m"
+  assert "${lines[${#lines}]}" same_as "\033[0;31mPackage 'dummy' is not installed\033[0;m"
 }
 
 @test 'Test "zulu uninstall" fails for non-existent package' {
   run zulu uninstall not-a-package
 
   assert $state equals 1
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'not-a-package' is not in the index\033[0;m"
+  assert "${lines[${#lines}]}" same_as "\033[0;31mPackage 'not-a-package' is not in the index\033[0;m"
 }
 
 @test 'Test "zulu uninstall" fails with no argument' {
