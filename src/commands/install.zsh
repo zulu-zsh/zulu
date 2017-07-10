@@ -122,6 +122,8 @@ function _zulu_install() {
     fi
   done
 
+  local error=0
+
   # Do a second loop, to do the actual install
   for package in "$packages[@]"; do
     # Get the JSON from the index
@@ -182,9 +184,14 @@ function _zulu_install() {
     else
       echo "$(_zulu_color red '✘') Error installing $package        "
       echo "$out"
+      error=1
     fi
   done
 
   # Write the new packagefile contents
   zulu bundle --dump --force
+
+  if [[ $error -ne 0 ]]; then
+    return 1
+  fi
 }

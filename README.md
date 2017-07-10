@@ -13,7 +13,7 @@ Thanks for using Zulu. Zulu is a environment manager for ZSH, which aims to make
 
 ## Requirements
 
-* ZSH `5.0.2` or above
+* ZSH `5.1.1` or above
 * git `1.9.1` or above
 
 ## Installation
