@@ -6,6 +6,7 @@ addons:
       - autoconf
       - yodl
       - man
+language: generic
 cache:
   apt: true
   directories:
