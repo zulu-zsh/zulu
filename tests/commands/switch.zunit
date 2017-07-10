@@ -1,15 +1,27 @@
 #!/usr/bin/env zunit
 
+@setup {
+  if ! _zulu_info_is_installed dummy; then
+    zulu install dummy
+  fi
+}
+
+@teardown {
+  if _zulu_info_is_installed dummy; then
+    zulu uninstall dummy
+  fi
+}
+
 @test 'Test "zulu switch --tag" checks out correct tag' {
-  run zulu switch --tag v0.6.1 zunit
+  run zulu switch --tag v1.0.0 dummy
 
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Successfully switched zunit to v0.6.1"
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Successfully switched dummy to v1.0.0"
 }
 
 @test 'Test "zulu switch --branch" checks out correct branch' {
-  run zulu switch --branch master zunit
+  run zulu switch --branch testing dummy
 
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Successfully switched zunit to master"
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Successfully switched dummy to testing"
 }
