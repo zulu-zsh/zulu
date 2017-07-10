@@ -17,13 +17,13 @@ function _zulu_bundle_usage() {
 # Dump installed packages to file
 ###
 function _zulu_bundle_dump() {
-  local installed=$(zulu list --installed --simple --branch --tag)
+  local -a installed; installed=($(zulu list --installed --simple --branch --tag))
 
   # Check if the packagefile exists
   if [[ -f $packagefile ]]; then
     # If the --force option was passed, overwrite it
     if [[ -n $force ]]; then
-      echo "$installed" >! $packagefile
+      echo ${(@F)installed} >! $packagefile
       return
     fi
 
@@ -34,7 +34,7 @@ function _zulu_bundle_dump() {
   fi
 
   # Write to the packagefile
-  echo "$installed" > $packagefile
+  echo ${(@F)installed} > $packagefile
   return
 }
 
