@@ -1,8 +1,20 @@
 #!/usr/bin/env zunit
 
+@setup {
+  if ! _zulu_info_is_installed dummy; then
+    zulu install dummy
+  fi
+}
+
+@teardown {
+  if _zulu_info_is_installed dummy; then
+    zulu uninstall dummy
+  fi
+}
+
 @test 'Test "zulu upgrade --check" finds package updates' {
   oldPWD=$PWD
-  cd tests/_support/.zulu/packages/filthy
+  cd tests/_support/.zulu/packages/dummy
 
   if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
     cd $oldPWD
@@ -33,7 +45,7 @@
 
 @test 'Test "zulu upgrade" updates package repository' {
   oldPWD=$PWD
-  cd tests/_support/.zulu/packages/filthy
+  cd tests/_support/.zulu/packages/dummy
 
   if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
     cd $oldPWD
@@ -47,12 +59,12 @@
   run zulu upgrade -y
 
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking filthy"
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
 }
 
 @test 'Test "zulu upgrade" preserves local changes in package repository' {
   oldPWD=$PWD
-  cd tests/_support/.zulu/packages/filthy
+  cd tests/_support/.zulu/packages/dummy
 
   if ! command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
     cd $oldPWD
@@ -73,7 +85,7 @@
 
   # Assert the update was successful
   assert $state equals 0
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking filthy"
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;32m✔\033[0;m Finished linking dummy"
 
   # Assert the additional line still exists in the file
   assert "$(tail -1 README.md)" same_as 'thisisatest'
