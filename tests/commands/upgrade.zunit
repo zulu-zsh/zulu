@@ -49,6 +49,12 @@
     skip 'Cannot test upgrade without an upstream'
   fi
 
+  # Stash any uncommitted changes and
+  git stash 2>&1
+
+  # Rewind one commit to ensure updates are available
+  git reset --hard HEAD~1 2>&1
+
   cd $oldPWD
   unset oldPWD
 
