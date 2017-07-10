@@ -36,7 +36,7 @@
 
   # Assert that the package failed to install
   assert $state equals 1
-  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31mPackage 'dummy' is already installed\033[0;m"
+  assert "${lines[${#lines}]%"${lines[${#lines}]##*[![:space:]]}"}" same_as "\033[0;31m✘\033[0;m Error installing dummy"
 }
 
 @test 'Test "zulu install" fails for non-existent package' {
