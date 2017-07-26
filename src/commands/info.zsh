@@ -2,8 +2,8 @@
 # Output usage information
 ###
 function _zulu_info_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu info <package>"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu info <package>"
 }
 
 ###
@@ -22,7 +22,7 @@ function _zulu_info_is_installed() {
 function _zulu_info_package() {
   local json name description url author packagetype installed package=$1
 
-  json=$(cat "$index/$package")
+  json=$(command cat "$index/$package")
 
   name=$(jsonval $json 'name')
   description=$(jsonval $json 'description')
@@ -32,13 +32,13 @@ function _zulu_info_package() {
 
   _zulu_info_is_installed $name && installed="$(_zulu_color green '✔ Installed')"
 
-  echo "$(_zulu_color white underline "$name") $installed"
-  echo $description
-  echo
+  builtin echo "$(_zulu_color white underline "$name") $installed"
+  builtin echo $description
+  builtin echo
 
-  echo "Type:   $packagetype"
-  echo "URL:    $url"
-  echo "Author: $author"
+  builtin echo "Type:   $packagetype"
+  builtin echo "URL:    $url"
+  builtin echo "Author: $author"
 }
 
 ###
@@ -48,7 +48,7 @@ function _zulu_info() {
   local base index out package=$1
 
   # Parse options
-  zparseopts -D h=help -help=help
+  builtin zparseopts -D h=help -help=help
 
   # Output help and return if requested
   if [[ -n $help ]]; then
@@ -62,7 +62,7 @@ function _zulu_info() {
   index="${base}/index/packages"
 
   if [[ ! -f "$index/$package" ]]; then
-    echo $(_zulu_color red "Package '$package' is not in the index")
+    builtin echo $(_zulu_color red "Package '$package' is not in the index")
     return 1
   fi
 

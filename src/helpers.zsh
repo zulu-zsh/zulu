@@ -8,7 +8,7 @@ function jsonval {
   local oldIFS=$IFS
   IFS=$' \t\n'
 
-  temp=$(command echo $json | command sed 's/\\\\\//\//g' | \
+  temp=$(builtin echo $json | command sed 's/\\\\\//\//g' | \
     command sed 's/[{}]//g' | \
     command sed 's/\"\:\"/\|/g' | \
     command sed 's/[\,]/ /g' | \
@@ -17,10 +17,10 @@ function jsonval {
     command cut -d":" -f2-9999999 | \
     command sed -e 's/^ *//g' -e 's/ *$//g'
   )
-  command echo ${temp##*|}
+  builtin echo ${temp##*|}
 
   IFS=$oldIFS
-  unset oldIFS
+  builtin unset oldIFS
 }
 
 ###
@@ -28,35 +28,35 @@ function jsonval {
 # function to prevent COMMAND_NOT_FOUND errors
 ###
 function _zulu_color {
-  $(type color 2>&1 > /dev/null)
+  $(builtin type -p color 2>&1 > /dev/null)
   if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/color"} ]]; then
     local color=$1 style=$2 b=0
 
-    shift
+    builtin shift
 
     case $style in
-      bold|b)           b=1; shift ;;
-      italic|i)         b=2; shift ;;
-      underline|u)      b=4; shift ;;
-      inverse|in)       b=7; shift ;;
-      strikethrough|s)  b=9; shift ;;
+      bold|b)           b=1; builtin shift ;;
+      italic|i)         b=2; builtin shift ;;
+      underline|u)      b=4; builtin shift ;;
+      inverse|in)       b=7; builtin shift ;;
+      strikethrough|s)  b=9; builtin shift ;;
     esac
 
     case $color in
-      black|b)    echo "\033[${b};30m${@}\033[0;m" ;;
-      red|r)      echo "\033[${b};31m${@}\033[0;m" ;;
-      green|g)    echo "\033[${b};32m${@}\033[0;m" ;;
-      yellow|y)   echo "\033[${b};33m${@}\033[0;m" ;;
-      blue|bl)    echo "\033[${b};34m${@}\033[0;m" ;;
-      magenta|m)  echo "\033[${b};35m${@}\033[0;m" ;;
-      cyan|c)     echo "\033[${b};36m${@}\033[0;m" ;;
-      white|w)    echo "\033[${b};37m${@}\033[0;m" ;;
+      black|b)    builtin echo "\033[${b};30m${@}\033[0;m" ;;
+      red|r)      builtin echo "\033[${b};31m${@}\033[0;m" ;;
+      green|g)    builtin echo "\033[${b};32m${@}\033[0;m" ;;
+      yellow|y)   builtin echo "\033[${b};33m${@}\033[0;m" ;;
+      blue|bl)    builtin echo "\033[${b};34m${@}\033[0;m" ;;
+      magenta|m)  builtin echo "\033[${b};35m${@}\033[0;m" ;;
+      cyan|c)     builtin echo "\033[${b};36m${@}\033[0;m" ;;
+      white|w)    builtin echo "\033[${b};37m${@}\033[0;m" ;;
     esac
 
     return
   fi
 
-  color "$@"
+  command color "$@"
 }
 
 ###
@@ -68,15 +68,15 @@ function _zulu_revolver {
     return
   fi
 
-  $(type revolver 2>&1 > /dev/null)
+  $(builtin type -p revolver 2>&1 > /dev/null)
   if [[ $? -ne 0 && ! -x ${ZULU_DIR:-"${ZDOTDIR:-$HOME}/bin/revolver"} ]]; then
     # Check for a revolver process file, and remove it if it exists.
     # Revolver will handle the missing state and kill any orphaned process.
     if [[ -f "${ZDOTDIR:-$HOME}/.revolver/${$}" ]]; then
-      rm "${ZDOTDIR:-$HOME}/.revolver/${$}"
+      command rm "${ZDOTDIR:-$HOME}/.revolver/${$}"
     fi
     return
   fi
 
-  revolver "$@"
+  command revolver "$@"
 }

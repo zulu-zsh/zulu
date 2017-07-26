@@ -2,13 +2,13 @@
 # Output usage information
 ###
 function _zulu_upgrade_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu upgrade [<packages...>]"
-  echo
-  echo $(_zulu_color yellow "Options:")
-  echo "  -c, --check             Check if upgrades are available"
-  echo "  -h, --help              Output this help text and exit"
-  echo "  -y, --no-confirmation   Do not ask for confirmation before upgrading"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu upgrade [<packages...>]"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Options:")
+  builtin echo "  -c, --check             Check if upgrades are available"
+  builtin echo "  -h, --help              Output this help text and exit"
+  builtin echo "  -y, --no-confirmation   Do not ask for confirmation before upgrading"
 }
 
 ###
@@ -43,7 +43,7 @@ function _zulu_upgrade() {
   local -A _pids
 
   # Parse options
-  zparseopts -D h=help -help=help \
+  builtin zparseopts -D h=help -help=help \
                 c=check -check=check \
                 y=no_confirmation -no-confirmation=no_confirmation
 
@@ -129,21 +129,21 @@ function _zulu_upgrade() {
   _zulu_revolver stop
 
   if [[ ${#to_update} -eq 0 ]]; then
-    echo "$(_zulu_color green "Nothing to upgrade")"
+    builtin echo "$(_zulu_color green "Nothing to upgrade")"
     return 1
   fi
 
   if [[ -n $check ]]; then
-    echo "$(_zulu_color green 'Package upgrades available') Run zulu upgrade to upgrade"
+    builtin echo "$(_zulu_color green 'Package upgrades available') Run zulu upgrade to upgrade"
     return 0
   fi
 
-  echo $(_zulu_color yellow 'The following packages will be upgraded')
-  echo "$to_update[@]"
+  builtin echo $(_zulu_color yellow 'The following packages will be upgraded')
+  builtin echo "$to_update[@]"
 
   if [[ -z $no_confirmation ]]; then
-    echo $(_zulu_color yellow bold 'Continue (y|N)')
-    read -rs -k 1 input
+    builtin echo $(_zulu_color yellow bold 'Continue (y|N)')
+    builtin read -rs -k 1 input
   else
     input='y'
   fi
@@ -163,16 +163,16 @@ function _zulu_upgrade() {
         _zulu_revolver stop
 
         if [ $? -eq 0 ]; then
-          echo "$(_zulu_color green '✔') Finished upgrading $package"
+          builtin echo "$(_zulu_color green '✔') Finished upgrading $package"
           zulu link --no-autoselect-themes $package
         else
-          echo "$(_zulu_color red '✘') Error upgrading $package"
-          echo "$out"
+          builtin echo "$(_zulu_color red '✘') Error upgrading $package"
+          builtin echo "$out"
         fi
       done
       ;;
     *)
-      echo $(_zulu_color red 'Upgrade cancelled')
+      builtin echo $(_zulu_color red 'Upgrade cancelled')
       return 1
       ;;
   esac

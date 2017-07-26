@@ -2,12 +2,12 @@
 # Print usage information
 ###
 function _zulu_update_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu update [options]"
-  echo
-  echo $(_zulu_color yellow "Options:")
-  echo "  -c, --check       Check if an update is available"
-  echo "  -h, --help        Output this help text and exit"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu update [options]"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Options:")
+  builtin echo "  -c, --check       Check if an update is available"
+  builtin echo "  -h, --help        Output this help text and exit"
 }
 
 ###
@@ -16,17 +16,17 @@ function _zulu_update_usage() {
 function _zulu_update_index() {
   local old="$(pwd)"
 
-  cd $index
-  git rebase -p --autostash FETCH_HEAD
-  cd $old
+  builtin cd $index
+  command git rebase -p --autostash FETCH_HEAD
+  builtin cd $old
 }
 
 function _zulu_update_check_for_update() {
   local old="$(pwd)"
 
-  cd "$base/index"
+  builtin cd "$base/index"
 
-  git fetch origin &>/dev/null
+  command git fetch origin &>/dev/null
 
   if command git rev-parse --abbrev-ref @'{u}' &>/dev/null; then
     count="$(command git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)"
@@ -34,14 +34,14 @@ function _zulu_update_check_for_update() {
     down="$count[(w)2]"
 
     if [[ $down -gt 0 ]]; then
-      echo "$(_zulu_color green "Zulu index updates available") Run zulu update to update the index"
-      cd $old
+      builtin echo "$(_zulu_color green "Zulu index updates available") Run zulu update to update the index"
+      builtin cd $old
       return
     fi
   fi
 
-  echo "$(_zulu_color green "No update available")"
-  cd $old
+  builtin echo "$(_zulu_color green "No update available")"
+  builtin cd $old
   return 1
 }
 
@@ -55,7 +55,7 @@ function _zulu_update() {
   index="${base}/index"
 
   # Parse options
-  zparseopts -D h=help -help=help c=check -check=check
+  builtin zparseopts -D h=help -help=help c=check -check=check
 
   # Output help and return if requested
   if [[ -n $help ]]; then
@@ -77,15 +77,15 @@ function _zulu_update() {
     _zulu_revolver stop
 
     if [ $? -eq 0 ]; then
-      echo "$(_zulu_color green '✔') Package index updated"
+      builtin echo "$(_zulu_color green '✔') Package index updated"
     else
-      echo "$(_zulu_color red '✘') Error updating package index"
-      echo "$out"
+      builtin echo "$(_zulu_color red '✘') Error updating package index"
+      builtin echo "$out"
     fi
 
     return
   fi
 
   _zulu_revolver stop
-  echo "$(_zulu_color green "No update available")"
+  builtin echo "$(_zulu_color green "No update available")"
 }
