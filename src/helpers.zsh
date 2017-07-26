@@ -8,16 +8,16 @@ function jsonval {
   local oldIFS=$IFS
   IFS=$' \t\n'
 
-  temp=$(echo $json | sed 's/\\\\\//\//g' | \
-    sed 's/[{}]//g' | \
-    sed 's/\"\:\"/\|/g' | \
-    sed 's/[\,]/ /g' | \
-    sed 's/\"//g' | \
-    grep -w $key | \
-    cut -d":" -f2-9999999 | \
-    sed -e 's/^ *//g' -e 's/ *$//g'
+  temp=$(command echo $json | command sed 's/\\\\\//\//g' | \
+    command sed 's/[{}]//g' | \
+    command sed 's/\"\:\"/\|/g' | \
+    command sed 's/[\,]/ /g' | \
+    command sed 's/\"//g' | \
+    command grep -w $key | \
+    command cut -d":" -f2-9999999 | \
+    command sed -e 's/^ *//g' -e 's/ *$//g'
   )
-  echo ${temp##*|}
+  command echo ${temp##*|}
 
   IFS=$oldIFS
   unset oldIFS
