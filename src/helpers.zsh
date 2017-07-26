@@ -5,6 +5,8 @@
 ###
 function jsonval {
   local temp json=$1 key=$2
+  local oldIFS=$IFS
+  IFS=$' \t\n'
 
   temp=$(echo $json | sed 's/\\\\\//\//g' | \
     sed 's/[{}]//g' | \
@@ -16,6 +18,9 @@ function jsonval {
     sed -e 's/^ *//g' -e 's/ *$//g'
   )
   echo ${temp##*|}
+
+  IFS=$oldIFS
+  unset oldIFS
 }
 
 ###
