@@ -1,12 +1,12 @@
 function _zulu_init_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu init [options]"
-  echo
-  echo $(_zulu_color yellow "Options:")
-  echo "  -c, --check-for-update   Check for updates on startup"
-  echo "  -h, --help               Output this help text and exit"
-  echo "  -n, --no-compile         Skip compilation of scripts on startup"
-  echo "      --dev                Start Zulu in Development Mode"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu init [options]"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Options:")
+  builtin echo "  -c, --check-for-update   Check for updates on startup"
+  builtin echo "  -h, --help               Output this help text and exit"
+  builtin echo "  -n, --no-compile         Skip compilation of scripts on startup"
+  builtin echo "      --dev                Start Zulu in Development Mode"
 }
 
 function _zulu_init_setup_completion() {
@@ -24,89 +24,89 @@ function _zulu_init_setup_completion() {
   fi
 
   # Load and initialize the completion system ignoring insecure directories.
-  autoload -Uz compinit && compinit -i
+  builtin autoload -Uz compinit && compinit -i
 
   #
   # Options
   #
 
-  setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
-  setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
-  setopt PATH_DIRS           # Perform path search even on command names with slashes.
-  setopt AUTO_MENU           # Show completion menu on a successive tab press.
-  setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
-  setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a trailing slash.
-  unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
-  unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
+  builtin setopt COMPLETE_IN_WORD    # Complete from both ends of a word.
+  builtin setopt ALWAYS_TO_END       # Move cursor to the end of a completed word.
+  builtin setopt PATH_DIRS           # Perform path search even on command names with slashes.
+  builtin setopt AUTO_MENU           # Show completion menu on a successive tab press.
+  builtin setopt AUTO_LIST           # Automatically list choices on ambiguous completion.
+  builtin setopt AUTO_PARAM_SLASH    # If completed parameter is a directory, add a trailing slash.
+  builtin unsetopt MENU_COMPLETE     # Do not autoselect the first completion entry.
+  builtin unsetopt FLOW_CONTROL      # Disable start/stop characters in shell editor.
 
   #
   # Styles
   #
 
   # Use caching to make completion for commands such as dpkg and apt usable.
-  zstyle ':completion::complete:*' use-cache on
-  zstyle ':completion::complete:*' cache-path "${ZDOTDIR:-$HOME}/.zcompcache"
+  builtin zstyle ':completion::complete:*' use-cache on
+  builtin zstyle ':completion::complete:*' cache-path "${ZDOTDIR:-$HOME}/.zcompcache"
 
   # Disable case sensitivity
-  zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-  unsetopt CASE_GLOB
+  builtin zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+  builtin unsetopt CASE_GLOB
 
   # Group matches and describe.
-  zstyle ':completion:*:*:*:*:*' menu select
-  zstyle ':completion:*:matches' group 'yes'
-  zstyle ':completion:*:options' description 'yes'
-  zstyle ':completion:*:options' auto-description '%d'
-  zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
-  zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
-  zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
-  zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
-  zstyle ':completion:*:default' list-prompt '%S%M matches%s'
-  zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
-  zstyle ':completion:*' group-name ''
-  zstyle ':completion:*' verbose yes
+  builtin zstyle ':completion:*:*:*:*:*' menu select
+  builtin zstyle ':completion:*:matches' group 'yes'
+  builtin zstyle ':completion:*:options' description 'yes'
+  builtin zstyle ':completion:*:options' auto-description '%d'
+  builtin zstyle ':completion:*:corrections' format ' %F{green}-- %d (errors: %e) --%f'
+  builtin zstyle ':completion:*:descriptions' format ' %F{yellow}-- %d --%f'
+  builtin zstyle ':completion:*:messages' format ' %F{purple} -- %d --%f'
+  builtin zstyle ':completion:*:warnings' format ' %F{red}-- no matches found --%f'
+  builtin zstyle ':completion:*:default' list-prompt '%S%M matches%s'
+  builtin zstyle ':completion:*' format ' %F{yellow}-- %d --%f'
+  builtin zstyle ':completion:*' group-name ''
+  builtin zstyle ':completion:*' verbose yes
 
   # Don't show already completed options in the list
-  zstyle ':completion:*:*:*:*:*' ignore-line 'yes'
+  builtin zstyle ':completion:*:*:*:*:*' ignore-line 'yes'
 
   # Fuzzy match mistyped completions.
-  zstyle ':completion:*' completer _complete _match _approximate
-  zstyle ':completion:*:match:*' original only
-  zstyle ':completion:*:approximate:*' max-errors 1 numeric
+  builtin zstyle ':completion:*' completer _complete _match _approximate
+  builtin zstyle ':completion:*:match:*' original only
+  builtin zstyle ':completion:*:approximate:*' max-errors 1 numeric
 
   # Increase the number of errors based on the length of the typed word.
-  zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
+  builtin zstyle -e ':completion:*:approximate:*' max-errors 'reply=($((($#PREFIX+$#SUFFIX)/3))numeric)'
 
   # Don't complete unavailable commands.
-  zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
+  builtin zstyle ':completion:*:functions' ignored-patterns '(_*|pre(cmd|exec))'
 
   # Array completion element sorting.
-  zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
+  builtin zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 
   # Directories
-  zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-  zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
-  zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
-  zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
-  zstyle ':completion:*' squeeze-slashes true
+  builtin zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+  builtin zstyle ':completion:*:*:cd:*' tag-order local-directories directory-stack path-directories
+  builtin zstyle ':completion:*:*:cd:*:directory-stack' menu yes select
+  builtin zstyle ':completion:*:-tilde-:*' group-order 'named-directories' 'path-directories' 'users' 'expand'
+  builtin zstyle ':completion:*' squeeze-slashes true
 
   # History
-  zstyle ':completion:*:history-words' stop yes
-  zstyle ':completion:*:history-words' remove-all-dups yes
-  zstyle ':completion:*:history-words' list false
-  zstyle ':completion:*:history-words' menu yes
+  builtin zstyle ':completion:*:history-words' stop yes
+  builtin zstyle ':completion:*:history-words' remove-all-dups yes
+  builtin zstyle ':completion:*:history-words' list false
+  builtin zstyle ':completion:*:history-words' menu yes
 
   # Environmental Variables
-  zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
+  builtin zstyle ':completion::*:(-command-|export):*' fake-parameters ${${${_comps[(I)-value-*]#*,}%%,*}:#-*-}
 
   # Populate hostname completion.
-  zstyle -e ':completion:*:hosts' hosts 'reply=(
+  builtin zstyle -e ':completion:*:hosts' hosts 'reply=(
     ${=${=${=${${(f)"$(cat {/etc/ssh_,~/.ssh/known_}hosts(|2)(N) 2>/dev/null)"}%%[#| ]*}//\]:[0-9]*/ }//,/ }//\[/ }
     ${=${(f)"$(cat /etc/hosts(|)(N) <<(ypcat hosts 2>/dev/null))"}%%\#*}
     ${=${${${${(@M)${(f)"$(cat ~/.ssh/config 2>/dev/null)"}:#Host *}#Host }:#*\**}:#*\?*}}
   )'
 
   # Don't complete uninteresting users...
-  zstyle ':completion:*:*:*:users' ignored-patterns \
+  builtin zstyle ':completion:*:*:*:users' ignored-patterns \
     adm amanda apache avahi beaglidx bin cacti canna clamav daemon \
     dbus distcache dovecot fax ftp games gdm gkrellmd gopher \
     hacluster haldaemon halt hsqldb ident junkbust ldap lp mail \
@@ -116,43 +116,43 @@ function _zulu_init_setup_completion() {
     rpc rpcuser rpm shutdown squid sshd sync uucp vcsa xfs '_*'
 
   # ... unless we really want to.
-  zstyle '*' single-ignored show
+  builtin zstyle '*' single-ignored show
 
   # Ignore multiple entries.
-  zstyle ':completion:*:(rm|kill|diff):*' ignore-line other
-  zstyle ':completion:*:rm:*' file-patterns '*:all-files'
+  builtin zstyle ':completion:*:(rm|kill|diff):*' ignore-line other
+  builtin zstyle ':completion:*:rm:*' file-patterns '*:all-files'
 
   # Kill
-  zstyle ':completion:*:*:*:*:processes' command 'ps -u $LOGNAME -o pid,user,command -w'
-  zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;36=0=01'
-  zstyle ':completion:*:*:kill:*' menu yes select
-  zstyle ':completion:*:*:kill:*' force-list always
-  zstyle ':completion:*:*:kill:*' insert-ids single
+  builtin zstyle ':completion:*:*:*:*:processes' command 'ps -u $LOGNAME -o pid,user,command -w'
+  builtin zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;36=0=01'
+  builtin zstyle ':completion:*:*:kill:*' menu yes select
+  builtin zstyle ':completion:*:*:kill:*' force-list always
+  builtin zstyle ':completion:*:*:kill:*' insert-ids single
 
   # Man
-  zstyle ':completion:*:manuals' separate-sections true
-  zstyle ':completion:*:manuals.(^1*)' insert-sections true
+  builtin zstyle ':completion:*:manuals' separate-sections true
+  builtin zstyle ':completion:*:manuals.(^1*)' insert-sections true
 
   # Media Players
-  zstyle ':completion:*:*:mpg123:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
-  zstyle ':completion:*:*:mpg321:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
-  zstyle ':completion:*:*:ogg123:*' file-patterns '*.(ogg|OGG|flac):ogg\ files *(-/):directories'
-  zstyle ':completion:*:*:mocp:*' file-patterns '*.(wav|WAV|mp3|MP3|ogg|OGG|flac):ogg\ files *(-/):directories'
+  builtin zstyle ':completion:*:*:mpg123:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
+  builtin zstyle ':completion:*:*:mpg321:*' file-patterns '*.(mp3|MP3):mp3\ files *(-/):directories'
+  builtin zstyle ':completion:*:*:ogg123:*' file-patterns '*.(ogg|OGG|flac):ogg\ files *(-/):directories'
+  builtin zstyle ':completion:*:*:mocp:*' file-patterns '*.(wav|WAV|mp3|MP3|ogg|OGG|flac):ogg\ files *(-/):directories'
 
   # Mutt
   if [[ -s "$HOME/.mutt/aliases" ]]; then
-    zstyle ':completion:*:*:mutt:*' menu yes select
-    zstyle ':completion:*:mutt:*' users ${${${(f)"$(<"$HOME/.mutt/aliases")"}#alias[[:space:]]}%%[[:space:]]*}
+    builtin zstyle ':completion:*:*:mutt:*' menu yes select
+    builtin zstyle ':completion:*:mutt:*' users ${${${(f)"$(<"$HOME/.mutt/aliases")"}#alias[[:space:]]}%%[[:space:]]*}
   fi
 
   # SSH/SCP/RSYNC
-  zstyle ':completion:*:(scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
-  zstyle ':completion:*:(scp|rsync):*' group-order users files all-files hosts-domain hosts-host hosts-ipaddr
-  zstyle ':completion:*:ssh:*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
-  zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hosts-ipaddr
-  zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
-  zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
-  zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
+  builtin zstyle ':completion:*:(scp|rsync):*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
+  builtin zstyle ':completion:*:(scp|rsync):*' group-order users files all-files hosts-domain hosts-host hosts-ipaddr
+  builtin zstyle ':completion:*:ssh:*' tag-order 'hosts:-host:host hosts:-domain:domain hosts:-ipaddr:ip\ address *'
+  builtin zstyle ':completion:*:ssh:*' group-order users hosts-domain hosts-host users hosts-ipaddr
+  builtin zstyle ':completion:*:(ssh|scp|rsync):*:hosts-host' ignored-patterns '*(.|:)*' loopback ip6-loopback localhost ip6-localhost broadcasthost
+  builtin zstyle ':completion:*:(ssh|scp|rsync):*:hosts-domain' ignored-patterns '<->.<->.<->.<->' '^[-[:alnum:]]##(.[-[:alnum:]]##)##' '*@*'
+  builtin zstyle ':completion:*:(ssh|scp|rsync):*:hosts-ipaddr' ignored-patterns '^(<->.<->.<->.<->|(|::)([[:xdigit:].]##:(#c,2))##(|%*))' '127.0.0.<->' '255.255.255.255' '::1' 'fe80::*'
 }
 
 function _zulu_init_setup_history() {
@@ -168,18 +168,18 @@ function _zulu_init_setup_history() {
   # Options
   #
 
-  setopt BANG_HIST                 # Treat the '!' character specially during expansion.
-  setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
-  setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
-  setopt SHARE_HISTORY             # Share history between all sessions.
-  setopt HIST_EXPIRE_DUPS_FIRST    # Expire a duplicate event first when trimming history.
-  setopt HIST_IGNORE_DUPS          # Do not record an event that was just recorded again.
-  setopt HIST_IGNORE_ALL_DUPS      # Delete an old recorded event if a new event is a duplicate.
-  setopt HIST_FIND_NO_DUPS         # Do not display a previously found event.
-  setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space.
-  setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
-  setopt HIST_VERIFY               # Do not execute immediately upon history expansion.
-  setopt HIST_BEEP                 # Beep when accessing non-existent history.
+  builtin setopt BANG_HIST                 # Treat the '!' character specially during expansion.
+  builtin setopt EXTENDED_HISTORY          # Write the history file in the ':start:elapsed;command' format.
+  builtin setopt INC_APPEND_HISTORY        # Write to the history file immediately, not when the shell exits.
+  builtin setopt SHARE_HISTORY             # Share history between all sessions.
+  builtin setopt HIST_EXPIRE_DUPS_FIRST    # Expire a duplicate event first when trimming history.
+  builtin setopt HIST_IGNORE_DUPS          # Do not record an event that was just recorded again.
+  builtin setopt HIST_IGNORE_ALL_DUPS      # Delete an old recorded event if a new event is a duplicate.
+  builtin setopt HIST_FIND_NO_DUPS         # Do not display a previously found event.
+  builtin setopt HIST_IGNORE_SPACE         # Do not record an event starting with a space.
+  builtin setopt HIST_SAVE_NO_DUPS         # Do not write a duplicate event to the history file.
+  builtin setopt HIST_VERIFY               # Do not execute immediately upon history expansion.
+  builtin setopt HIST_BEEP                 # Beep when accessing non-existent history.
 
   if (( $+widgets[history-substring-search-up] )); then
     #
@@ -193,8 +193,8 @@ function _zulu_init_setup_history() {
     # Source module files.
     [[ -f "$base/init/zsh-history-substring-search.zsh" ]] || return 1
 
-    zle -N history-substring-search-up
-    zle -N history-substring-search-down
+    builtin zle -N history-substring-search-up
+    builtin zle -N history-substring-search-down
 
     #
     # Search
@@ -211,17 +211,17 @@ function _zulu_init_setup_history() {
 
     if [[ -n "$key_info" ]]; then
       # Emacs
-      bindkey -M emacs "$key_info[Control]P" history-substring-search-up
-      bindkey -M emacs "$key_info[Control]N" history-substring-search-down
+      builtin bindkey -M emacs "$key_info[Control]P" history-substring-search-up
+      builtin bindkey -M emacs "$key_info[Control]N" history-substring-search-down
 
       # Vi
-      bindkey -M vicmd "k" history-substring-search-up
-      bindkey -M vicmd "j" history-substring-search-down
+      builtin bindkey -M vicmd "k" history-substring-search-up
+      builtin bindkey -M vicmd "j" history-substring-search-down
 
       # Emacs and Vi
       for keymap in 'emacs' 'viins'; do
-        bindkey -M "$keymap" "$key_info[Up]" history-substring-search-up
-        bindkey -M "$keymap" "$key_info[Down]" history-substring-search-down
+        builtin bindkey -M "$keymap" "$key_info[Up]" history-substring-search-up
+        builtin bindkey -M "$keymap" "$key_info[Down]" history-substring-search-down
       done
     fi
   fi
@@ -245,7 +245,7 @@ function _zulu_init_setup_key_bindings() {
   #
 
   # Beep on error in line editor.
-  setopt BEEP
+  builtin setopt BEEP
 
   #
   # Variables
@@ -255,7 +255,7 @@ function _zulu_init_setup_key_bindings() {
   WORDCHARS='*?_-.[]~&;!#$%^(){}<>'
 
   # Use human-friendly identifiers.
-  zmodload zsh/terminfo
+  builtin zmodload zsh/terminfo
   typeset -gA key_info
   key_info=(
     'Control'      '\C-'
@@ -302,8 +302,8 @@ function _zulu_init_setup_key_bindings() {
   #
 
   # Allow command line editing in an external editor.
-  autoload -Uz edit-command-line
-  zle -N edit-command-line
+  builtin autoload -Uz edit-command-line
+  builtin zle -N edit-command-line
 
   #
   # Functions
@@ -312,16 +312,16 @@ function _zulu_init_setup_key_bindings() {
   # Exposes information about the Zsh Line Editor via the $editor_info associative
   # array.
   function editor-info {
-    zle reset-prompt
-    zle -R
+    builtin zle reset-prompt
+    builtin zle -R
   }
-  zle -N editor-info
+  builtin zle -N editor-info
 
   # Updates editor information when the keymap changes.
   function zle-keymap-select {
-    zle editor-info
+    builtin zle editor-info
   }
-  zle -N zle-keymap-select
+  builtin zle -N zle-keymap-select
 
   # Enables terminal application mode and updates editor information.
   function zle-line-init {
@@ -333,9 +333,9 @@ function _zulu_init_setup_key_bindings() {
     fi
 
     # Update editor information.
-    zle editor-info
+    builtin zle editor-info
   }
-  zle -N zle-line-init
+  builtin zle -N zle-line-init
 
   # Disables terminal application mode and updates editor information.
   function zle-line-finish {
@@ -347,38 +347,38 @@ function _zulu_init_setup_key_bindings() {
     fi
 
     # Update editor information.
-    zle editor-info
+    builtin zle editor-info
   }
-  zle -N zle-line-finish
+  builtin zle -N zle-line-finish
 
   # Toggles emacs overwrite mode and updates editor information.
   function overwrite-mode {
-    zle .overwrite-mode
-    zle editor-info
+    builtin zle .overwrite-mode
+    builtin zle editor-info
   }
-  zle -N overwrite-mode
+  builtin zle -N overwrite-mode
 
   # Enters vi insert mode and updates editor information.
   function vi-insert {
-    zle .vi-insert
-    zle editor-info
+    builtin zle .vi-insert
+    builtin zle editor-info
   }
-  zle -N vi-insert
+  builtin zle -N vi-insert
 
   # Moves to the first non-blank character then enters vi insert mode and updates
   # editor information.
   function vi-insert-bol {
-    zle .vi-insert-bol
-    zle editor-info
+    builtin zle .vi-insert-bol
+    builtin zle editor-info
   }
-  zle -N vi-insert-bol
+  builtin zle -N vi-insert-bol
 
   # Enters vi replace mode and updates editor information.
   function vi-replace  {
-    zle .vi-replace
-    zle editor-info
+    builtin zle .vi-replace
+    builtin zle editor-info
   }
-  zle -N vi-replace
+  builtin zle -N vi-replace
 
   # Expands .... to ../..
   function expand-dot-to-parent-directory-path {
@@ -388,16 +388,16 @@ function _zulu_init_setup_key_bindings() {
       LBUFFER+='.'
     fi
   }
-  zle -N expand-dot-to-parent-directory-path
+  builtin zle -N expand-dot-to-parent-directory-path
 
   # Displays an indicator when completing.
   function expand-or-complete-with-indicator {
     local indicator="→"
     print -Pn "$indicator"
-    zle expand-or-complete
-    zle redisplay
+    builtin zle expand-or-complete
+    builtin zle redisplay
   }
-  zle -N expand-or-complete-with-indicator
+  builtin zle -N expand-or-complete-with-indicator
 
   # Inserts 'sudo ' at the beginning of the line.
   function prepend-sudo {
@@ -406,40 +406,40 @@ function _zulu_init_setup_key_bindings() {
       (( CURSOR += 5 ))
     fi
   }
-  zle -N prepend-sudo
+  builtin zle -N prepend-sudo
 
   # Reset to default key bindings.
-  bindkey -d
+  builtin bindkey -d
 
   #
   # Emacs Key Bindings
   #
 
   for key in "$key_info[Escape]"{B,b} "${(s: :)key_info[ControlLeft]}"
-    bindkey -M emacs "$key" emacs-backward-word
+    builtin bindkey -M emacs "$key" emacs-backward-word
   for key in "$key_info[Escape]"{F,f} "${(s: :)key_info[ControlRight]}"
-    bindkey -M emacs "$key" emacs-forward-word
+    builtin bindkey -M emacs "$key" emacs-forward-word
 
   # Kill to the beginning of the line.
   for key in "$key_info[Escape]"{K,k}
-    bindkey -M emacs "$key" backward-kill-line
+    builtin bindkey -M emacs "$key" backward-kill-line
 
   # Redo.
-  bindkey -M emacs "$key_info[Escape]_" redo
+  builtin bindkey -M emacs "$key_info[Escape]_" redo
 
   # Search previous character.
-  bindkey -M emacs "$key_info[Control]X$key_info[Control]B" vi-find-prev-char
+  builtin bindkey -M emacs "$key_info[Control]X$key_info[Control]B" vi-find-prev-char
 
   # Match bracket.
-  bindkey -M emacs "$key_info[Control]X$key_info[Control]]" vi-match-bracket
+  builtin bindkey -M emacs "$key_info[Control]X$key_info[Control]]" vi-match-bracket
 
   # Edit command in an external editor.
-  bindkey -M emacs "$key_info[Control]X$key_info[Control]E" edit-command-line
+  builtin bindkey -M emacs "$key_info[Control]X$key_info[Control]E" edit-command-line
 
   if (( $+widgets[history-incremental-pattern-search-backward] )); then
-    bindkey -M emacs "$key_info[Control]R" \
+    builtin bindkey -M emacs "$key_info[Control]R" \
       history-incremental-pattern-search-backward
-    bindkey -M emacs "$key_info[Control]S" \
+    builtin bindkey -M emacs "$key_info[Control]S" \
       history-incremental-pattern-search-forward
   fi
 
@@ -448,18 +448,18 @@ function _zulu_init_setup_key_bindings() {
   #
 
   # Edit command in an external editor.
-  bindkey -M vicmd "v" edit-command-line
+  builtin bindkey -M vicmd "v" edit-command-line
 
   # Undo/Redo
-  bindkey -M vicmd "u" undo
-  bindkey -M vicmd "$key_info[Control]R" redo
+  builtin bindkey -M vicmd "u" undo
+  builtin bindkey -M vicmd "$key_info[Control]R" redo
 
   if (( $+widgets[history-incremental-pattern-search-backward] )); then
-    bindkey -M vicmd "?" history-incremental-pattern-search-backward
-    bindkey -M vicmd "/" history-incremental-pattern-search-forward
+    builtin bindkey -M vicmd "?" history-incremental-pattern-search-backward
+    builtin bindkey -M vicmd "/" history-incremental-pattern-search-forward
   else
-    bindkey -M vicmd "?" history-incremental-search-backward
-    bindkey -M vicmd "/" history-incremental-search-forward
+    builtin bindkey -M vicmd "?" history-incremental-search-backward
+    builtin bindkey -M vicmd "/" history-incremental-search-forward
   fi
 
   #
@@ -467,52 +467,52 @@ function _zulu_init_setup_key_bindings() {
   #
 
   for keymap in 'emacs' 'viins'; do
-    bindkey -M "$keymap" "$key_info[Home]" beginning-of-line
-    bindkey -M "$keymap" "$key_info[End]" end-of-line
+    builtin bindkey -M "$keymap" "$key_info[Home]" beginning-of-line
+    builtin bindkey -M "$keymap" "$key_info[End]" end-of-line
 
-    bindkey -M "$keymap" "$key_info[Insert]" overwrite-mode
-    bindkey -M "$keymap" "$key_info[Delete]" delete-char
-    bindkey -M "$keymap" "$key_info[Backspace]" backward-delete-char
+    builtin bindkey -M "$keymap" "$key_info[Insert]" overwrite-mode
+    builtin bindkey -M "$keymap" "$key_info[Delete]" delete-char
+    builtin bindkey -M "$keymap" "$key_info[Backspace]" backward-delete-char
 
-    bindkey -M "$keymap" "$key_info[Left]" backward-char
-    bindkey -M "$keymap" "$key_info[Right]" forward-char
+    builtin bindkey -M "$keymap" "$key_info[Left]" backward-char
+    builtin bindkey -M "$keymap" "$key_info[Right]" forward-char
 
     # Expand history on space.
-    bindkey -M "$keymap" ' ' magic-space
+    builtin bindkey -M "$keymap" ' ' magic-space
 
     # Clear screen.
-    bindkey -M "$keymap" "$key_info[Control]L" clear-screen
+    builtin bindkey -M "$keymap" "$key_info[Control]L" clear-screen
 
     # Expand command name to full path.
     for key in "$key_info[Escape]"{E,e}
-      bindkey -M "$keymap" "$key" expand-cmd-path
+      builtin bindkey -M "$keymap" "$key" expand-cmd-path
 
     # Duplicate the previous word.
     for key in "$key_info[Escape]"{M,m}
-      bindkey -M "$keymap" "$key" copy-prev-shell-word
+      builtin bindkey -M "$keymap" "$key" copy-prev-shell-word
 
     # Use a more flexible push-line.
     for key in "$key_info[Control]Q" "$key_info[Escape]"{q,Q}
-      bindkey -M "$keymap" "$key" push-line-or-edit
+      builtin bindkey -M "$keymap" "$key" push-line-or-edit
 
     # Bind Shift + Tab to go to the previous menu item.
-    bindkey -M "$keymap" "$key_info[BackTab]" reverse-menu-complete
+    builtin bindkey -M "$keymap" "$key_info[BackTab]" reverse-menu-complete
 
     # Complete in the middle of word.
-    bindkey -M "$keymap" "$key_info[Control]I" expand-or-complete
+    builtin bindkey -M "$keymap" "$key_info[Control]I" expand-or-complete
 
     # Expand .... to ../..
-    bindkey -M "$keymap" "." expand-dot-to-parent-directory-path
+    builtin bindkey -M "$keymap" "." expand-dot-to-parent-directory-path
 
     # Display an indicator when completing.
-    bindkey -M "$keymap" "$key_info[Control]I" \
+    builtin bindkey -M "$keymap" "$key_info[Control]I" \
       expand-or-complete-with-indicator
 
     # Insert 'sudo ' at the beginning of the line.
-    bindkey -M "$keymap" "$key_info[Control]X$key_info[Control]S" prepend-sudo
+    builtin bindkey -M "$keymap" "$key_info[Control]X$key_info[Control]S" prepend-sudo
   done
 
-  unset key{,map,bindings}
+  builtin unset key{,map,bindings}
 }
 
 ###
@@ -537,21 +537,21 @@ function _zulu_check_for_update() {
       {
         out=$(${=command})
         if [[ $? -eq 0 ]]; then
-          echo $out
+          builtin echo $out
         fi
       } &!
       pids+=$!
     done
 
     for pid in $pids; do
-      while kill -0 $pid >/dev/null 2>&1; do
+      while builtin kill -0 $pid >/dev/null 2>&1; do
       done
     done
   else
     for command in $commands; do
       out=$(${=command})
       if [[ $? -eq 0 ]]; then
-        echo $out
+        builtin echo $out
       fi
     done
   fi
@@ -562,12 +562,12 @@ function _zulu_check_for_update() {
 ###
 function _zulu_load_packages() {
   # Source files in the init directory
-  setopt EXTENDED_GLOB
+  builtin setopt EXTENDED_GLOB
   for f in ${base}/init/**/*^(*.zwc)(#q@N); do
     if [[ -L $f ]]; then
-      source $(readlink $f)
+      builtin source $(command readlink $f)
     else
-      source $f
+      builtin source $f
     fi
   done
 }
@@ -577,33 +577,33 @@ function _zulu_load_packages() {
 ###
 function _zulu_init_switch_branch() {
   local oldPWD=$PWD branch="$1"
-  cd $base/core
+  builtin cd $base/core
 
-  local current=$(git status --short --branch -uno --ignore-submodules=all | head -1 | awk '{print $2}' 2>/dev/null)
+  local current=$(command git status --short --branch -uno --ignore-submodules=all | command head -1 | command awk '{print $2}' 2>/dev/null)
 
   if [[ ${current:0:${#branch}} != $branch ]]; then
-    git reset --hard >/dev/null 2>&1
-    git checkout $branch >/dev/null 2>&1
+    command git reset --hard >/dev/null 2>&1
+    command git checkout $branch >/dev/null 2>&1
     ./build.zsh >/dev/null 2>&1
-    echo "\033[0;32m✔\033[0;m Switched to Zulu ${branch}"
+    builtin echo "\033[0;32m✔\033[0;m Switched to Zulu ${branch}"
   fi
 
-  cd $oldPWD
-  unset oldPWD
+  builtin cd $oldPWD
+  builtin unset oldPWD
 }
 
 ###
 # Display a message to next users
 ###
 function _zulu_init_next_message() {
-  echo
-  echo '\033[0;33mThanks for using Zulu next\033[0;m'
-  echo 'We rely on people like you testing new versions to keep Zulu as useful'
-  echo 'and as stable as possible. If you do run into any errors, please do'
-  echo 'report them so that they can be fixed before the next release.'
-  echo
-  echo 'Github Issues: https://github.com/zulu-zsh/zulu/issues'
-  echo 'Gitter Chat:   https://gitter.im/zulu-zsh/zulu'
+  builtin echo
+  builtin echo '\033[0;33mThanks for using Zulu next\033[0;m'
+  builtin echo 'We rely on people like you testing new versions to keep Zulu as useful'
+  builtin echo 'and as stable as possible. If you do run into any errors, please do'
+  builtin echo 'report them so that they can be fixed before the next release.'
+  builtin echo
+  builtin echo 'Github Issues: https://github.com/zulu-zsh/zulu/issues'
+  builtin echo 'Gitter Chat:   https://gitter.im/zulu-zsh/zulu'
 }
 
 ###
@@ -615,7 +615,7 @@ function _zulu_init() {
   local help check_for_update no_compile next dev
 
   # Parse CLI options
-  zparseopts -D \
+  builtin zparseopts -D \
     h=help -help=help \
     c=check_for_update -check-for-update=check_for_update \
     n=no_compile -no-compile=no_compile \
@@ -666,7 +666,7 @@ function _zulu_init() {
 
   # Autoload zsh theme
   if [[ -f "$config/theme" ]]; then
-    autoload -U promptinit && promptinit
+    builtin autoload -U promptinit && promptinit
     local theme=$(cat "$config/theme")
     prompt $theme
   fi

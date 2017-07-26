@@ -4,8 +4,8 @@
 # Output usage information and exit
 ###
 function _zulu_compile_usage() {
-  echo '\033[0;32mUsage:\033[0;m'
-  echo '  zulu_compile [options]'
+  builtin echo '\033[0;32mUsage:\033[0;m'
+  builtin echo '  zulu_compile [options]'
 }
 
 ###
@@ -15,14 +15,14 @@ function _zulu_compile_usage() {
 function _zulu_compile_if_needed() {
   local file="$1" follow_symlinks
 
-  zparseopts -D \
+  builtin zparseopts -D \
     f=follow_symlinks -follow-symlinks=follow_symlinks
 
   # We can't compile files that do not exist
   [[ ! -e $file ]] && return
 
   # Resolve symlinks if necessary
-  [[ -n $follow_symlinks && -L $file ]] && file=$(readlink $file)
+  [[ -n $follow_symlinks && -L $file ]] && file=$(command readlink $file)
 
   # Check if the file is newer than it's compiled version,
   # and recompile if necessary
@@ -39,7 +39,7 @@ function _zulu_compile_if_needed() {
   local config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   local help version
 
-  zparseopts -D \
+  builtin zparseopts -D \
     h=help -help=help
 
   if [[ -n $help ]]; then

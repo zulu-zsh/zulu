@@ -2,8 +2,8 @@
 # Output usage information
 ###
 function _zulu_uninstall_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu uninstall <packages...>"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu uninstall <packages...>"
 }
 
 ###
@@ -16,8 +16,8 @@ function _zulu_uninstall_package() {
 
   # Double check that the package name has been passed
   if [[ -z $package ]]; then
-    echo $(_zulu_color red "Please specify a package name")
-    echo
+    builtin echo $(_zulu_color red "Please specify a package name")
+    builtin echo
     _zulu_uninstall_usage
     return 1
   fi
@@ -30,7 +30,7 @@ function _zulu_uninstall_package() {
   # TODO: Obviously, this works, but would really like to find a pure-zsh
   #       way of doing this safely *just in case* the root variable doesn't
   #       get populated for some reason
-  rm -rf "$root"
+  command rm -rf "$root"
 
   return $?
 }
@@ -42,7 +42,7 @@ function _zulu_uninstall() {
   local base index packages out
 
   # Parse options
-  zparseopts -D h=help -help=help
+  builtin zparseopts -D h=help -help=help
 
   # Output help and return if requested
   if [[ -n $help ]]; then
@@ -57,8 +57,8 @@ function _zulu_uninstall() {
 
   # If no context is passed, output the contents of the pathfile
   if [[ "$1" = "" ]]; then
-    echo $(_zulu_color red "Please specify a package name")
-    echo
+    builtin echo $(_zulu_color red "Please specify a package name")
+    builtin echo
     _zulu_uninstall_usage
     return 1
   fi
@@ -66,12 +66,12 @@ function _zulu_uninstall() {
   # Do a first loop, to ensure all packages exist
   for package in "$@"; do
     if [[ ! -f "$index/$package" ]]; then
-      echo $(_zulu_color red "Package '$package' is not in the index")
+      builtin echo $(_zulu_color red "Package '$package' is not in the index")
       return 1
     fi
 
     if [[ ! -d "$base/packages/$package" ]]; then
-      echo $(_zulu_color red "Package '$package' is not installed")
+      builtin echo $(_zulu_color red "Package '$package' is not installed")
       return 1
     fi
   done
@@ -87,10 +87,10 @@ function _zulu_uninstall() {
     _zulu_revolver stop
 
     if [ $state -eq 0 ]; then
-      echo "$(_zulu_color green '✔') Finished uninstalling $package"
+      builtin echo "$(_zulu_color green '✔') Finished uninstalling $package"
     else
-      echo "$(_zulu_color red '✘') Error uninstalling $package"
-      echo "$out"
+      builtin echo "$(_zulu_color red '✘') Error uninstalling $package"
+      builtin echo "$out"
     fi
   done
 

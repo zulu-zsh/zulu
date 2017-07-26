@@ -2,19 +2,19 @@
 # Print usage information
 ###
 function _zulu_list_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu list [options]"
-  echo
-  echo $(_zulu_color yellow "Options:")
-  echo "  -a, --all            List all packages in the index"
-  echo "  -d, --describe       Include package description in output"
-  echo "  -h, --help           Output this help text and exit"
-  echo "  -i, --installed      List only installed packages (default)"
-  echo "  -n, --not-installed  List non-installed packages"
-  echo "  -s, --simple         Hide the 'package installed' indicator"
-  echo "  -t, --type <type>    Limit results to packages of <type>"
-  echo "      --branch         Print the current branch (if one is checked out)"
-  echo "      --tag            Print the current tag (if one is checked out)"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu list [options]"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Options:")
+  builtin echo "  -a, --all            List all packages in the index"
+  builtin echo "  -d, --describe       Include package description in output"
+  builtin echo "  -h, --help           Output this help text and exit"
+  builtin echo "  -i, --installed      List only installed packages (default)"
+  builtin echo "  -n, --not-installed  List non-installed packages"
+  builtin echo "  -s, --simple         Hide the 'package installed' indicator"
+  builtin echo "  -t, --type <type>    Limit results to packages of <type>"
+  builtin echo "      --branch         Print the current branch (if one is checked out)"
+  builtin echo "      --tag            Print the current tag (if one is checked out)"
 }
 
 ###
@@ -27,7 +27,7 @@ function _zulu_list_packages() {
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="$base/index/packages"
 
-  for package in $(/bin/ls $index); do
+  for package in $(command ls $index); do
     # If --installed is passed but the package is not installed,
     # then skip past it
     if [[ -n $installed ]] && ! _zulu_info_is_installed $package; then
@@ -43,7 +43,7 @@ function _zulu_list_packages() {
     # We only need to read the package's index file if
     # the --type or --describe options are passed
     if [[ -n $package_type || -n $describe ]]; then
-      json="$(cat $index/$package)"
+      json="$(command cat $index/$package)"
     fi
 
     # If --type is passed but the package is not of the
@@ -58,7 +58,7 @@ function _zulu_list_packages() {
 
     # Prevent ZVM from changing the ZSH version
     local old_ZVM_AUTO_USE=$ZVM_AUTO_USE
-    unset ZVM_AUTO_USE
+    builtin unset ZVM_AUTO_USE
 
     local suffix=''
 
@@ -66,38 +66,38 @@ function _zulu_list_packages() {
     # for the package and print it alongside the name
     if [[ -n $branch ]] && _zulu_info_is_installed $package; then
       local oldPWD=$PWD
-      cd "$base/packages/$package"
+      builtin cd "$base/packages/$package"
 
-      local current=$(git status --short --branch -uno --ignore-submodules=all | head -1 | awk '{print $2}' 2>/dev/null)
+      local current=$(command git status --short --branch -uno --ignore-submodules=all | command head -1 | command awk '{print $2}' 2>/dev/null)
       current=${current%...*}
 
       if [[ $current != 'HEAD' && $current != 'master' ]]; then
         suffix+=", branch: $current"
       fi
 
-      cd $oldPWD
-      unset oldPWD
+      builtin cd $oldPWD
+      builtin unset oldPWD
     fi
 
     # If --tag is specified, get the current checked-out tag
     # for the package and print it alongside the name
     if [[ -n $tag ]] && _zulu_info_is_installed $package; then
       local oldPWD=$PWD
-      cd "$base/packages/$package"
+      builtin cd "$base/packages/$package"
 
-      local commit=$(git status HEAD -uno --ignore-submodules=all | head -1 | awk '{print $4}' 2>/dev/null)
+      local commit=$(command git status HEAD -uno --ignore-submodules=all | command head -1 | command awk '{print $4}' 2>/dev/null)
 
       if [[ -n $commit ]]; then
         suffix+=", tag: $commit"
       fi
 
-      cd $oldPWD
-      unset oldPWD
+      builtin cd $oldPWD
+      builtin unset oldPWD
     fi
 
     # Restore the previous ZVM_AUTO_USE setting
     export ZVM_AUTO_USE=$old_ZVM_AUTO_USE
-    unset old_ZVM_AUTO_USE
+    builtin unset old_ZVM_AUTO_USE
 
     # Print out the name of the package, and the installed flag
     # unless --simple is passed
@@ -117,11 +117,11 @@ function _zulu_list_packages() {
     # If --describe is specified, print the description
     if [[ -n $describe ]]; then
       description=$(jsonval $json 'description')
-      printf '%s' "$name"
-      printf '%*.*s' 0 $(($lim - ${#name} )) "$(printf '%0.1s' " "{1..60})"
-      printf '%s\n' "$description"
+      builtin printf '%s' "$name"
+      builtin printf '%*.*s' 0 $(($lim - ${#name} )) "$(builtin printf '%0.1s' " "{1..60})"
+      builtin printf '%s\n' "$description"
     else
-      echo $name
+      builtin echo $name
     fi
   done
 
@@ -144,7 +144,7 @@ function _zulu_list() {
   fi
 
   # Parse options
-  zparseopts -D \
+  builtin zparseopts -D \
     h=help -help=help \
     i=installed -installed=installed \
     n=not_installed -not-installed=not_installed \
@@ -163,7 +163,7 @@ function _zulu_list() {
 
   # Check if the --type option is passed and shift the argument
   if [[ -n $package_type ]]; then
-    shift package_type
+    builtin shift package_type
   fi
 
   # List the packages

@@ -2,11 +2,11 @@
 # Print usage information
 ###
 function _zulu_link_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu link <package>"
-  echo
-  echo $(_zulu_color yellow "Options:")
-  echo "      --no-autoselect-themes      Don't autoselect themes after installing"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu link <package>"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Options:")
+  builtin echo "      --no-autoselect-themes      Don't autoselect themes after installing"
 }
 
 ###
@@ -16,7 +16,7 @@ function _zulu_link() {
   local help package json dir file link base index no_autoselect_themes
   local -a dirs
 
-  zparseopts -D h=help -help=help \
+  builtin zparseopts -D h=help -help=help \
     -no-autoselect-themes=no_autoselect_themes
 
   if [[ -n $help ]]; then
@@ -33,32 +33,32 @@ function _zulu_link() {
   # Check if the package is already installed
   root="$base/packages/$package"
   if [[ ! -d "$root" ]]; then
-    echo $(_zulu_color red "Package '$package' is not installed")
+    builtin echo $(_zulu_color red "Package '$package' is not installed")
     return 1
   fi
 
   _zulu_revolver start "Linking $package..."
 
   # Get the JSON from the index
-  json=$(cat "$index/$package")
+  json=$(command cat "$index/$package")
 
   # See if the package has a post_install script
   post_install=$(jsonval $json 'post_install')
   if [[ -n $post_install ]]; then
     # Change to the package directory
     oldPWD=$PWD
-    cd $root
+    builtin cd $root
 
     # Eval the post_install script
-    output=$(eval "$post_install")
+    output=$(builtin eval "$post_install")
     if [[ $? -ne 0 ]]; then
-      echo $(_zulu_color red "Post install step for $package failed")
-      echo "$output"
-      cd $oldPWD
+      builtin echo $(_zulu_color red "Post install step for $package failed")
+      builtin echo "$output"
+      builtin cd $oldPWD
       return 1
     fi
 
-    cd $oldPWD
+    builtin cd $oldPWD
   fi
 
   # Loop through the 'bin' and 'share' objects
@@ -69,7 +69,7 @@ function _zulu_link() {
     IFS=$' '
 
     # Convert the bin/share object into an associative array
-    typeset -A files; files=($(echo $(jsonval $json $dir) | tr "," "\n" | tr ":" " "))
+    typeset -A files; files=($(builtin echo $(jsonval $json $dir) | tr "," "\n" | tr ":" " "))
 
     IFS=$oldIFS
 
@@ -84,12 +84,12 @@ function _zulu_link() {
 
       # Make sure that commands to be included in bin are executable
       if [[ "$dir" = "bin" ]]; then
-        chmod u+x "$root/$file"
+        command chmod u+x "$root/$file"
       fi
 
       # Source init scripts
       if [[ "$dir" = "init" ]]; then
-        source $(readlink "$base/init/$link")
+        builtin source $(command readlink "$base/init/$link")
       fi
     done
   done
@@ -102,5 +102,5 @@ function _zulu_link() {
   fi
 
   _zulu_revolver stop
-  echo "$(_zulu_color green '✔') Finished linking $package"
+  builtin echo "$(_zulu_color green '✔') Finished linking $package"
 }

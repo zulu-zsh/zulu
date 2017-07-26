@@ -2,8 +2,8 @@
 # Output usage information
 ###
 function _zulu_search_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu search <term>"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu search <term>"
 }
 
 ###
@@ -13,7 +13,7 @@ function _zulu_search() {
   local base index out results term=$1
 
   # Parse options
-  zparseopts -D h=help -help=help
+  builtin zparseopts -D h=help -help=help
 
   # Output help and return if requested
   if [[ -n $help ]]; then
@@ -26,6 +26,6 @@ function _zulu_search() {
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   index="${base}/index/packages"
 
-  results="$(zulu list --all | grep -i $term)"
-  echo "$results"
+  results="$(zulu list --all | command grep -i $term)"
+  builtin echo "$results"
 }
