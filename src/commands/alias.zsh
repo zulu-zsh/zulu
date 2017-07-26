@@ -15,7 +15,7 @@ function _zulu_alias_usage() {
 # Add an alias
 ###
 function _zulu_alias_add() {
-  locwal existing alias cmd
+  local existing alias cmd
 
   alias="$1"
   cmd="${(@)@:2}"
