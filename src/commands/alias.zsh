@@ -2,34 +2,34 @@
 # Output usage information
 ###
 function _zulu_alias_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu alias <context> [args]"
-  echo
-  echo $(_zulu_color yellow "Contexts:")
-  echo "  add <alias> <command>   Add an alias"
-  echo "  load                    Load all aliases from alias file"
-  echo "  rm <alias>              Remove an alias"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu alias <context> [args]"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Contexts:")
+  builtin echo "  add <alias> <command>   Add an alias"
+  builtin echo "  load                    Load all aliases from alias file"
+  builtin echo "  rm <alias>              Remove an alias"
 }
 
 ###
 # Add an alias
 ###
 function _zulu_alias_add() {
-  local existing alias cmd
+  locwal existing alias cmd
 
   alias="$1"
   cmd="${(@)@:2}"
 
-  existing=$(cat $aliasfile | grep "alias $alias=")
+  existing=$(command cat $aliasfile | command grep "alias $alias=")
   if [[ $existing != "" ]]; then
-    echo $(_zulu_color red "Alias '$alias' already exists")
+    builtin echo $(_zulu_color red "Alias '$alias' already exists")
     return 1
   fi
 
-  echo "alias $alias='$cmd'" >> $aliasfile
+  builtin echo "alias $alias='$cmd'" >> $aliasfile
 
   zulu alias load
-  echo "$(_zulu_color green '✔') Alias '$alias' added"
+  builtin echo "$(_zulu_color green '✔') Alias '$alias' added"
 }
 
 ###
@@ -40,24 +40,24 @@ function _zulu_alias_rm() {
 
   alias="$1"
 
-  existing=$(cat $aliasfile | grep "alias $alias=")
+  existing=$(command cat $aliasfile | command grep "alias $alias=")
   if [[ $existing = "" ]]; then
-    echo $(_zulu_color red "Alias '$alias' does not exist")
+    builtin echo $(_zulu_color red "Alias '$alias' does not exist")
     return 1
   fi
 
-  echo "$(cat $aliasfile | grep -v "alias $alias=")" >! $aliasfile
+  builtin echo "$(command cat $aliasfile | command grep -v "alias $alias=")" >! $aliasfile
   unalias $alias
 
   zulu alias load
-  echo "$(_zulu_color green '✔') Alias '$alias' removed"
+  builtin echo "$(_zulu_color green '✔') Alias '$alias' removed"
 }
 
 ###
 # Load aliases
 ###
 function _zulu_alias_load() {
-  source $aliasfile
+  builtin source $aliasfile
 }
 
 ###
@@ -67,7 +67,7 @@ function _zulu_alias() {
   local ctx base aliasfile
 
   # Parse options
-  zparseopts -D h=help -help=help
+  builtin zparseopts -D h=help -help=help
 
   # Output help and return if requested
   if [[ -n $help ]]; then

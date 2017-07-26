@@ -2,12 +2,12 @@
 # Output usage information
 ###
 function _zulu_sync_usage() {
-  echo $(_zulu_color yellow 'Usage:')
-  echo '  zulu sync'
-  echo
-  echo $(_zulu_color yellow 'Commands:')
-  echo '  pull      Pull changes from remote repository'
-  echo '  push      Push local changes to remote repository'
+  builtin echo $(_zulu_color yellow 'Usage:')
+  builtin echo '  zulu sync'
+  builtin echo
+  builtin echo $(_zulu_color yellow 'Commands:')
+  builtin echo '  pull      Pull changes from remote repository'
+  builtin echo '  push      Push local changes to remote repository'
 }
 
 ###
@@ -15,13 +15,13 @@ function _zulu_sync_usage() {
 ###
 function _zulu_sync_pull_changes() {
   local oldPWD=$PWD
-  cd $config_dir
+  builtin cd $config_dir
 
   # Start the progress spinner
   _zulu_revolver start 'Syncing...'
 
   # Fetch from the remote
-  git fetch origin >/dev/null 2>&1
+  command git fetch origin >/dev/null 2>&1
 
   # Check if any updates are available
   count="$(command git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)"
@@ -29,22 +29,22 @@ function _zulu_sync_pull_changes() {
 
   # If no updates are available, stop and tell the user
   if [[ $down -eq 0 ]]; then
-    cd $oldPWD
-    unset oldPWD
+    builtin cd $oldPWD
+    builtin unset oldPWD
 
     _zulu_revolver stop
-    echo $(_zulu_color green 'No updates found')
+    builtin echo $(_zulu_color green 'No updates found')
     return
   fi
 
   # Rebase master over the updates
-  git rebase -p --autostash origin/master >/dev/null 2>&1
+  command git rebase -p --autostash origin/master >/dev/null 2>&1
   if [[ $? -ne 0 ]]; then
-    cd $oldPWD
-    unset oldPWD
+    builtin cd $oldPWD
+    builtin unset oldPWD
 
     _zulu_revolver stop
-    echo $(_zulu_color red 'Failed to merge changes from remote')
+    builtin echo $(_zulu_color red 'Failed to merge changes from remote')
     return 1
   fi
 
@@ -53,21 +53,21 @@ function _zulu_sync_pull_changes() {
 
   # Success! Tell the user
   _zulu_revolver stop
-  echo "$(_zulu_color green '✔') Remote changes synced"
+  builtin echo "$(_zulu_color green '✔') Remote changes synced"
 
-  cd $oldPWD
-  unset oldPWD
+  builtin cd $oldPWD
+  builtin unset oldPWD
 }
 
 function _zulu_sync_push_changes() {
   local oldPWD=$PWD
-  cd $config_dir
+  builtin cd $config_dir
 
   # Start the progress spinner
   _zulu_revolver start 'Syncing...'
 
   # Fetch from the remote
-  git fetch origin >/dev/null 2>&1
+  command git fetch origin >/dev/null 2>&1
 
   # Check if any updates are available
   count="$(command git rev-list --left-right --count HEAD...@'{u}' 2>/dev/null)"
@@ -75,33 +75,33 @@ function _zulu_sync_push_changes() {
 
   # If no updates are available, stop and tell the user
   if [[ $down -gt 0 ]]; then
-    cd $oldPWD
-    unset oldPWD
+    builtin cd $oldPWD
+    builtin unset oldPWD
 
     _zulu_revolver stop
-    echo $(_zulu_color red 'Remote has been updated. Pull changes first')
+    builtin echo $(_zulu_color red 'Remote has been updated. Pull changes first')
     return 1
   fi
 
-  dirty="$(git diff --ignore-submodules=all HEAD 2>/dev/null)"
+  dirty="$(command git diff --ignore-submodules=all HEAD 2>/dev/null)"
   if [[ -z $dirty ]]; then
-    cd $oldPWD
-    unset oldPWD
+    builtin cd $oldPWD
+    builtin unset oldPWD
 
     _zulu_revolver stop
-    echo $(_zulu_color green 'Nothing to sync')
+    builtin echo $(_zulu_color green 'Nothing to sync')
     return 1
   fi
 
-  git add . >/dev/null 2>&1
-  git commit -m "Sync config from $HOST" >/dev/null 2>&1
-  git push -u origin master >/dev/null 2>&1
+  command git add . >/dev/null 2>&1
+  command git commit -m "Sync config from $HOST" >/dev/null 2>&1
+  command git push -u origin master >/dev/null 2>&1
 
   _zulu_revolver stop
-  echo "$(_zulu_color green '✔') Local changes uploaded"
+  builtin echo "$(_zulu_color green '✔') Local changes uploaded"
 
-  cd $oldPWD
-  unset oldPWD
+  builtin cd $oldPWD
+  builtin unset oldPWD
 }
 
 ###
@@ -109,24 +109,24 @@ function _zulu_sync_push_changes() {
 ###
 function _zulu_sync_repository_exists() {
   local oldPWD=$PWD
-  cd $config_dir
+  builtin cd $config_dir
 
   # Check if the config directory is already within a git repository
   if command git rev-parse --is-inside-work-tree &>/dev/null; then
     # If it is, check if the config directory is the git root.
     # If it's not, we'll exit, since syncing is probably already
     # being handled outside of Zulu
-    git_dir=$(git rev-parse --git-dir)
+    git_dir=$(command git rev-parse --git-dir)
     if [[ $git_dir = ".git" ]]; then
-      cd $oldPWD
-      unset oldPWD
+      builtin cd $oldPWD
+      builtin unset oldPWD
 
       return 0
     fi
   fi
 
-  cd $oldPWD
-  unset oldPWD
+  builtin cd $oldPWD
+  builtin unset oldPWD
 
   return 1
 }
@@ -137,19 +137,19 @@ function _zulu_sync_repository_exists() {
 function _zulu_sync_setup() {
   # Change into the config directory
   local oldPWD=$PWD
-  cd $config_dir
+  builtin cd $config_dir
 
   # Check if the config directory is already within a git repository
   if command git rev-parse --is-inside-work-tree &>/dev/null; then
     # If it is, check if the config directory is the git root.
     # If it's not, we'll exit, since syncing is probably already
     # being handled outside of Zulu
-    git_dir=$(git rev-parse --git-dir)
+    git_dir=$(command git rev-parse --git-dir)
     if [[ $git_dir != ".git" ]]; then
-      cd $oldPWD
-      unset oldPWD
+      builtin cd $oldPWD
+      builtin unset oldPWD
 
-      echo $(_zulu_color red "It looks like $config_dir is already within a git repository at $git_dir")
+      builtin echo $(_zulu_color red "It looks like $config_dir is already within a git repository at $git_dir")
       return 1
     fi
 
@@ -157,42 +157,42 @@ function _zulu_sync_setup() {
   fi
 
   # Create a new git repository in the config directory
-  if ! git init >/dev/null 2>&1; then
-    cd $oldPWD
-    unset oldPWD
+  if ! command git init >/dev/null 2>&1; then
+    builtin cd $oldPWD
+    builtin unset oldPWD
 
-    echo $(_zulu_color red 'Failed to initialise empty repository')
+    builtin echo $(_zulu_color red 'Failed to initialise empty repository')
     exit 1
   fi
 
   # Ask the user for the remote repository URL
-  echo $(_zulu_color yellow 'Sync has not been set up yet')
-  echo 'If you haven'\''t already, create a repository using'
-  echo 'a remote service such as github.com'
-  echo
+  builtin echo $(_zulu_color yellow 'Sync has not been set up yet')
+  builtin echo 'If you haven'\''t already, create a repository using'
+  builtin echo 'a remote service such as github.com'
+  builtin echo
   vared -p "$(_zulu_color yellow 'Please enter your repository URL: ')" -c repo_url
 
   # If a URL was not provided, exit
   if [[ -z $repo_url ]]; then
-    cd $oldPWD
-    unset oldPWD
+    builtin cd $oldPWD
+    builtin unset oldPWD
 
-    echo $(_zulu_color red 'Repository URL not provided')
+    builtin echo $(_zulu_color red 'Repository URL not provided')
     return 1
   fi
 
   # Set the repository's origin to the remote
-  git remote add origin $repo_url
-  git fetch origin >/dev/null 2>&1
+  command git remote add origin $repo_url
+  command git fetch origin >/dev/null 2>&1
 
   # Create a .gitignore if one does not exist, to ensure
   # private configuration is not synced
   if [[ ! -f .gitignore ]]; then
-    echo ".backup
+    builtin echo ".backup
 *.private" > .gitignore
   fi
 
-  remotes=$(git rev-parse --remotes)
+  remotes=$(command git rev-parse --remotes)
   if [[ -n $remotes ]]; then
     # The repository provided already has a HEAD
     # Present the user with some options
@@ -212,19 +212,19 @@ Please choose from one of the following options:
       p|P )
         _zulu_revolver start 'Overwriting remote config...'
         # Commit changes
-        git add . >/dev/null 2>&1
-        git commit -m "Sync config from $HOST" >/dev/null 2>&1
+        command git add . >/dev/null 2>&1
+        command git commit -m "Sync config from $HOST" >/dev/null 2>&1
 
         # Force push to overwrite remote config
-        git push --force --set-upstream origin master >/dev/null 2>&1
+        command git push --force --set-upstream origin master >/dev/null 2>&1
 
         _zulu_revolver stop
-        echo
-        echo "$(_zulu_color green '✔') Sync setup complete"
+        builtin echo
+        builtin echo "$(_zulu_color green '✔') Sync setup complete"
 
         # Return to the previous directory
-        cd $oldPWD
-        unset oldPWD
+        builtin cd $oldPWD
+        builtin unset oldPWD
         ;;
 
       # Back up the existing config to $ZULU_CONFIG_DIR/.backup
@@ -234,38 +234,38 @@ Please choose from one of the following options:
 
         # Return to the previous directory so we can move
         # the current directory
-        cd $oldPWD
-        unset oldPWD
+        builtin cd $oldPWD
+        builtin unset oldPWD
 
         # Move existing config directory into tmp
-        mv "$ZULU_CONFIG_DIR" "/tmp/zulu-config.bkp"
+        command mv "$ZULU_CONFIG_DIR" "/tmp/zulu-config.bkp"
 
         # Since we have no local branch we can't pull
         # a remote branch into the local repository,
         # so we create a fresh clone instead
-        git clone $repo_url $ZULU_CONFIG_DIR >/dev/null 2>&1
+        command git clone $repo_url $ZULU_CONFIG_DIR >/dev/null 2>&1
 
         # Move the temporary backup back into the repository
         # so that it's easy to find. It will be ignored by git
-        mv "/tmp/zulu-config.bkp" "$ZULU_CONFIG_DIR/.backup"
+        command mv "/tmp/zulu-config.bkp" "$ZULU_CONFIG_DIR/.backup"
 
         _zulu_revolver stop
-        echo
-        echo "$(_zulu_color green '✔') Sync setup complete"
-        echo "Old config backed up to $ZULU_CONFIG_DIR/.backup"
-        echo
+        builtin echo
+        builtin echo "$(_zulu_color green '✔') Sync setup complete"
+        builtin echo "Old config backed up to $ZULU_CONFIG_DIR/.backup"
+        builtin echo
 
         zulu bundle
         zulu init
 
-        echo "$(_zulu_color green '✔') Remote changes synced"
+        builtin echo "$(_zulu_color green '✔') Remote changes synced"
         ;;
 
       # Something else was entered, exit
       * )
         # Return to the previous directory
-        cd $oldPWD
-        unset oldPWD
+        builtin cd $oldPWD
+        builtin unset oldPWD
 
         return 1
         ;;
@@ -280,7 +280,7 @@ function _zulu_sync() {
   local ctx config_dir
 
   # Parse options
-  zparseopts -D h=help -help=help
+  builtin zparseopts -D h=help -help=help
 
   # Output help and return if requested
   if [[ -n $help ]]; then
@@ -314,7 +314,7 @@ function _zulu_sync() {
       _zulu_sync_pull_changes
       ;;
     * )
-      echo $(_zulu_color red "Unrecognized command $ctx")
+      builtin echo $(_zulu_color red "Unrecognized command $ctx")
       return 1
   esac
 }

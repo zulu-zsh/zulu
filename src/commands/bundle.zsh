@@ -2,15 +2,15 @@
 # Print usage information
 ###
 function _zulu_bundle_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu bundle [options]"
-  echo
-  echo $(_zulu_color yellow "Options:")
-  echo "  -c, --cleanup        Uninstall packages not in packagefile"
-  echo "  -f, --file           Specify a packagefile"
-  echo "  -d, --dump           Dump installed packages to packagefile"
-  echo "  -h, --help           Output this help text and exit"
-  echo "  -x, --force          Force writing of packages to an existing file"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu bundle [options]"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Options:")
+  builtin echo "  -c, --cleanup        Uninstall packages not in packagefile"
+  builtin echo "  -f, --file           Specify a packagefile"
+  builtin echo "  -d, --dump           Dump installed packages to packagefile"
+  builtin echo "  -h, --help           Output this help text and exit"
+  builtin echo "  -x, --force          Force writing of packages to an existing file"
 }
 
 ###
@@ -23,18 +23,18 @@ function _zulu_bundle_dump() {
   if [[ -f $packagefile ]]; then
     # If the --force option was passed, overwrite it
     if [[ -n $force ]]; then
-      echo ${(@F)installed} >! $packagefile
+      builtin echo ${(@F)installed} >! $packagefile
       return
     fi
 
     # Throw an error
-    echo $(_zulu_color red "Packagefile at $packagefile already exists")
-    echo 'Use `zulu bundle --dump --force` to overwrite'
+    builtin echo $(_zulu_color red "Packagefile at $packagefile already exists")
+    builtin echo 'Use `zulu bundle --dump --force` to overwrite'
     return 1
   fi
 
   # Write to the packagefile
-  echo ${(@F)installed} > $packagefile
+  builtin echo ${(@F)installed} > $packagefile
   return
 }
 
@@ -63,7 +63,7 @@ function _zulu_bundle() {
   local help file cleanup dump force base config packagefile packages
 
   # Parse options
-  zparseopts -D h=help -help=help \
+  builtin zparseopts -D h=help -help=help \
                 f:=file -file:=file \
                 c=cleanup -cleanup=cleanup \
                 d=dump -dump=dump \
@@ -84,7 +84,7 @@ function _zulu_bundle() {
 
   # If a file is passed, use that as the packagefile
   if [[ -n $file ]]; then
-    shift file
+    builtin shift file
     packagefile="$file"
   fi
 
@@ -97,7 +97,7 @@ function _zulu_bundle() {
   # Check that the packagefile exists, and throw an
   # error if it does not
   if [[ ! -f $packagefile ]]; then
-    echo $(_zulu_color red 'Packagefile cannot be found')
+    builtin echo $(_zulu_color red 'Packagefile cannot be found')
     return 1
   fi
 
@@ -114,7 +114,7 @@ function _zulu_bundle() {
   packages=($(cat $packagefile))
 
   IFS=$oldIFS
-  unset oldIFS
+  builtin unset oldIFS
 
   # Loop through the packages
   for package in "${packages[@]}"; do

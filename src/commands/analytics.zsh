@@ -8,7 +8,7 @@ function _zulu_analytics_user_key() {
   # If a user ID is already set in the config file.
   # we don't need to generate one
   if zulu config user_id >/dev/null 2>&1; then
-    echo $(zulu config user_id)
+    builtin echo $(zulu config user_id)
     return
   fi
 
@@ -30,7 +30,7 @@ function _zulu_analytics_user_key() {
   fi
 
   # Create a hash from the user's username and hostname
-  hash=$(echo -n "$USER@$HOST" | $cmd)
+  hash=$(builtin echo -n "$USER@$HOST" | $cmd)
 
   # Store the hash in the Zulu config file
   # and return it
@@ -54,7 +54,7 @@ function _zulu_analytics_track() {
   # you, the user, and find ways to improve Zulu.
   # If the data is inaccurate, it makes supporting
   # Zulu more difficult. Please don't be a dick.
-  curl \
+  command curl \
     -X POST \
     -H "Content-Type: application/json" \
     -d "{
@@ -70,7 +70,7 @@ function _zulu_analytics_enabled() {
     zulu config set analytics true >/dev/null 2>&1
 
     # Let the user know they can opt-out
-    echo 'Zulu collects anonymous usage data to allow the developers to see
+    builtin echo 'Zulu collects anonymous usage data to allow the developers to see
 which of Zulu'\''s features are most important to you, the user, and to
 continue to improve Zulu for you.
 

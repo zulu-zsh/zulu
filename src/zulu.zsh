@@ -2,39 +2,39 @@
 # Print usage information
 ###
 function _zulu_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu [options] <command>"
-  echo
-  echo $(_zulu_color yellow "Options:")
-  echo "  -h, --help          Output this help text and exit"
-  echo "  -v, --version       Output version information and exit"
-  echo
-  echo $(_zulu_color yellow "Commands:")
-  echo "  alias <args>          Functions for adding/removing aliases"
-  echo "  bundle                Install all packages from packagefile"
-  echo "  cdpath <args>         Functions for adding/removing dirs from \$cdpath"
-  echo "  fpath <args>          Functions for adding/removing dirs from \$fpath"
-  echo "  func <args>           Functions for adding/removing functions"
-  echo "  info                  Show information for a package"
-  echo "  install <package>     Install a package"
-  echo "  link <package>        Create symlinks for a package"
-  echo "  list                  List packages"
-  echo "  manpath               Functions for adding/removing dirs from \$manpath"
-  echo "  path <args>           Functions for adding/removing dirs from \$path"
-  echo "  theme <theme>         Select a prompt theme"
-  echo "  search                Search the package index"
-  echo "  self-update           Update zulu"
-  echo "  switch                Switch to a different version of a package"
-  echo "  sync                  Sync your Zulu environment to a remote repository"
-  echo "  uninstall <package>   Uninstall a package"
-  echo "  unlink <package>      Remove symlinks for a package"
-  echo "  update                Update the package index"
-  echo "  upgrade <package>     Upgrade a package"
-  echo "  var <args>            Functions for adding/removing environment variables"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu [options] <command>"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Options:")
+  builtin echo "  -h, --help          Output this help text and exit"
+  builtin echo "  -v, --version       Output version information and exit"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Commands:")
+  builtin echo "  alias <args>          Functions for adding/removing aliases"
+  builtin echo "  bundle                Install all packages from packagefile"
+  builtin echo "  cdpath <args>         Functions for adding/removing dirs from \$cdpath"
+  builtin echo "  fpath <args>          Functions for adding/removing dirs from \$fpath"
+  builtin echo "  func <args>           Functions for adding/removing functions"
+  builtin echo "  info                  Show information for a package"
+  builtin echo "  install <package>     Install a package"
+  builtin echo "  link <package>        Create symlinks for a package"
+  builtin echo "  list                  List packages"
+  builtin echo "  manpath               Functions for adding/removing dirs from \$manpath"
+  builtin echo "  path <args>           Functions for adding/removing dirs from \$path"
+  builtin echo "  theme <theme>         Select a prompt theme"
+  builtin echo "  search                Search the package index"
+  builtin echo "  self-update           Update zulu"
+  builtin echo "  switch                Switch to a different version of a package"
+  builtin echo "  sync                  Sync your Zulu environment to a remote repository"
+  builtin echo "  uninstall <package>   Uninstall a package"
+  builtin echo "  unlink <package>      Remove symlinks for a package"
+  builtin echo "  update                Update the package index"
+  builtin echo "  upgrade <package>     Upgrade a package"
+  builtin echo "  var <args>            Functions for adding/removing environment variables"
 }
 
 function _zulu_version() {
-  cat "$base/core/.version"
+  command cat "$base/core/.version"
 }
 
 ###
@@ -50,7 +50,7 @@ function zulu() {
   config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
 
   # Parse CLI options
-  zparseopts -D h=help -help=help v=version -version=version
+  builtin zparseopts -D h=help -help=help v=version -version=version
 
   # Print help
   if [[ -n $help ]]; then
@@ -66,28 +66,28 @@ function zulu() {
   cmd="$1"
 
   if [[ -z $cmd ]]; then
-    echo " _____         ___"
-    echo "/__  /  __  __/  /_  __"
-    echo "  / /  / / / /  / / / /"
-    echo " / /__/ /_/ /  / /_/ /"
-    echo "/____/\\____/__/\\____/"
-    echo
-    echo "Version $(zulu --version)"
-    echo
+    builtin echo " _____         ___"
+    builtin echo "/__  /  __  __/  /_  __"
+    builtin echo "  / /  / / / /  / / / /"
+    builtin echo " / /__/ /_/ /  / /_/ /"
+    builtin echo "/____/\\____/__/\\____/"
+    builtin echo
+    builtin echo "Version $(zulu --version)"
+    builtin echo
     _zulu_usage
     return
   fi
 
   # If we're in dev mode, re-source the command now
   if (( $+functions[_zulu_${cmd}] )) && [[ $ZULU_DEV_MODE -eq 1 ]]; then
-    source "$base/core/src/commands/$cmd.zsh"
+    builtin source "$base/core/src/commands/$cmd.zsh"
   fi
 
   # Check if the requested command exists
   if (( ! $+functions[_zulu_${cmd}] )); then
     # If it doesn't, print usage information and exit
-    echo $(_zulu_color red "Command '$cmd' can not be found.")
-    echo
+    builtin echo $(_zulu_color red "Command '$cmd' can not be found.")
+    builtin echo
     _zulu_usage
     return 1
   fi

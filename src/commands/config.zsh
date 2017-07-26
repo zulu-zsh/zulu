@@ -2,13 +2,13 @@
 # Output usage information
 ###
 function _zulu_config_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu config <args...>"
-  echo
-  echo $(_zulu_color yellow "Contexts:")
-  echo "  list                List all config values"
-  echo "  get <key>           Get a config value"
-  echo "  set <key> <value>   Set a config value"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu config <args...>"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Contexts:")
+  builtin echo "  list                List all config values"
+  builtin echo "  get <key>           Get a config value"
+  builtin echo "  set <key> <value>   Set a config value"
 }
 
 ###
@@ -21,13 +21,13 @@ function _zulu_config_set() {
 
   # Rewrite the config file, omitting the key
   # we're setting if it exists
-  echo "$(cat $configfile | grep -v -E "^$key:")" >! $configfile
+  builtin echo "$(command cat $configfile | command grep -v -E "^$key:")" >! $configfile
 
   # Write the new value to the config file
-  echo "$key: $value" >> $configfile
+  builtin echo "$key: $value" >> $configfile
 
   # Write the config file again, stripping out any blank lines
-  echo "$(cat $configfile | grep -v -E '^\s*$')" >! $configfile
+  builtin echo "$(command cat $configfile | command grep -v -E '^\s*$')" >! $configfile
 
   zulu config $key
 }
@@ -44,7 +44,7 @@ function _zulu_config_get() {
     return 1
   fi
 
-  echo "$zulu_config[$key]"
+  builtin echo "$zulu_config[$key]"
 }
 
 ###
@@ -52,7 +52,7 @@ function _zulu_config_get() {
 ###
 function _zulu_config_load {
   [[ ! -f $configfile ]] && touch $configfile
-  eval $(_zulu_config_parse_yaml)
+  builtin eval $(_zulu_config_parse_yaml)
 }
 
 ###
@@ -63,8 +63,8 @@ function _zulu_config_parse_yaml() {
   local s w fs prefix='zulu_config'
   s='[[:space:]]*'
   w='[a-zA-Z0-9_]*'
-  fs="$(echo @|tr @ '\034')"
-  sed -ne "s|^\(${s}\)\(${w}\)${s}:${s}\"\(.*\)\"${s}\$|\1${fs}\2${fs}\3|p" \
+  fs="$(builtin echo @|tr @ '\034')"
+  command sed -ne "s|^\(${s}\)\(${w}\)${s}:${s}\"\(.*\)\"${s}\$|\1${fs}\2${fs}\3|p" \
       -e "s|^\(${s}\)\(${w}\)${s}[:-]${s}\(.*\)${s}\$|\1${fs}\2${fs}\3|p" "$configfile" |
   awk -F"${fs}" '{
   indent = length($1)/2;
@@ -74,7 +74,7 @@ function _zulu_config_parse_yaml() {
           vn=""; for (i=0; i<indent; i++) {vn=(vn)(vname[i])("_")}
           printf("%s%s[%s]=\"%s\"\n", "'"$prefix"'",vn, $2, $3);
       }
-  }' | sed 's/_=/+=/g'
+  }' | command sed 's/_=/+=/g'
 }
 
 ###
@@ -84,7 +84,7 @@ function _zulu_config() {
   local ctx
   local configfile="${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}/config.yml"
 
-  zparseopts -D h=help -help=help
+  builtin zparseopts -D h=help -help=help
 
   # Output help and return if requested
   if [[ -n $help ]]; then
@@ -97,7 +97,7 @@ function _zulu_config() {
   ctx="$1"
   case $ctx in
     list )
-      cat $configfile
+      command cat $configfile
       ;;
     set )
       _zulu_config_set "${(@)@:2}"

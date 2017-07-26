@@ -2,8 +2,8 @@
 # Print usage information
 ###
 function _zulu_unlink_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu unlink <package>"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu unlink <package>"
 }
 
 ###
@@ -13,7 +13,7 @@ function _zulu_unlink() {
   local help package json dir file link base
   local -a dirs
 
-  zparseopts -D h=help -help=help
+  builtin zparseopts -D h=help -help=help
 
   if [[ -n $help ]]; then
     _zulu_unlink_usage
@@ -29,14 +29,14 @@ function _zulu_unlink() {
   # Check if the package is already installed
   root="$base/packages/$package"
   if [[ ! -d "$root" ]]; then
-    echo $(_zulu_color red "Package '$package' is not installed")
+    builtin echo $(_zulu_color red "Package '$package' is not installed")
     return 1
   fi
 
   _zulu_revolver start "Unlinking $package..."
 
   # Get the JSON from the index
-  json=$(cat "$index/$package")
+  json=$(command cat "$index/$package")
 
   # Loop through the 'bin' and 'share' objects
   dirs=('bin' 'init' 'share')
@@ -53,16 +53,16 @@ function _zulu_unlink() {
   esac
 
   for dir in $dirs[@]; do
-    cd "$base/$dir"
+    builtin cd "$base/$dir"
     # Unlink any file in $dir which points to the package's source
     ls -la | \
-      grep "$base/packages/$package/" | \
-      awk '{print $9}' | \
-      xargs $flags rm
+      command grep "$base/packages/$package/" | \
+      command awk '{print $9}' | \
+      command xargs $flags rm
   done
 
-  cd $oldPWD
+  builtin cd $oldPWD
 
   _zulu_revolver stop
-  echo "$(_zulu_color green '✔') Finished unlinking $package"
+  builtin echo "$(_zulu_color green '✔') Finished unlinking $package"
 }

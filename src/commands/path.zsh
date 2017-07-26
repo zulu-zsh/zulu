@@ -2,13 +2,13 @@
 # Output usage information
 ###
 function _zulu_path_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu path <context> <dir>"
-  echo
-  echo $(_zulu_color yellow "Context:")
-  echo "  add <dir>   Add a directory to \$path"
-  echo "  reset       Replace the current session \$path with the stored dirs"
-  echo "  rm <dir>    Remove a directory from \$path"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu path <context> <dir>"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Context:")
+  builtin echo "  add <dir>   Add a directory to \$path"
+  builtin echo "  reset       Replace the current session \$path with the stored dirs"
+  builtin echo "  rm <dir>    Remove a directory from \$path"
 }
 
 ###
@@ -21,13 +21,13 @@ function _zulu_path_parse() {
   if [[ -d "$PWD/$dir" ]]; then
     # If the directory exists in the current working directory
     # convert the relative path to absolute
-    echo "$PWD/$dir"
+    builtin echo "$PWD/$dir"
   elif [[ -d "$dir" ]]; then
     # If the directory exists as an absolute path, we can use it directly
-    echo "$dir"
+    builtin echo "$dir"
   elif [[ "$check_existing" != "false" ]]; then
     # The directory could not be found
-    echo $dir
+    builtin echo $dir
     return 1
   fi
 }
@@ -37,7 +37,7 @@ function _zulu_path_parse() {
 ###
 function _zulu_path_add() {
   local dir p
-  local -a items paths; paths=($(cat $pathfile))
+  local -a items paths; paths=($(command cat $pathfile))
 
   # Check that each of the passed directories exist, and convert relative
   # paths to absolute
@@ -49,9 +49,9 @@ function _zulu_path_add() {
       # Add the directory to the array of items
       items+="$dir"
 
-      echo "$(_zulu_color green '✔') $dir added to \$path"
+      builtin echo "$(_zulu_color green '✔') $dir added to \$path"
     else
-      echo "$(_zulu_color red '✘') $dir cannot be found"
+      builtin echo "$(_zulu_color red '✘') $dir cannot be found"
     fi
 
   done
@@ -71,7 +71,7 @@ function _zulu_path_add() {
 ###
 function _zulu_path_rm() {
   local dir p
-  local -a items paths; paths=($(cat $pathfile))
+  local -a items paths; paths=($(command cat $pathfile))
 
   # Check that each of the passed directories exist, and convert relative
   # paths to absolute
@@ -80,7 +80,7 @@ function _zulu_path_rm() {
 
     # If parsing returned with an error, output the error and return
     if [[ ! $? -eq 0 ]]; then
-      echo $dir
+      builtin echo $dir
       return 1
     fi
 
@@ -92,7 +92,7 @@ function _zulu_path_rm() {
       fi
     done
 
-    echo "$(_zulu_color green '✔') $dir removed from \$path"
+    builtin echo "$(_zulu_color green '✔') $dir removed from \$path"
   done
 
   # Store the new paths in the pathfile, and override $path
@@ -110,9 +110,9 @@ function _zulu_path_store() {
   separator=$'\n'
   local oldIFS=$IFS
   IFS="$separator"; out="${items[*]/#/${separator}}"
-  echo ${out:${#separator}} >! $pathfile
+  builtin echo ${out:${#separator}} >! $pathfile
   IFS=$oldIFS
-  unset oldIFS
+  builtin unset oldIFS
 }
 
 ###
@@ -120,7 +120,7 @@ function _zulu_path_store() {
 ###
 function _zulu_path_reset() {
   local separator out
-  local -a paths; paths=($(cat $pathfile))
+  local -a paths; paths=($(command cat $pathfile))
 
   typeset -gUa path; path=()
   for p in "${paths[@]}"; do
@@ -135,7 +135,7 @@ function _zulu_path() {
   local ctx base pathfile
 
   # Parse options
-  zparseopts -D h=help -help=help
+  builtin zparseopts -D h=help -help=help
 
   # Output help and return if requested
   if [[ -n $help ]]; then
@@ -150,7 +150,7 @@ function _zulu_path() {
 
   # If no context is passed, output the contents of the pathfile
   if [[ "$1" = "" ]]; then
-    cat "$pathfile"
+    command cat "$pathfile"
     return
   fi
 

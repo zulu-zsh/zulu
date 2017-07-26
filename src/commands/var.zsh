@@ -2,13 +2,13 @@
 # Output usage information
 ###
 function _zulu_var_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu var <context> [args]"
-  echo
-  echo $(_zulu_color yellow "Contexts:")
-  echo "  add <var> <command>   Add an environment variable"
-  echo "  load                  Load all environment variables from env file"
-  echo "  rm <var>              Remove an environment variable"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu var <context> [args]"
+  builtin echo
+  builtin echo $(_zulu_color yellow "Contexts:")
+  builtin echo "  add <var> <command>   Add an environment variable"
+  builtin echo "  load                  Load all environment variables from env file"
+  builtin echo "  rm <var>              Remove an environment variable"
 }
 
 ###
@@ -17,7 +17,7 @@ function _zulu_var_usage() {
 _zulu_var_add() {
   local existing var cmd private
 
-  zparseopts -D \
+  builtin zparseopts -D \
     p=private -private=private
 
   var="$1"
@@ -26,12 +26,12 @@ _zulu_var_add() {
   # Loop through each of the envfiles
   for file in $envfile $envfile.private; do
     # Search for the variable in the file
-    existing=$(cat $file | grep "export $var=")
+    existing=$(command cat $file | command grep "export $var=")
 
     # If the variable already exists in either file,
     # throw an error
     if [[ $existing != "" ]]; then
-      echo $(_zulu_color red "Environment variable '$var' already exists")
+      builtin echo $(_zulu_color red "Environment variable '$var' already exists")
       return 1
     fi
   done
@@ -42,10 +42,10 @@ _zulu_var_add() {
   fi
 
   # Save the variable to the envfile
-  echo "export $var='$cmd'" >> $envfile
+  builtin echo "export $var='$cmd'" >> $envfile
 
   # Strip any blank lines for neatness
-  echo "$(cat $envfile | grep -vE '^\s*$')" >! $envfile
+  builtin echo "$(command cat $envfile | command grep -vE '^\s*$')" >! $envfile
 
   # Reload variables
   zulu var load
@@ -63,20 +63,20 @@ _zulu_var_rm() {
   # Loop through each of the envfiles
   for file in $envfile $envfile.private; do
     # Search for the variable in the file
-    existing=$(cat $file | grep "export $var=")
+    existing=$(command cat $file | command grep "export $var=")
 
     # If we haven't found it, skip to the next file
     [[ $existing = "" ]] && continue
 
     # If we get here, we've found the variable, so we rewrite the file,
     # stripping out the definition to remove
-    echo "$(cat $file | grep -v "export $var=" | grep -vE '^\s*$')" >! $file
+    builtin echo "$(command cat $file | command grep -v "export $var=" | command grep -vE '^\s*$')" >! $file
     break
   done
 
   # The variable wasn't found in either of the envfiles, so throw an error
   if [[ $existing = "" ]]; then
-    echo $(_zulu_color red "Environment variable '$var' does not exist")
+    builtin echo $(_zulu_color red "Environment variable '$var' does not exist")
     return 1
   fi
 
@@ -89,8 +89,8 @@ _zulu_var_rm() {
 # Load vares
 ###
 _zulu_var_load() {
-  source $envfile
-  source $envfile.private
+  builtin source $envfile
+  builtin source $envfile.private
 }
 
 ###
@@ -100,7 +100,7 @@ function _zulu_var() {
   local ctx base envfile private
 
   # Parse options
-  zparseopts -D h=help -help=help \
+  builtin zparseopts -D h=help -help=help \
     p=private -private=private
 
   # Output help and return if requested
@@ -115,21 +115,21 @@ function _zulu_var() {
   envfile="${config}/env"
 
   # Check if the envfiles exist, and if not create them
-  [[ -f $envfile ]] || touch $envfile
-  [[ -f "$envfile.private" ]] || touch "$envfile.private"
+  [[ -f $envfile ]] || command touch $envfile
+  [[ -f "$envfile.private" ]] || command touch "$envfile.private"
 
   # If no context is passed, output the contents of the envfiles
   if [[ "$1" = "" ]]; then
-    cat "$envfile"
-    echo
-    echo $(_zulu_color yellow 'Private:')
-    cat "$envfile.private"
+    command cat "$envfile"
+    builtin echo
+    builtin echo $(_zulu_color yellow 'Private:')
+    command cat "$envfile.private"
     return
   fi
 
   # Get the context
   ctx="$1"
-  shift
+  builtin shift
 
   # Call the relevant function
   _zulu_var_${ctx} ${private:+'--private'} "$@"

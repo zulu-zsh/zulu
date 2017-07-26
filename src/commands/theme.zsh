@@ -2,8 +2,8 @@
 # Output usage information
 ###
 function _zulu_theme_usage() {
-  echo $(_zulu_color yellow "Usage:")
-  echo "  zulu theme <theme_name>"
+  builtin echo $(_zulu_color yellow "Usage:")
+  builtin echo "  zulu theme <theme_name>"
 }
 
 _zulu_theme() {
@@ -12,7 +12,7 @@ _zulu_theme() {
   theme="$1"
 
   # Parse options
-  zparseopts -D h=help -help=help
+  builtin zparseopts -D h=help -help=help
 
   # Output help and return if requested
   if [[ -n $help ]]; then
@@ -30,16 +30,16 @@ _zulu_theme() {
 
   # Test if theme prompt function exists.
   # If not, print a pretty warn message.
-  if which prompt_${theme}_setup >/dev/null 2>&1; then
+  if builtin which prompt_${theme}_setup >/dev/null 2>&1; then
     prompt ${theme}
     if [[ $? -eq 0 ]]; then
-      echo "$theme" >! $config
-      echo "$(_zulu_color green '✔') Theme set to $theme"
+      builtin echo "$theme" >! $config
+      builtin echo "$(_zulu_color green '✔') Theme set to $theme"
       return
     fi
   fi
 
-  echo $(_zulu_color red "Failed to load theme '${theme}'")
-  echo "Please ensure your theme is in \$fpath and is called prompt_${theme}_setup"
+  builtin echo $(_zulu_color red "Failed to load theme '${theme}'")
+  builtin echo "Please ensure your theme is in \$fpath and is called prompt_${theme}_setup"
   return 1
 }
