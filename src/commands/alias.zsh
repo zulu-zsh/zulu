@@ -15,18 +15,25 @@ function _zulu_alias_usage() {
 # Add an alias
 ###
 function _zulu_alias_add() {
-  local existing alias cmd
+  local existing alias cmd flag
+
+  builtin zparseopts -D \
+    g=global -global=global
 
   alias="$1"
   cmd="${(@)@:2}"
 
-  existing=$(command cat $aliasfile | command grep "alias $alias=")
+  existing=$(command cat $aliasfile | command grep -E -e "^alias(\ -g)?\ $alias=")
   if [[ $existing != "" ]]; then
     builtin echo $(_zulu_color red "Alias '$alias' already exists")
     return 1
   fi
 
-  builtin echo "alias $alias='$cmd'" >> $aliasfile
+  if [[ -n $global ]]; then
+    flag=' -g'
+  fi
+
+  builtin echo "alias$flag $alias='$cmd'" >> $aliasfile
 
   zulu alias load
   builtin echo "$(_zulu_color green '✔') Alias '$alias' added"
@@ -40,13 +47,13 @@ function _zulu_alias_rm() {
 
   alias="$1"
 
-  existing=$(command cat $aliasfile | command grep "alias $alias=")
-  if [[ $existing = "" ]]; then
+  existing=$(command cat $aliasfile | command grep -E -e "^alias(\ -g)?\ $alias=")
+  if [[ -z $existing ]]; then
     builtin echo $(_zulu_color red "Alias '$alias' does not exist")
     return 1
   fi
 
-  builtin echo "$(command cat $aliasfile | command grep -v "alias $alias=")" >! $aliasfile
+  builtin echo "$(command cat $aliasfile | command grep -E -ve "^alias(\ -g)?\ $alias=")" >! $aliasfile
   unalias $alias
 
   zulu alias load
