@@ -15,7 +15,7 @@ function _zulu_alias_usage() {
 # Add an alias
 ###
 function _zulu_alias_add() {
-  local existing alias cmd flag
+  local existing alias cmd flag global
 
   builtin zparseopts -D \
     g=global -global=global
