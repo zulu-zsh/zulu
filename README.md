@@ -21,7 +21,7 @@ Thanks for using Zulu. Zulu is a environment manager for ZSH, which aims to make
 Zulu comes with its own install script, which is the recommended method of install.
 
 ```sh
-curl -L https://git.io/zulu-install | zsh && zsh
+curl -L https://zulu.sh/install | zsh && zsh
 ```
 
 If you'd rather not pipe a script into ZSH, take a look at the [manual installation process](https://zulu.sh/docs/getting-started/manual-installation).
