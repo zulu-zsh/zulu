@@ -624,13 +624,14 @@ function _zulu_init_next_message() {
 function _zulu_init() {
   local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   local config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  local help check_for_update no_compile next dev branch
+  local help check_for_update no_compile next dev bare branch
 
   # Parse CLI options
   builtin zparseopts -D \
     h=help -help=help \
     c=check_for_update -check-for-update=check_for_update \
     n=no_compile -no-compile=no_compile \
+    -bare=bare \
     -next=next \
     -dev=dev
 
@@ -674,18 +675,22 @@ function _zulu_init() {
   _zulu_init_setup_completion
 
   # Load installed packages
-  _zulu_load_packages
+  if [[ -z $bare ]]; then
+    _zulu_load_packages
+  fi
 
   # Set up history
   _zulu_init_setup_history
 
   # Load aliases, functions and environment variables
-  zulu alias load
-  zulu func load
-  zulu var load
+  if [[ -z $bare ]]; then
+    zulu alias load
+    zulu func load
+    zulu var load
+  fi
 
   # Autoload zsh theme
-  if [[ -f "$config/theme" ]]; then
+  if [[ -z $bare && -f "$config/theme" ]]; then
     builtin autoload -U promptinit && promptinit
     local theme=$(cat "$config/theme")
     prompt $theme
