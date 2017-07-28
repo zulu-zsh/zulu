@@ -55,10 +55,10 @@ function _zulu_unlink() {
   for dir in $dirs[@]; do
     builtin cd "$base/$dir"
     # Unlink any file in $dir which points to the package's source
-    ls -la | \
+    command ls -la | \
       command grep "$base/packages/$package/" | \
       command awk '{print $9}' | \
-      command xargs $flags rm
+      command xargs $flags command rm
   done
 
   builtin cd $oldPWD
