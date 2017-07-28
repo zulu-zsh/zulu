@@ -58,7 +58,7 @@ function _zulu_unlink() {
     command ls -la | \
       command grep "$base/packages/$package/" | \
       command awk '{print $9}' | \
-      command xargs $flags command rm
+      command xargs $flags /bin/rm
   done
 
   builtin cd $oldPWD
