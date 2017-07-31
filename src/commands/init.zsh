@@ -582,11 +582,22 @@ function _zulu_init_switch_branch() {
   local current=$(command git status --short --branch -uno --ignore-submodules=all | command head -1 | command awk '{print $2}' 2>/dev/null)
 
   if [[ ${current:0:${#branch}} != $branch ]]; then
-    command git reset --hard >/dev/null 2>&1
-    command git checkout $branch >/dev/null 2>&1
-    ./build.zsh >/dev/null 2>&1
+    if command git reset --hard 2>&1; then
+      echo $(_zulu_color red 'Failed to reset Zulu repository')
+      return 1
+    fi
+
+    if command git checkout $branch 2>&1; then
+      echo $(_zulu_color red "Failed to checkout branch $branch")
+      return 1
+    fi
+
+    if ./build.zsh 2>&1; then
+      echo $(_zulu_color red "Failed to compile Zulu")
+      return 1
+    fi
+    
     builtin source ./zulu
-    builtin echo "\033[0;32m✔\033[0;m Switched to Zulu ${branch}"
   fi
 
   builtin cd $oldPWD
@@ -613,7 +624,7 @@ function _zulu_init_next_message() {
 function _zulu_init() {
   local base=${ZULU_DIR:-"${ZDOTDIR:-$HOME}/.zulu"}
   local config=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
-  local help check_for_update no_compile next dev
+  local help check_for_update no_compile next dev branch
 
   # Parse CLI options
   builtin zparseopts -D \
@@ -638,9 +649,17 @@ function _zulu_init() {
   # Check for the --next flag unless in dev mode
   if [[ $ZULU_DEV_MODE -ne 1 ]]; then
     if [[ -n $next ]]; then
-      _zulu_init_switch_branch 'next'
+      branch='next'
     else
-      _zulu_init_switch_branch 'master'
+      branch='master'
+    fi
+
+    output=$(_zulu_init_switch_branch $branch)
+    if [[ $? -eq 0 ]]; then
+      builtin echo "\033[0;32m✔\033[0;m Switched to Zulu $branch"
+    else
+      builtin echo $output
+      return 1
     fi
   fi
 
