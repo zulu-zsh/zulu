@@ -585,6 +585,7 @@ function _zulu_init_switch_branch() {
     command git reset --hard >/dev/null 2>&1
     command git checkout $branch >/dev/null 2>&1
     ./build.zsh >/dev/null 2>&1
+    builtin source ./zulu
     builtin echo "\033[0;32m✔\033[0;m Switched to Zulu ${branch}"
   fi
 
