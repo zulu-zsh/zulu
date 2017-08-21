@@ -282,10 +282,10 @@ function _zulu_init_setup_key_bindings() {
     'PageUp'       "$terminfo[kpp]"
     'End'          "$terminfo[kend]"
     'PageDown'     "$terminfo[knp]"
-    'Up'           "$terminfo[kcuu1]"
-    'Left'         "$terminfo[kcub1]"
-    'Down'         "$terminfo[kcud1]"
-    'Right'        "$terminfo[kcuf1]"
+    'Up'           "^[[A"
+    'Left'         "^[[D"
+    'Down'         "^[[B"
+    'Right'        "^[[C"
     'BackTab'      "$terminfo[kcbt]"
   )
 
