@@ -25,6 +25,12 @@ _zulu_theme() {
   config_dir=${ZULU_CONFIG_DIR:-"${ZDOTDIR:-$HOME}/.config/zulu"}
   config="${config_dir}/theme"
 
+  # If no argument is passed, print the current theme
+  if [[ -z $theme ]]; then
+    echo "$(cat $config)"
+    return
+  fi
+
   # Ensure promptinit is loaded
   autoload -U promptinit && promptinit
 
