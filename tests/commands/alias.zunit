@@ -6,7 +6,7 @@
   assert $state equals 0
   assert "$output" same_as "\033[0;32m✔\033[0;m Alias 'an_alias' added"
 
-  run grep -E '^alias an_alias=' tests/_support/.config/zulu/alias
+  run grep -E -e '^alias an_alias=' tests/_support/.config/zulu/alias
 
   assert $state equals 0
   assert "$output" same_as "alias an_alias='echo \"It worked\"'"
@@ -21,8 +21,49 @@
   assert "$output" same_as "\033[0;32m✔\033[0;m Alias 'an_alias' removed"
 
   local -a output
-  run grep -E '^alias an_alias=' tests/_support/.config/zulu/alias
+  run grep -E -e '^alias an_alias=' tests/_support/.config/zulu/alias
 
   assert $state equals 1
   assert "$output" is_empty
+}
+
+@test 'Test "zulu alias add -g" creates a global alias' {
+  run zulu alias add -g a_global_alias ' | cat -vte'
+
+  assert $state equals 0
+  assert "$output" same_as "\033[0;32m✔\033[0;m Alias 'a_global_alias' added"
+
+  run grep -E -e '^alias -g a_global_alias=' tests/_support/.config/zulu/alias
+
+  assert $state equals 0
+  assert "$output" same_as "alias -g a_global_alias=' | cat -vte'"
+}
+
+@test 'Test "zulu alias rm" removes a global alias' {
+  zulu alias load
+
+  run zulu alias rm 'a_global_alias'
+
+  assert $state equals 0
+  assert "$output" same_as "\033[0;32m✔\033[0;m Alias 'a_global_alias' removed"
+
+  local -a output
+  run grep -E -e '^alias -g a_global_alias=' tests/_support/.config/zulu/alias
+
+  assert $state equals 1
+  assert "$output" is_empty
+}
+
+@test 'Test "zulu alias add" does not allow overlapping standard and global aliases' {
+  run zulu alias add a_new_alias 'echo "It worked"'
+
+  assert $state equals 0
+  assert "$output" same_as "\033[0;32m✔\033[0;m Alias 'a_new_alias' added"
+
+  zulu alias load
+
+  run zulu alias add -g a_new_alias ' | cat -vte'
+
+  assert $state equals 1
+  assert "$output" same_as "\033[0;31mAlias 'a_new_alias' already exists\033[0;m"
 }
