@@ -30,6 +30,6 @@ install:
 before_script:
   - zvm use ${ZVM_VERSION}
   - ./build.zsh
-script: zunit --verbose
+script: zunit
 notifications:
   email: false
