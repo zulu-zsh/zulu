@@ -209,7 +209,7 @@ Please choose from one of the following options:
     case $choice in
       # Force push the empty repository to the remote,
       # overwriting any existing remote config
-      p|P )
+     ( p|P )
         _zulu_revolver start 'Overwriting remote config...'
         # Commit changes
         command git add . >/dev/null 2>&1
@@ -229,7 +229,7 @@ Please choose from one of the following options:
 
       # Back up the existing config to $ZULU_CONFIG_DIR/.backup
       # and create a fresh clone of the remote repository in $ZULU_CONFIG_DIR
-      b|B )
+     ( b|B )
         _zulu_revolver start 'Backing up and downloading from remote...'
 
         # Return to the previous directory so we can move
@@ -262,7 +262,7 @@ Please choose from one of the following options:
         ;;
 
       # Something else was entered, exit
-      * )
+     ( * )
         # Return to the previous directory
         builtin cd $oldPWD
         builtin unset oldPWD
