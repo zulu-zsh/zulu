@@ -42,7 +42,7 @@
   run zulu update
 
   assert $state equals 0
-  assert "${output%"${output##*[![:space:]]}"}" same_as '\033[0;32m✔\033[0;m Package index updated'
+  assert "${lines[${#lines}]}" same_as '\033[0;32m✔\033[0;m Package index updated'
 }
 
 @test 'Test "zulu update" preserves local changes' {
@@ -68,7 +68,7 @@
 
   # Assert the update was successful
   assert $state equals 0
-  assert "${output%"${output##*[![:space:]]}"}" same_as '\033[0;32m✔\033[0;m Package index updated'
+  assert "${lines[${#lines}]}" same_as '\033[0;32m✔\033[0;m Package index updated'
 
   # Assert the additional line still exists in the file
   assert "$(tail -1 readme.md)" same_as 'thisisatest'
