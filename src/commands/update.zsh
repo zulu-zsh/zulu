@@ -15,9 +15,55 @@ function _zulu_update_usage() {
 ###
 function _zulu_update_index() {
   local old="$(pwd)"
+  local stub="packages/"
+  typeset -A files
+  typeset -a changed; changed=()
+  typeset -a new; new=()
+  typeset -a removed; removed=()
 
   builtin cd $index
-  command git rebase -p --autostash FETCH_HEAD
+
+  # Get the list of changed files
+  files=($(command git diff --name-status HEAD...@'{u}' 2>&1))
+
+  # Sort files into arrays for changed, new and removed packages
+  for type file in "${(@kv)files}"; do
+    if [[ $type == 'M' ]]; then
+      changed=($changed ${file//${stub}/})
+    fi
+
+    if [[ $type == 'A' ]]; then
+      new=($new ${file//${stub}/})
+    fi
+
+    if [[ $type == 'D' ]]; then
+      removed=($removed ${file//${stub}/})
+    fi
+  done
+
+  # Update the index
+  local out=$(command git rebase -p --autostash FETCH_HEAD >/dev/null 2>&1)
+  if [ $? -ne 0 ]; then
+    builtin echo $(color red $out)
+    return 1
+  fi
+
+  # Print the updated packages
+  if [ ${#changed} -gt 0 ]; then
+    builtin echo $(color yellow 'Updated packages')
+    builtin echo "  $changed"
+  fi
+
+  if [ ${#new} -gt 0 ]; then
+    builtin echo $(color yellow 'New packages')
+    builtin echo "  $new"
+  fi
+
+  if [ ${#removed} -gt 0 ]; then
+    builtin echo $(color yellow 'Deleted packages')
+    builtin echo "  $removed"
+  fi
+
   builtin cd $old
 }
 
@@ -77,6 +123,7 @@ function _zulu_update() {
     _zulu_revolver stop
 
     if [ $? -eq 0 ]; then
+      builtin echo "$out"
       builtin echo "$(_zulu_color green '✔') Package index updated"
     else
       builtin echo "$(_zulu_color red '✘') Error updating package index"
