@@ -38,6 +38,7 @@ function _zulu_install_package() {
 
   # Get the repository URL from the JSON
   repo=$(jsonval $json 'repository')
+
   if [[ $? -ne 0 || -z $repo ]]; then
     builtin echo 'Could not find repository URL' >&2
     return 1
@@ -60,7 +61,11 @@ function _zulu_install_package() {
   # Clone the repository
   builtin cd "$base/packages"
 
-  command git clone --recursive --branch $ref $repo $package 2>&1
+  local -a args
+  if [[ -n $ref ]]; then
+    args=(--branch $ref)
+  fi
+  command git clone --recursive $args $repo $package 2>&1
   if [[ $? -ne 0 ]]; then
     builtin echo 'Failed to clone repository' >&2
     return 1
@@ -156,7 +161,7 @@ function _zulu_install() {
       fi
     fi
 
-    local ref='master'
+    local ref=''
     if [[ -n $branch ]]; then
       builtin shift branch
       ref=$branch
