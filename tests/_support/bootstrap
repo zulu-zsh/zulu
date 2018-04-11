@@ -16,7 +16,7 @@ oldIFS=$IFS
 if [[ ! -d "$ZULU_DIR" ]]; then
   # Check if the Zulu install script has already been downloaded
   if [[ ! -f "$ZULU_INSTALL_SCRIPT" ]]; then
-    curl -L https://zulu.sh/install > $ZULU_INSTALL_SCRIPT
+    curl -L https://zulu.molovo.co/install > $ZULU_INSTALL_SCRIPT
   fi
 
   # Source the Zulu install script
