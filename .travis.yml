@@ -1,35 +1,37 @@
 addons:
   apt:
     packages:
-      - zsh
-      - ncurses-dev
-      - autoconf
-      - yodl
-      - man
+    - zsh
+    - ncurses-dev
+    - autoconf
+    - yodl
+    - man
 language: generic
 cache:
   apt: true
   directories:
-    - $HOME/.zvm
+  - "$HOME/.zvm"
 dist: trusty
 matrix:
   include:
-    - env: ZVM_VERSION='5.0.8'
-    - env: ZVM_VERSION='5.1.1'
-    - env: ZVM_VERSION='5.2'
-    - env: ZVM_VERSION='5.3.1'
+  - env: ZVM_VERSION='5.0.8'
+  - env: ZVM_VERSION='5.1.1'
+  - env: ZVM_VERSION='5.2'
+  - env: ZVM_VERSION='5.3.1'
 install:
-  - if [[ $(ls "$HOME/.zvm" | wc -l) -eq 0 ]]; then rm -rf "$HOME/.zvm"; fi
-  - mkdir .bin
-  - curl -L https://raw.githubusercontent.com/molovo/revolver/master/revolver > .bin/revolver
-  - curl -L https://raw.githubusercontent.com/molovo/color/master/color.zsh > .bin/color
-  - curl -L https://raw.githubusercontent.com/molovo/zvm/master/zvm > .bin/zvm
-  - curl -L https://github.com/molovo/zunit/releases/download/v0.8.0/zunit > .bin/zunit
-  - chmod u+x .bin/{color,revolver,zunit,zvm}
-  - export PATH="$HOME/.zvm/bin:$PWD/.bin:$PATH"
+- if [[ $(ls "$HOME/.zvm" | wc -l) -eq 0 ]]; then rm -rf "$HOME/.zvm"; fi
+- mkdir .bin
+- curl -L https://raw.githubusercontent.com/molovo/revolver/master/revolver > .bin/revolver
+- curl -L https://raw.githubusercontent.com/molovo/color/master/color.zsh > .bin/color
+- curl -L https://raw.githubusercontent.com/molovo/zvm/master/zvm > .bin/zvm
+- curl -L https://github.com/molovo/zunit/releases/download/v0.8.0/zunit > .bin/zunit
+- chmod u+x .bin/{color,revolver,zunit,zvm}
+- export PATH="$HOME/.zvm/bin:$PWD/.bin:$PATH"
 before_script:
-  - zvm use ${ZVM_VERSION}
-  - ./build.zsh
+- zvm use ${ZVM_VERSION}
+- "./build.zsh"
 script: zunit
 notifications:
   email: false
+  slack:
+    secure: odq7Bn+HU3VLl7g8ZY4r2ILsq9g7DnEh802zOporpmeayzU2Zd44L+R6QG8oR/rfeOSNpczmn6ERrwP1rhyPsG16ziU1SXSlxUGjvjCqoaFi7UZduyN/29FdziBCcfgP454EjMB696/JBUTwfKtsxqGSSrVuBUWeFlRO0Q8Une8LL+dyZ2wenCDKD14f7qxmUOxM/11DnvN1P9KNhJvX4jD8qLNB/QnY788KRGnsR1kruBT9xM1VUSuEj5wRqMqSpaQNGPNQxJUX2A/tWNXlZsnaGGVI7KTTDleylQwG+MebXdB4En2UPnW8iPIYmYNKUGFRyVq0PPAuq081heoiFj0f5otZb1JJcWobw3fkXWzukEyjqVaGU8WM90qvFNTn7hOuhN5v902n+v7H3QlRD2W+ac1+cGKoFyZxVOVH7mMxRrbGd85i2xr35OmqketOhvTep2snr8Oj4kLD6X6J7bvZPQVHSMkfgZi8XdU08yGJkEkH837kUD0VRZA89MZ7EWT8SstuxosAgUAyUqmkz8bOmTwGQksna5qj9zHiCGiYinrHzjFwhd8QnKW45CKflxxwGuW7Ve00Nef9QNWWrDYbvL5JJZJVGHhsTS+ArVUAsHDrMHg/OeITKSakDlDv0i+U1V0YyvOW1gFnE0xeA7ei7y0kL1GSywRFAZkOp24=
